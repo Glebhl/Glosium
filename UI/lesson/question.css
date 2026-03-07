@@ -1,0 +1,17 @@
+.answer-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.question-content {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 21px;
+}
+
+.question-paragraph {
+  margin-top: 6px;
+  color: var(--text);
+  font-size: 16px;
+}

@@ -38,12 +38,14 @@ class LessonController(QObject):
             "matching": self._load_matching_task,
             "translation": self._load_translation_task,
             "filling": self._load_filling_task,
+            "question": self._load_question_task,
         }
         self.task_verifiers: dict[str, Callable[[], bool]] = {
-            "explanation": None,
+            "explanation": None,  # None to skip verification
             "matching": None,
             "translation": self._verify_translation_task,
             "filling": self._verify_filling_task,
+            "question": None,
         }
 
         # Load lesson plan once
@@ -146,6 +148,7 @@ class LessonController(QObject):
             self._open_next_task()
 
     # --- EXPLANATION task ---
+    
     def _load_explanation_task(self, content: Any) -> None:
         """Render explanation page."""
         script = f'setTask("explanation", "next", {json.dumps(content)});'
@@ -239,4 +242,10 @@ class LessonController(QObject):
         """Render filling task."""
         script = f'setTask("filling", "next", {json.dumps(content)});'
         self.view.page().runJavaScript(script)
+    
+    # --- QUESTION task ---
 
+    def _load_question_task(self, content: Any) -> None:
+        """Render question task."""
+        script = f'setTask("question", "next", {json.dumps(content)});'
+        self.view.page().runJavaScript(script)

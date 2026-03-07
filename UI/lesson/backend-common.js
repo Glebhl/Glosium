@@ -36,9 +36,7 @@ const hydrators = {
   },
 
   question(el, data) {
-    if (typeof initQuestion === "function") {
-      initQuestion(el, data.question, data.paragraph, data.answers);
-    }
+    initQuestion(el, data.question, data.paragraph, data.options, data.answer);
   },
 };
 
