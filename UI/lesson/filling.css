@@ -1,0 +1,30 @@
+.filling-answer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: start;
+  align-items: center;
+  min-height: 94px;
+  transition: 100ms ease;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.panel-filling {
+  border-style: dashed;
+}
+
+.filling-text {
+  min-height: 42px;
+  line-height: 42px;
+  text-align: end;
+}
+
+.blank {
+  display: inline-flex;
+  min-width: 100px;
+  min-height: 42px;
+  border-bottom: 2px solid #8d8d8d;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,56 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+  /* background: var(--panel-2);
+  border: 1px solid var(--border); */
+  border-radius: var(--radius-lg);
+  /* padding: 14px; */
+  box-shadow: var(--inner-shadow);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.item {
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  padding: 15px 0;
+  font-size: 20px;
+  text-align: center;
+  color: var(--text);
+  transition: var(--transition);
+  /* box-shadow: var(--inner-shadow); */
+}
+
+.item.unselected {
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.item.unselected:hover {
+  color: rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.007);
+}
+
+.item.selected {
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.item.correct {
+  border: 1px solid rgba(6, 255, 6, 0.59);
+  background: rgba(6, 255, 6, 0.39);
+  color: var(--text);
+}
+
+.item.wrong {
+  border: 1px solid rgba(255, 6, 6, 0.59);
+  background: rgba(255, 6, 6, 0.39);
+  color: var(--text);
+}

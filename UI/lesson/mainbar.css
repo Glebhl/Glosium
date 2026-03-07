@@ -1,0 +1,210 @@
+.lesson-shell {
+  /* flex: 1; */
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--main-shadow);
+  position: absolute;
+  top: 40px;
+  right: 70px;
+  bottom: 40px;
+  left: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.lesson-shell__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.lesson-shell__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.lesson-shell__logo {
+  height: 36px;
+  width: 36px;
+  border-radius: 12px;
+  box-shadow: var(--inner-shadow);
+  object-fit: cover;
+}
+
+.lesson-shell__name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.lesson-shell__subtitle {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lesson-progress {
+  height: 15px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.lesson-progress-bar {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.lesson-progress__fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(123, 97, 255, 0.95),
+    rgba(32, 227, 178, 0.75)
+  );
+  transition: width 200ms ease;
+}
+
+.lesson-progress__text {
+  text-align: center;
+  width: 50px;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.lesson-stage {
+  flex: 1;
+  position: relative;
+  padding: 15px 20px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  /* height: 350px; */
+}
+
+.task-screen {
+  transition: transform 360ms ease;
+  flex: 1;
+  width: calc(100% - 40px);
+  position: absolute;
+}
+
+.task-title {
+  margin-left: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.task-description {
+  margin-left: 10px;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.panel {
+  margin: 14px 0;
+  background: var(--panel);
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--inner-shadow);
+}
+
+.field-wrong {
+  border-color: rgba(255, 6, 6, 0.5);
+  /* outline: 2px solid rgba(255, 6, 6, .3); */
+  box-shadow: 0 0 10px rgba(255, 6, 6, 0.2);
+}
+
+.hint-wrap {
+  overflow: hidden;
+}
+
+.hint {
+  margin-top: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  width: 20px;
+  font-size: 13px;
+}
+
+.field-label {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+  color: var(--muted);
+}
+
+.translation-sentence {
+  font-size: 17px;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.lesson-shell__footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding: 10px 15px;
+}
+
+.lesson-button {
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: 70ms var(--transition);
+}
+
+.lesson-button--skip {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.lesson-button--skip:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: white;
+}
+
+.lesson-button--skip:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lesson-button--continue {
+  background: linear-gradient(
+    135deg,
+    rgba(32, 227, 178, 1),
+    rgba(32, 227, 178, 0.7)
+  );
+  color: #05110d;
+  border: none;
+  box-shadow: 0 3px 15px rgba(32, 227, 178, 0.16);
+}
+
+.lesson-button--continue:hover {
+  filter: brightness(1.08);
+}
+
+.lesson-button--continue:active {
+  filter: brightness(0.94);
+}
+
+.lesson-button--continue:disabled {
+  cursor: default;
+  filter: brightness(0.7);
+  box-shadow: none;
+}

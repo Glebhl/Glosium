@@ -1,0 +1,46 @@
+:root {
+  --text: rgb(233, 233, 243);
+  --muted: rgba(233, 233, 243, .66);
+
+  --background: #121314;
+  --panel: rgba(255, 255, 255, .03);
+  --panel-hover: rgba(255, 255, 255, .05);
+  --panel-active: rgba(255, 255, 255, .07);
+  --focus-color: rgba(123, 97, 255, .55);
+  
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.1);
+  --border-active: rgba(255, 255, 255, 0.13);
+  --glow: 0 0 0 1px rgba(123, 97, 255, .25), 0 8px 28px rgba(123, 97, 255, .14);;
+  --accent-shadow: 0 6px 33px rgba(0, 0, 0, .25);
+  --main-shadow: 0 6px 20px rgba(0, 0, 0, .15);
+  --inner-shadow: 0 3px 18px rgba(0, 0, 0, .12);
+  
+  --transition: cubic-bezier(.2, .8, .2, 1);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+}
+
+body {
+  background-color: var(--background);
+  font-family: Roboto, Arial;
+  color: var(--text);
+  /* padding: 40px 70px 0 70px; */
+}
+
+p {
+  margin: 0;
+}
+
+code {
+  display: inline-flex;
+  font-family: monospace;
+  font-size: 12px;
+  color: rgba(231,233,238,.9);
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 999px;
+}

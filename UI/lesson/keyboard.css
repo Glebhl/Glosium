@@ -1,0 +1,66 @@
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+  min-height: 90px;
+}
+
+.word-key {
+  cursor: pointer;
+  display: inline-block;
+  padding: 11px 13px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 16px;
+  transition: 150ms var(--transition);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+}
+
+.word-key:hover {
+  background: var(--panel-hover);
+  border-color: var(--border-hover);
+}
+
+.word-key:active {
+  background: var(--panel-active);
+  border-color: var(--border-active);
+}
+
+.keyboard-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.keyboard-switch {
+  display: flex;
+  gap: 4px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.switch-el {
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 14px;
+  border-radius: 999px;
+  padding: 8px 10px;
+  transition: 100ms ease;
+}
+
+.switch-el:hover {
+  background: rgb(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.switch-el.switch-active {
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--panel);
+}

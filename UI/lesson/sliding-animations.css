@@ -1,0 +1,9 @@
+.task-screen.is-right {
+  transform: translateX(110%);
+}
+.task-screen.is-left {
+  transform: translateX(-110%);
+}
+.task-screen.is-center {
+  transform: translateX(0);
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link href="Inter.ttf" rel="stylesheet">
+
+    <link href="darkscroll.css" rel="stylesheet"></link>
+    <link href="topbar.css" rel="stylesheet"></link>
+    <link href="general.css" rel="stylesheet"></link>
+    <link href="cards.css" rel="stylesheet"></link>
+    
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <div class="brandrow">
+          <div class="brand">
+            <img class="logo" src="../logo.jpg">
+            <div>
+              <p class="header">LexiForge</p>
+              <p class="description">Vocabulary planning</p>
+            </div>
+          </div>
+          <div class="status-chips">
+            <div class="chip">
+              <div class="ai-indicator"></div>
+              AI ready
+            </div>
+            <div class="chip">
+              <img class="language-indicator" src="../flagpack/US.svg">
+              EN
+            </div>
+            <div class="chip" id="deck-amount">Deck: 0 cards</div>
+          </div>
+        </div>
+        <div class="prompt-row">
+          <div class="prompt-wrap">
+            <input class="prompt" placeholder="What do you want to learn today? e. g. ‘Business meeting vocabulary for B2’">
+            <div class="hint-wrap">
+              <div class="hint" id="hint"></div>
+            </div>
+          </div>
+          <button class="btn btn--go" id="btn-go">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              <path d="M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            Generate
+          </button>
+          <button class="btn btn--start" id="btn-start">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 5v14l12-7-12-7z" fill="currentColor"></path>
+            </svg>
+            Start lesson
+          </button>
+        </div>
+      </div>
+        <div class="cards" id="cards"></div>
+    </main>
+
+    <template id="card-template">
+      <div class="card">
+        <div class="strip"></div>
+        <div class="cardTop">
+          <div class="word-block">
+            <p class="word"></p>
+            <p class="transcription"></p>
+          </div>
+          <div class="action-panel">
+            <button class="action-btn">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </button>
+            <button class="action-btn remove-btn">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="pill">
+            <span class="tag tag--purple"></span>
+            unit
+          </span>
+          <span class="pill">
+            <span class="tag tag--green"></span>
+            part of speech
+          </span>
+          <span class="pill">
+            <span class="tag tag--amber"></span>
+            level
+          </span>
+        </div>
+        <div class="field">
+          <p class="field-lable">TRANSLATION</p>
+          <p class="field-value translation"></p>
+        </div>
+        <div class="field">
+          <p class="field-lable">MEANING</p>
+          <p class="field-value defenition"></p>
+        </div>
+        <div class="field quote">
+          <p class="field-lable">EXAMPLE</p>
+          <p class="quote-lable example"></p>
+        </div>
+      </div>
+    </template>
+
+    <script>
+      // Global link to Python backend
+      let backend = null;
+
+      // Channel initialization
+      new QWebChannel(qt.webChannelTransport, function (channel) {
+        backend = channel.objects.backend;
+      });
+    </script>
+
+    <script src="backend-functions.js"></script>
+  </body>
+</html>

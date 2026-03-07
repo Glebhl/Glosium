@@ -1,0 +1,14 @@
+.translation-answer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: start;
+  min-height: 90px;
+  transition: 100ms ease;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.panel-translation {
+  border-style: dashed;
+}

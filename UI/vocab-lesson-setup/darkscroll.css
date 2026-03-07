@@ -1,0 +1,10 @@
+/* Пример: примените к прокручиваемому контейнеру */
+body{
+  /* Цвета (можно менять) */
+  --sb-track: rgba(255, 255, 255, 0.06);
+  --sb-thumb: rgba(255, 255, 255, 0.22);
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) var(--sb-track);
+}

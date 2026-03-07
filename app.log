@@ -1,0 +1,985 @@
+2026-03-03 19:14:07 | DEBUG | __main__ | Application startup
+2026-03-03 19:14:07 | DEBUG | __main__ | MainWindow initialization started
+2026-03-03 19:14:07 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-03 19:14:07 | DEBUG | __main__ | Backend object created
+2026-03-03 19:14:07 | DEBUG | __main__ | Router created
+2026-03-03 19:14:09 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-03 19:14:09 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:14:09 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-03 19:14:09 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:14:09 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:14:09 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:14:09 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-03 19:14:09 | INFO | __main__ | MainWindow initialization completed
+2026-03-03 19:14:09 | INFO | __main__ | Application started successfully
+2026-03-03 19:14:11 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-03 19:14:11 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-03 19:14:11 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-03 19:14:11 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-03 19:14:11 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:14:11 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:14:11 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-03 19:14:11 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-03 19:14:11 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-03 19:14:11 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-03 19:14:11 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-03 19:14:11 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-03 19:15:11 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:15:11 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:15:11 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:15:11 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-03 19:15:16 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:16 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:16 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:15:16 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-03 19:15:16 | DEBUG | lesson_controller | Filling answer received: user_answer=['a', 'The'] expected=['a', 'The'] is_correct=True
+2026-03-03 19:15:16 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-03 19:15:16 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-03 19:15:20 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:20 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:20 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:15:20 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-03 19:15:20 | DEBUG | lesson_controller | Filling answer received: user_answer=['blue', 'green'] expected=['blue', 'green'] is_correct=True
+2026-03-03 19:15:20 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-03 19:15:20 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-03 19:15:25 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:25 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:25 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:15:25 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-03 19:15:25 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень хорошая книга' expected=['это очень хорошая книга', 'лишние три слова'] is_correct=True
+2026-03-03 19:15:25 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-03 19:15:25 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-03 19:15:29 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:29 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:29 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:15:29 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-03 19:15:29 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень плохая книга' expected=['это очень плохая книга', 'очень лишние четыре слова'] is_correct=True
+2026-03-03 19:15:29 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-03 19:15:29 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-03 19:15:34 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:34 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:34 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:15:34 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-03 19:15:38 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:38 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:38 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:15:38 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-03 19:15:47 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:47 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:15:47 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:15:47 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-03 19:16:01 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:01 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:01 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:16:01 | INFO | lesson_controller | Opening task: index=7/7 id=matching
+2026-03-03 19:16:02 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:02 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:02 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:16:02 | INFO | lesson_controller | All tasks completed, navigating back
+2026-03-03 19:16:02 | DEBUG | router | Going back: from url="\UI\lesson\index.html" to url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:02 | DEBUG | router | Deactivated controller signals: url="\UI\lesson\index.html"
+2026-03-03 19:16:02 | DEBUG | router | Popped current page from history stack (size=1)
+2026-03-03 19:16:02 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:02 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:02 | INFO | router | Went back to previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:03 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-03 19:16:03 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-03 19:16:03 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-03 19:16:03 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-03 19:16:03 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:03 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:03 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-03 19:16:03 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-03 19:16:03 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-03 19:16:03 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-03 19:16:03 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-03 19:16:03 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-03 19:16:36 | DEBUG | __main__ | Application startup
+2026-03-03 19:16:36 | DEBUG | __main__ | MainWindow initialization started
+2026-03-03 19:16:36 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-03 19:16:36 | DEBUG | __main__ | Backend object created
+2026-03-03 19:16:36 | DEBUG | __main__ | Router created
+2026-03-03 19:16:37 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-03 19:16:37 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:37 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-03 19:16:37 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:37 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:37 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:37 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-03 19:16:37 | INFO | __main__ | MainWindow initialization completed
+2026-03-03 19:16:37 | INFO | __main__ | Application started successfully
+2026-03-03 19:16:38 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-03 19:16:38 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-03 19:16:38 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-03 19:16:38 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-03 19:16:38 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:38 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:16:38 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-03 19:16:38 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-03 19:16:38 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-03 19:16:38 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-03 19:16:38 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-03 19:16:38 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-03 19:16:40 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:40 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:40 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:16:40 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-03 19:16:40 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:40 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:40 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:16:40 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-03 19:16:40 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:40 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:40 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:16:40 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-03 19:16:41 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:41 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:41 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:16:41 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-03 19:16:41 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:41 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:16:41 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:16:41 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-03 19:16:49 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:16:49 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:16:49 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:16:49 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-03 19:16:49 | CRITICAL | __main__ | Unhandled exception
+Traceback (most recent call last):
+  File "D:\PyLanguage\lesson_controller.py", line 77, in on_ui_event
+    handler(payload)
+    ~~~~~~~^^^^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 91, in _handle_button_click
+    self._check_task_completion()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\PyLanguage\lesson_controller.py", line 136, in _check_task_completion
+    self._on_check_result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+TypeError: LessonController._on_check_result() missing 1 required positional argument: 'is_correct'
+2026-03-03 19:17:00 | DEBUG | __main__ | Application startup
+2026-03-03 19:17:00 | DEBUG | __main__ | MainWindow initialization started
+2026-03-03 19:17:00 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-03 19:17:00 | DEBUG | __main__ | Backend object created
+2026-03-03 19:17:00 | DEBUG | __main__ | Router created
+2026-03-03 19:17:01 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-03 19:17:01 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:01 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-03 19:17:01 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:01 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:01 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:01 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-03 19:17:01 | INFO | __main__ | MainWindow initialization completed
+2026-03-03 19:17:01 | INFO | __main__ | Application started successfully
+2026-03-03 19:17:02 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-03 19:17:02 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-03 19:17:02 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-03 19:17:02 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-03 19:17:02 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:02 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:02 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-03 19:17:02 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-03 19:17:02 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-03 19:17:02 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-03 19:17:02 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-03 19:17:02 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-03 19:17:04 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:04 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-03 19:17:04 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:04 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-03 19:17:04 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:04 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-03 19:17:04 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:04 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-03 19:17:04 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:04 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:04 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-03 19:17:05 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:05 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:05 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:05 | INFO | lesson_controller | Opening task: index=7/7 id=matching
+2026-03-03 19:17:10 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:17:10 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:17:10 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:17:10 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-03 19:17:10 | CRITICAL | __main__ | Unhandled exception
+Traceback (most recent call last):
+  File "D:\PyLanguage\lesson_controller.py", line 77, in on_ui_event
+    handler(payload)
+    ~~~~~~~^^^^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 91, in _handle_button_click
+    self._check_task_completion()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\PyLanguage\lesson_controller.py", line 136, in _check_task_completion
+    self._on_check_result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+TypeError: LessonController._on_check_result() missing 1 required positional argument: 'is_correct'
+2026-03-03 19:17:18 | DEBUG | __main__ | Application startup
+2026-03-03 19:17:18 | DEBUG | __main__ | MainWindow initialization started
+2026-03-03 19:17:18 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-03 19:17:18 | DEBUG | __main__ | Backend object created
+2026-03-03 19:17:18 | DEBUG | __main__ | Router created
+2026-03-03 19:17:19 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-03 19:17:19 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:19 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-03 19:17:19 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:19 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:19 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:19 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-03 19:17:19 | INFO | __main__ | MainWindow initialization completed
+2026-03-03 19:17:19 | INFO | __main__ | Application started successfully
+2026-03-03 19:17:20 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-03 19:17:20 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-03 19:17:20 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-03 19:17:20 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-03 19:17:20 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:20 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:20 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-03 19:17:20 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-03 19:17:20 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-03 19:17:20 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-03 19:17:20 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-03 19:17:20 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-03 19:17:21 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:21 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:21 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:21 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-03 19:17:21 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:21 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:21 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:21 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-03 19:17:21 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:21 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:21 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:21 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-03 19:17:21 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:21 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:21 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:21 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-03 19:17:22 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:22 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-03 19:17:22 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-03 19:17:22 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-03 19:17:26 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:17:26 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:17:26 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:17:26 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-03 19:17:26 | INFO | lesson_controller | Task check result: task_id=matching is_correct=True
+2026-03-03 19:17:26 | INFO | lesson_controller | Opening task: index=7/7 id=matching
+2026-03-03 19:17:26 | DEBUG | lesson_controller | Running verifier for task type: matching
+2026-03-03 19:17:26 | CRITICAL | __main__ | Unhandled exception
+Traceback (most recent call last):
+  File "D:\PyLanguage\lesson_controller.py", line 77, in on_ui_event
+    handler(payload)
+    ~~~~~~~^^^^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 91, in _handle_button_click
+    self._check_task_completion()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\PyLanguage\lesson_controller.py", line 139, in _check_task_completion
+    return verifier()
+TypeError: 'NoneType' object is not callable
+2026-03-03 19:17:29 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:17:29 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-03 19:17:29 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-03 19:17:29 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-03 19:17:29 | INFO | lesson_controller | Task check result: task_id=matching is_correct=True
+2026-03-03 19:17:29 | INFO | lesson_controller | All tasks completed, navigating back
+2026-03-03 19:17:29 | DEBUG | router | Going back: from url="\UI\lesson\index.html" to url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:29 | DEBUG | router | Deactivated controller signals: url="\UI\lesson\index.html"
+2026-03-03 19:17:29 | DEBUG | router | Popped current page from history stack (size=1)
+2026-03-03 19:17:29 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:29 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:29 | INFO | router | Went back to previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-03 19:17:29 | DEBUG | lesson_controller | Running verifier for task type: matching
+2026-03-03 19:17:29 | CRITICAL | __main__ | Unhandled exception
+Traceback (most recent call last):
+  File "D:\PyLanguage\lesson_controller.py", line 77, in on_ui_event
+    handler(payload)
+    ~~~~~~~^^^^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 91, in _handle_button_click
+    self._check_task_completion()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\PyLanguage\lesson_controller.py", line 139, in _check_task_completion
+    return verifier()
+TypeError: 'NoneType' object is not callable
+2026-03-06 19:22:59 | DEBUG | __main__ | Application startup
+2026-03-06 19:22:59 | DEBUG | __main__ | MainWindow initialization started
+2026-03-06 19:22:59 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-06 19:22:59 | DEBUG | __main__ | Backend object created
+2026-03-06 19:22:59 | DEBUG | __main__ | Router created
+2026-03-06 19:23:00 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-06 19:23:00 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:23:00 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-06 19:23:00 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:23:00 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:23:00 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:23:00 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-06 19:23:00 | INFO | __main__ | MainWindow initialization completed
+2026-03-06 19:23:00 | INFO | __main__ | Application started successfully
+2026-03-06 19:23:13 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-06 19:23:13 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-06 19:23:13 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-06 19:23:13 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-06 19:23:13 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:23:13 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:23:13 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-06 19:23:13 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-06 19:23:13 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-06 19:23:13 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-06 19:23:14 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-06 19:23:14 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-06 19:25:11 | DEBUG | __main__ | Application startup
+2026-03-06 19:25:11 | DEBUG | __main__ | MainWindow initialization started
+2026-03-06 19:25:11 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-06 19:25:11 | DEBUG | __main__ | Backend object created
+2026-03-06 19:25:11 | DEBUG | __main__ | Router created
+2026-03-06 19:25:12 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-06 19:25:12 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:25:12 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-06 19:25:12 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:25:12 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:25:12 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:25:12 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-06 19:25:12 | INFO | __main__ | MainWindow initialization completed
+2026-03-06 19:25:12 | INFO | __main__ | Application started successfully
+2026-03-06 19:25:13 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-06 19:25:13 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-06 19:25:13 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-06 19:25:13 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-06 19:25:13 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:25:13 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:25:13 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-06 19:25:13 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-06 19:25:13 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-06 19:25:13 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-06 19:25:13 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-06 19:25:13 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-06 19:26:16 | DEBUG | __main__ | Application startup
+2026-03-06 19:26:16 | DEBUG | __main__ | MainWindow initialization started
+2026-03-06 19:26:16 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-06 19:26:16 | DEBUG | __main__ | Backend object created
+2026-03-06 19:26:16 | DEBUG | __main__ | Router created
+2026-03-06 19:26:17 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-06 19:26:17 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:17 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-06 19:26:17 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:17 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:17 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:17 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-06 19:26:17 | INFO | __main__ | MainWindow initialization completed
+2026-03-06 19:26:17 | INFO | __main__ | Application started successfully
+2026-03-06 19:26:18 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-06 19:26:18 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-06 19:26:18 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-06 19:26:18 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-06 19:26:18 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:18 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:18 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-06 19:26:18 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-06 19:26:18 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-06 19:26:18 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-06 19:26:18 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-06 19:26:18 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-06 19:26:24 | DEBUG | __main__ | Application startup
+2026-03-06 19:26:24 | DEBUG | __main__ | MainWindow initialization started
+2026-03-06 19:26:24 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-06 19:26:24 | DEBUG | __main__ | Backend object created
+2026-03-06 19:26:24 | DEBUG | __main__ | Router created
+2026-03-06 19:26:24 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-06 19:26:24 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:24 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-06 19:26:24 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:24 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:24 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:24 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-06 19:26:24 | INFO | __main__ | MainWindow initialization completed
+2026-03-06 19:26:24 | INFO | __main__ | Application started successfully
+2026-03-06 19:26:26 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-06 19:26:26 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-06 19:26:26 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-06 19:26:26 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-06 19:26:26 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:26 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:26 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-06 19:26:26 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-06 19:26:26 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-06 19:26:26 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-06 19:26:26 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-06 19:26:26 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-06 19:26:27 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:26:27 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:26:27 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:26:27 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-06 19:26:27 | CRITICAL | __main__ | Unhandled exception
+Traceback (most recent call last):
+  File "D:\PyLanguage\lesson_controller.py", line 77, in on_ui_event
+    handler(payload)
+    ~~~~~~~^^^^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 91, in _handle_button_click
+    self._check_task_completion()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\PyLanguage\lesson_controller.py", line 136, in _check_task_completion
+    self._on_check_result()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+TypeError: LessonController._on_check_result() missing 1 required positional argument: 'is_correct'
+2026-03-06 19:26:54 | CRITICAL | __main__ | Unhandled exception
+Traceback (most recent call last):
+  File "D:\PyLanguage\main.py", line 90, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "D:\PyLanguage\main.py", line 86, in main
+    return app.exec()
+           ~~~~~~~~^^
+KeyboardInterrupt
+2026-03-06 19:26:56 | DEBUG | __main__ | Application startup
+2026-03-06 19:26:57 | DEBUG | __main__ | MainWindow initialization started
+2026-03-06 19:26:57 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-06 19:26:57 | DEBUG | __main__ | Backend object created
+2026-03-06 19:26:57 | DEBUG | __main__ | Router created
+2026-03-06 19:26:57 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-06 19:26:57 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:57 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-06 19:26:57 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:57 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:57 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:26:57 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-06 19:26:57 | INFO | __main__ | MainWindow initialization completed
+2026-03-06 19:26:57 | INFO | __main__ | Application started successfully
+2026-03-06 19:27:09 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-06 19:27:09 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-06 19:27:09 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-06 19:27:09 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-06 19:27:09 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:27:09 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:27:09 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-06 19:27:09 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-06 19:27:09 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-06 19:27:09 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-06 19:27:09 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-06 19:27:09 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-06 19:27:13 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:27:13 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:27:13 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:27:13 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-06 19:27:13 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-06 19:27:13 | CRITICAL | __main__ | Unhandled exception
+Traceback (most recent call last):
+  File "D:\PyLanguage\lesson_controller.py", line 77, in on_ui_event
+    handler(payload)
+    ~~~~~~~^^^^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 91, in _handle_button_click
+    self._check_task_completion()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\PyLanguage\lesson_controller.py", line 136, in _check_task_completion
+    self._on_check_result(True)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 146, in _on_check_result
+    self._open_next_task(True)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^
+TypeError: LessonController._open_next_task() takes 1 positional argument but 2 were given
+2026-03-06 19:28:12 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:28:12 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:28:12 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:28:12 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-06 19:28:12 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-06 19:28:12 | CRITICAL | __main__ | Unhandled exception
+Traceback (most recent call last):
+  File "D:\PyLanguage\lesson_controller.py", line 77, in on_ui_event
+    handler(payload)
+    ~~~~~~~^^^^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 91, in _handle_button_click
+    self._check_task_completion()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\PyLanguage\lesson_controller.py", line 136, in _check_task_completion
+    self._on_check_result(True)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "D:\PyLanguage\lesson_controller.py", line 146, in _on_check_result
+    self._open_next_task(True)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^
+TypeError: LessonController._open_next_task() takes 1 positional argument but 2 were given
+2026-03-06 19:29:32 | DEBUG | __main__ | Application startup
+2026-03-06 19:29:32 | DEBUG | __main__ | MainWindow initialization started
+2026-03-06 19:29:32 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-06 19:29:32 | DEBUG | __main__ | Backend object created
+2026-03-06 19:29:32 | DEBUG | __main__ | Router created
+2026-03-06 19:29:33 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-06 19:29:33 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:29:33 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-06 19:29:33 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:29:33 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:29:33 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:29:33 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-06 19:29:33 | INFO | __main__ | MainWindow initialization completed
+2026-03-06 19:29:33 | INFO | __main__ | Application started successfully
+2026-03-06 19:29:34 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-06 19:29:34 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-06 19:29:34 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-06 19:29:34 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-06 19:29:34 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:29:34 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:29:34 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-06 19:29:34 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-06 19:29:34 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-06 19:29:34 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-06 19:29:34 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-06 19:29:34 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-06 19:29:35 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:35 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:35 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:29:35 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-06 19:29:35 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-06 19:29:35 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-06 19:29:39 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:39 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:39 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:29:39 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-06 19:29:39 | DEBUG | lesson_controller | Filling answer received: user_answer=['a', 'The'] expected=['a', 'The'] is_correct=True
+2026-03-06 19:29:39 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-06 19:29:39 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-06 19:29:42 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:42 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:42 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:29:42 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-06 19:29:42 | DEBUG | lesson_controller | Filling answer received: user_answer=['blue', 'green'] expected=['blue', 'green'] is_correct=True
+2026-03-06 19:29:42 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-06 19:29:42 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-06 19:29:45 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:45 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:45 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:29:45 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-06 19:29:45 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень хорошая книга' expected=['это очень хорошая книга', 'лишние три слова'] is_correct=True
+2026-03-06 19:29:45 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-06 19:29:45 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-06 19:29:50 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:50 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:50 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:29:50 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-06 19:29:50 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень плохая книга очень' expected=['это очень плохая книга', 'очень лишние четыре слова'] is_correct=False
+2026-03-06 19:29:50 | INFO | lesson_controller | Task check result: task_id=translation is_correct=False
+2026-03-06 19:29:53 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:53 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:29:53 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:29:53 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-06 19:29:53 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень плохая книга' expected=['это очень плохая книга', 'очень лишние четыре слова'] is_correct=True
+2026-03-06 19:29:53 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-06 19:29:53 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-06 19:29:55 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-06 19:29:55 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-06 19:29:55 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-06 19:29:55 | INFO | lesson_controller | Opening task: index=7/7 id=matching
+2026-03-06 19:30:01 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:30:01 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-06 19:30:01 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-06 19:30:01 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-06 19:30:01 | INFO | lesson_controller | Task check result: task_id=matching is_correct=True
+2026-03-06 19:30:01 | INFO | lesson_controller | All tasks completed, navigating back
+2026-03-06 19:30:01 | DEBUG | router | Going back: from url="\UI\lesson\index.html" to url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:30:01 | DEBUG | router | Deactivated controller signals: url="\UI\lesson\index.html"
+2026-03-06 19:30:01 | DEBUG | router | Popped current page from history stack (size=1)
+2026-03-06 19:30:01 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:30:01 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 19:30:01 | INFO | router | Went back to previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:03:50 | DEBUG | __main__ | Application startup
+2026-03-06 20:03:50 | DEBUG | __main__ | MainWindow initialization started
+2026-03-06 20:03:50 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-06 20:03:50 | DEBUG | __main__ | Backend object created
+2026-03-06 20:03:50 | DEBUG | __main__ | Router created
+2026-03-06 20:03:50 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-06 20:03:50 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:03:50 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-06 20:03:50 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:03:50 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:03:50 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:03:50 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-06 20:03:50 | INFO | __main__ | MainWindow initialization completed
+2026-03-06 20:03:51 | INFO | __main__ | Application started successfully
+2026-03-06 20:10:59 | DEBUG | __main__ | Application startup
+2026-03-06 20:10:59 | DEBUG | __main__ | MainWindow initialization started
+2026-03-06 20:10:59 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-06 20:10:59 | DEBUG | __main__ | Backend object created
+2026-03-06 20:10:59 | DEBUG | __main__ | Router created
+2026-03-06 20:10:59 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-06 20:10:59 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:10:59 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-06 20:10:59 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:11:00 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:11:00 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:11:00 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-06 20:11:00 | INFO | __main__ | MainWindow initialization completed
+2026-03-06 20:11:00 | INFO | __main__ | Application started successfully
+2026-03-06 20:11:01 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-06 20:11:01 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-06 20:11:01 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-06 20:11:01 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-06 20:11:01 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:11:01 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-06 20:11:01 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-06 20:11:01 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-06 20:11:01 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-06 20:11:01 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-06 20:11:01 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-06 20:11:01 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-07 15:17:11 | DEBUG | __main__ | Application startup
+2026-03-07 15:17:11 | DEBUG | __main__ | MainWindow initialization started
+2026-03-07 15:17:11 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-07 15:17:11 | DEBUG | __main__ | Backend object created
+2026-03-07 15:17:11 | DEBUG | __main__ | Router created
+2026-03-07 15:17:13 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-07 15:17:13 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:13 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-07 15:17:13 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:13 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:13 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:13 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-07 15:17:13 | INFO | __main__ | MainWindow initialization completed
+2026-03-07 15:17:13 | INFO | __main__ | Application started successfully
+2026-03-07 15:17:16 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-07 15:17:16 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-07 15:17:16 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-07 15:17:16 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-07 15:17:16 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:16 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:16 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-07 15:17:16 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-07 15:17:16 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-07 15:17:16 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-07 15:17:16 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-07 15:17:16 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-07 15:17:18 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:18 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:18 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:17:18 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-07 15:17:18 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-07 15:17:18 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-07 15:17:22 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:22 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:22 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:17:22 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 15:17:22 | DEBUG | lesson_controller | Filling answer received: user_answer=['a', 'The'] expected=['a', 'The'] is_correct=True
+2026-03-07 15:17:22 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-07 15:17:22 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-07 15:17:25 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:25 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:25 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:17:25 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 15:17:25 | DEBUG | lesson_controller | Filling answer received: user_answer=['blue', 'green'] expected=['blue', 'green'] is_correct=True
+2026-03-07 15:17:25 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-07 15:17:25 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-07 15:17:30 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:30 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:30 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:17:30 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-07 15:17:30 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень хорошая книга' expected=['это очень хорошая книга', 'лишние три слова'] is_correct=True
+2026-03-07 15:17:30 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-07 15:17:30 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-07 15:17:33 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:33 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:33 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:17:33 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-07 15:17:33 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень плохая книга' expected=['это очень плохая книга', 'очень лишние четыре слова'] is_correct=True
+2026-03-07 15:17:33 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-07 15:17:33 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-07 15:17:37 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:37 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:37 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:17:37 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-07 15:17:37 | INFO | lesson_controller | Task check result: task_id=matching is_correct=True
+2026-03-07 15:17:37 | INFO | lesson_controller | Opening task: index=7/7 id=matching
+2026-03-07 15:17:41 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:41 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:17:41 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:17:41 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-07 15:17:41 | INFO | lesson_controller | Task check result: task_id=matching is_correct=True
+2026-03-07 15:17:41 | INFO | lesson_controller | All tasks completed, navigating back
+2026-03-07 15:17:41 | DEBUG | router | Going back: from url="\UI\lesson\index.html" to url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:41 | DEBUG | router | Deactivated controller signals: url="\UI\lesson\index.html"
+2026-03-07 15:17:41 | DEBUG | router | Popped current page from history stack (size=1)
+2026-03-07 15:17:41 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:41 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:17:41 | INFO | router | Went back to previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:41:19 | DEBUG | __main__ | Application startup
+2026-03-07 15:41:19 | DEBUG | __main__ | MainWindow initialization started
+2026-03-07 15:41:19 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-07 15:41:19 | DEBUG | __main__ | Backend object created
+2026-03-07 15:41:19 | DEBUG | __main__ | Router created
+2026-03-07 15:41:19 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-07 15:41:19 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:41:19 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-07 15:41:19 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:41:20 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:41:20 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:41:20 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-07 15:41:20 | INFO | __main__ | MainWindow initialization completed
+2026-03-07 15:41:20 | INFO | __main__ | Application started successfully
+2026-03-07 15:41:21 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-07 15:41:21 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-07 15:41:21 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-07 15:41:21 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-07 15:41:21 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:41:21 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:41:21 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-07 15:41:21 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-07 15:41:21 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-07 15:41:21 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-07 15:41:21 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-07 15:41:21 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-07 15:41:27 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:27 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:27 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:41:27 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-07 15:41:27 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-07 15:41:27 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-07 15:41:32 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:32 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:32 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:41:32 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 15:41:32 | DEBUG | lesson_controller | Filling answer received: user_answer=['a', 'The'] expected=['a', 'The'] is_correct=True
+2026-03-07 15:41:32 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-07 15:41:32 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-07 15:41:35 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:35 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:35 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:41:35 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 15:41:35 | DEBUG | lesson_controller | Filling answer received: user_answer=['blue', 'green'] expected=['blue', 'green'] is_correct=True
+2026-03-07 15:41:35 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-07 15:41:35 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-07 15:41:37 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:37 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:37 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:41:37 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-07 15:41:37 | DEBUG | lesson_controller | Translation answer received: user_answer='хорошая три' expected=['это очень хорошая книга', 'лишние три слова'] is_correct=False
+2026-03-07 15:41:37 | INFO | lesson_controller | Task check result: task_id=translation is_correct=False
+2026-03-07 15:41:45 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:45 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:45 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:41:45 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-07 15:41:45 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень хорошая книга' expected=['это очень хорошая книга', 'лишние три слова'] is_correct=True
+2026-03-07 15:41:45 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-07 15:41:45 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-07 15:41:49 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:49 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:49 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:41:49 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-07 15:41:49 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень плохая книга' expected=['это очень плохая книга', 'очень лишние четыре слова'] is_correct=True
+2026-03-07 15:41:49 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-07 15:41:49 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-07 15:41:57 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:57 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:41:57 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:41:57 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-07 15:41:57 | INFO | lesson_controller | Task check result: task_id=matching is_correct=True
+2026-03-07 15:41:57 | INFO | lesson_controller | Opening task: index=7/7 id=matching
+2026-03-07 15:42:01 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:42:01 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:42:01 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:42:01 | DEBUG | lesson_controller | No verifier registered for task type: matching. Validating the task
+2026-03-07 15:42:01 | INFO | lesson_controller | Task check result: task_id=matching is_correct=True
+2026-03-07 15:42:01 | INFO | lesson_controller | All tasks completed, navigating back
+2026-03-07 15:42:01 | DEBUG | router | Going back: from url="\UI\lesson\index.html" to url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:01 | DEBUG | router | Deactivated controller signals: url="\UI\lesson\index.html"
+2026-03-07 15:42:01 | DEBUG | router | Popped current page from history stack (size=1)
+2026-03-07 15:42:01 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:01 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:01 | INFO | router | Went back to previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:09 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'go'}
+2026-03-07 15:42:09 | DEBUG | vocab_planner_controller | Clicked the button with the id='go'
+2026-03-07 15:42:09 | DEBUG | vocab_planner_controller | Created a card with the id='0'
+2026-03-07 15:42:48 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-07 15:42:48 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-07 15:42:48 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-07 15:42:48 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-07 15:42:48 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:48 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:48 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-07 15:42:48 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-07 15:42:48 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-07 15:42:48 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-07 15:42:48 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-07 15:42:48 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-07 15:42:50 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:42:50 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:42:50 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:42:50 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-07 15:42:50 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-07 15:42:50 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-07 15:42:53 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:53 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:53 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-07 15:42:53 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-07 15:42:53 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:53 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:53 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-07 15:42:53 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-07 15:42:53 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:53 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:53 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-07 15:42:53 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-07 15:42:53 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:53 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:53 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-07 15:42:53 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-07 15:42:54 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:54 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:54 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-07 15:42:54 | INFO | lesson_controller | Opening task: index=7/7 id=matching
+2026-03-07 15:42:56 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:56 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 15:42:56 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-07 15:42:56 | INFO | lesson_controller | All tasks completed, navigating back
+2026-03-07 15:42:56 | DEBUG | router | Going back: from url="\UI\lesson\index.html" to url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:56 | DEBUG | router | Deactivated controller signals: url="\UI\lesson\index.html"
+2026-03-07 15:42:56 | DEBUG | router | Popped current page from history stack (size=1)
+2026-03-07 15:42:56 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:56 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:56 | INFO | router | Went back to previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:57 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-07 15:42:57 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-07 15:42:57 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-07 15:42:57 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-07 15:42:57 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:57 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 15:42:57 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-07 15:42:57 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-07 15:42:57 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-07 15:42:57 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-07 15:42:57 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-07 15:42:57 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-07 15:42:59 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:42:59 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:42:59 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:42:59 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-07 15:42:59 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-07 15:42:59 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-07 15:43:07 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:43:07 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 15:43:07 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 15:43:07 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 15:43:07 | DEBUG | lesson_controller | Filling answer received: user_answer=['The', 'a'] expected=['a', 'The'] is_correct=False
+2026-03-07 15:43:07 | INFO | lesson_controller | Task check result: task_id=filling is_correct=False
+2026-03-07 17:24:55 | DEBUG | __main__ | Application startup
+2026-03-07 17:24:56 | DEBUG | __main__ | MainWindow initialization started
+2026-03-07 17:24:56 | DEBUG | __main__ | WebEngine view created and set as central widget
+2026-03-07 17:24:56 | DEBUG | __main__ | Backend object created
+2026-03-07 17:24:56 | DEBUG | __main__ | Router created
+2026-03-07 17:24:57 | DEBUG | __main__ | WebChannel configured and backend registered as 'backend'
+2026-03-07 17:24:57 | DEBUG | router | Navigating to page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:24:57 | DEBUG | router | Pushed new page to history stack (size=1)
+2026-03-07 17:24:57 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:24:57 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:24:57 | INFO | router | Page navigation completed: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:24:57 | DEBUG | __main__ | Navigated to VocabPlannerController
+2026-03-07 17:24:57 | INFO | __main__ | MainWindow initialization completed
+2026-03-07 17:24:58 | INFO | __main__ | Application started successfully
+2026-03-07 17:24:59 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-07 17:24:59 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-07 17:24:59 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-07 17:24:59 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-07 17:24:59 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:24:59 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:24:59 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-07 17:24:59 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-07 17:24:59 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-07 17:24:59 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-07 17:24:59 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-07 17:24:59 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-07 17:25:15 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:15 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:15 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:25:15 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-07 17:25:15 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-07 17:25:15 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-07 17:25:26 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:26 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:26 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:25:26 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 17:25:26 | DEBUG | lesson_controller | Filling answer received: user_answer=['The', 'a'] expected=['a', 'The'] is_correct=False
+2026-03-07 17:25:26 | INFO | lesson_controller | Task check result: task_id=filling is_correct=False
+2026-03-07 17:25:29 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:29 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:29 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:25:29 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 17:25:29 | DEBUG | lesson_controller | Filling answer received: user_answer=['a', 'The'] expected=['a', 'The'] is_correct=True
+2026-03-07 17:25:29 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-07 17:25:29 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-07 17:25:34 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:34 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:34 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:25:34 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 17:25:34 | DEBUG | lesson_controller | Filling answer received: user_answer=['blue', 'green'] expected=['blue', 'green'] is_correct=True
+2026-03-07 17:25:34 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-07 17:25:34 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-07 17:25:38 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:38 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:38 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:25:38 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-07 17:25:38 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень хорошая книга' expected=['это очень хорошая книга', 'лишние три слова'] is_correct=True
+2026-03-07 17:25:38 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-07 17:25:38 | INFO | lesson_controller | Opening task: index=5/7 id=translation
+2026-03-07 17:25:44 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:44 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:25:44 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:25:44 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-07 17:25:44 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень плохая книга' expected=['это очень плохая книга', 'очень лишние четыре слова'] is_correct=True
+2026-03-07 17:25:44 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-07 17:25:44 | INFO | lesson_controller | Opening task: index=6/7 id=matching
+2026-03-07 17:26:17 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 17:26:17 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 17:26:17 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-07 17:26:17 | INFO | lesson_controller | Opening task: index=7/7 id=matching
+2026-03-07 17:26:18 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 17:26:18 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'skip'}
+2026-03-07 17:26:18 | DEBUG | lesson_controller | Button clicked: id=skip
+2026-03-07 17:26:18 | INFO | lesson_controller | All tasks completed, navigating back
+2026-03-07 17:26:18 | DEBUG | router | Going back: from url="\UI\lesson\index.html" to url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:26:18 | DEBUG | router | Deactivated controller signals: url="\UI\lesson\index.html"
+2026-03-07 17:26:18 | DEBUG | router | Popped current page from history stack (size=1)
+2026-03-07 17:26:18 | DEBUG | router | Activated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:26:18 | DEBUG | router | Requested page load: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:26:18 | INFO | router | Went back to previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:26:19 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'start'}
+2026-03-07 17:26:19 | DEBUG | vocab_planner_controller | Clicked the button with the id='start'
+2026-03-07 17:26:19 | DEBUG | lesson_controller | LessonController initialized: tasks_total=7, url=\UI\lesson\index.html
+2026-03-07 17:26:19 | DEBUG | router | Navigating to page: url="\UI\lesson\index.html"
+2026-03-07 17:26:19 | DEBUG | router | Deactivated controller signals: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:26:19 | DEBUG | router | Deactivated previous page: url="\UI\vocab-lesson-setup\index.html"
+2026-03-07 17:26:19 | DEBUG | router | Pushed new page to history stack (size=2)
+2026-03-07 17:26:19 | DEBUG | router | Activated controller signals: url="\UI\lesson\index.html"
+2026-03-07 17:26:19 | DEBUG | router | Requested page load: url="\UI\lesson\index.html"
+2026-03-07 17:26:19 | INFO | router | Page navigation completed: url="\UI\lesson\index.html"
+2026-03-07 17:26:19 | DEBUG | lesson_controller | UI load finished, opening the first task
+2026-03-07 17:26:19 | INFO | lesson_controller | Opening task: index=1/7 id=explanation
+2026-03-07 17:26:20 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:26:20 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:26:20 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:26:20 | DEBUG | lesson_controller | No verifier registered for task type: explanation. Validating the task
+2026-03-07 17:26:20 | INFO | lesson_controller | Task check result: task_id=explanation is_correct=True
+2026-03-07 17:26:20 | INFO | lesson_controller | Opening task: index=2/7 id=filling
+2026-03-07 17:26:33 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:26:33 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:26:33 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:26:33 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 17:26:33 | DEBUG | lesson_controller | Filling answer received: user_answer=['a', 'The'] expected=['a', 'The'] is_correct=True
+2026-03-07 17:26:33 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-07 17:26:33 | INFO | lesson_controller | Opening task: index=3/7 id=filling
+2026-03-07 17:26:39 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:26:39 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:26:39 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:26:39 | DEBUG | lesson_controller | Running verifier for task type: filling
+2026-03-07 17:26:39 | DEBUG | lesson_controller | Filling answer received: user_answer=['blue', 'green'] expected=['blue', 'green'] is_correct=True
+2026-03-07 17:26:39 | INFO | lesson_controller | Task check result: task_id=filling is_correct=True
+2026-03-07 17:26:39 | INFO | lesson_controller | Opening task: index=4/7 id=translation
+2026-03-07 17:26:42 | DEBUG | backend | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:26:42 | DEBUG | lesson_controller | UI event received: name=btn-click payload={'id': 'continue'}
+2026-03-07 17:26:42 | DEBUG | lesson_controller | Button clicked: id=continue
+2026-03-07 17:26:42 | DEBUG | lesson_controller | Running verifier for task type: translation
+2026-03-07 17:26:42 | DEBUG | lesson_controller | Translation answer received: user_answer='Это очень хорошая книга' expected=['это очень хорошая книга', 'лишние три слова'] is_correct=True
+2026-03-07 17:26:42 | INFO | lesson_controller | Task check result: task_id=translation is_correct=True
+2026-03-07 17:26:42 | INFO | lesson_controller | Opening task: index=5/7 id=translation

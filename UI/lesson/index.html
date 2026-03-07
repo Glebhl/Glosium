@@ -1,0 +1,208 @@
+<!doctype html>
+
+<html>
+  <head>
+    <link href="Inter.ttf" rel="stylesheet" />
+
+    <link href="darkscroll.css" rel="stylesheet" />
+    <link href="general.css" rel="stylesheet" />
+    <link href="mainbar.css" rel="stylesheet" />
+    <link href="sliding-animations.css" rel="stylesheet" />
+    <link href="keyboard.css" rel="stylesheet" />
+    <link href="explanation.css" rel="stylesheet" />
+    <link href="matching.css" rel="stylesheet" />
+    <link href="translation.css" rel="stylesheet" />
+    <link href="filling.css" rel="stylesheet" />
+    <!-- <link href="filling.css" rel="stylesheet"> -->
+
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="lesson-shell">
+        <div class="lesson-shell__body">
+          <div class="lesson-shell__header">
+            <img class="lesson-shell__logo" src="../logo.jpg" />
+            <div>
+              <p class="lesson-shell__name">LexiForge</p>
+              <p class="lesson-shell__subtitle">Lesson · Tasks</p>
+            </div>
+          </div>
+          <div class="lesson-progress">
+            <div class="lesson-progress-bar">
+              <div class="lesson-progress__fill" id="progressFill"></div>
+            </div>
+            <div class="lesson-progress__text" id="progressText"></div>
+          </div>
+          <div class="lesson-stage" id="taskStage">
+            <!-- Mainscreen content -->
+            <!-- Content END -->
+          </div>
+        </div>
+        <div class="lesson-shell__footer">
+          <button class="lesson-button lesson-button--skip" id="skip">
+            Skip
+          </button>
+          <button
+            class="lesson-button lesson-button--continue"
+            id="continue"
+            disabled
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- QUESTION task START -->
+    <template>
+      <div class="task-screen">
+        <div>
+          <p class="task-title">Answer the question</p>
+          <p class="task-description">
+            Choose an answer for the question below.
+          </p>
+        </div>
+        <div class="panel">
+          <p class="field-label">QUESTION</p>
+          <div>
+            <p class="question-content"></p>
+            <p class="question-paragraph"></p>
+          </div>
+        </div>
+        <div class="panel answer-field">
+          <p class="field-label">YOUR ANSWER</p>
+        </div>
+      </div>
+    </template>
+    <!-- QUESTION task END -->
+
+    <!-- EXPLANATION task START -->
+    <template id="article-template">
+      <article class="panel">
+        <div class="field-label"></div>
+        <div class="md-content"></div>
+      </article>
+    </template>
+    <template id="tpl-explanation">
+      <div class="task-screen"></div>
+    </template>
+    <!-- EXAMPLE task END -->
+
+    <!-- FILLING task START -->
+    <template id="tpl-filling">
+      <div class="task-screen">
+        <div>
+          <p class="task-title">Fill in the gaps</p>
+          <p class="task-description">
+            Build the answer using the word bank, or switch to typing if you
+            prefer.
+          </p>
+        </div>
+        <div class="panel">
+          <span class="field-label">YOUR ANSWER</span>
+          <div class="panel panel-filling">
+            <p class="field-label">SENTENCE</p>
+            <div class="filling-answer"></div>
+          </div>
+          <div class="panel">
+            <p class="field-label">KEYBOARD</p>
+            <div class="keyboard"></div>
+          </div>
+          <div class="hint-wrap">
+            <div class="hint" id="hint">
+              Tip: click a word to place it into the next slot. Click a placed
+              word to remove it.
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template id="blank-template">
+      <span class="blank"></span>
+    </template>
+
+    <!-- TRANSLATION task START -->
+    <template id="tpl-translation">
+      <div class="task-screen">
+        <div>
+          <p class="task-title">Translate the sentence</p>
+          <p class="task-description">
+            Build the answer using the word bank, or switch to typing if you
+            prefer.
+          </p>
+        </div>
+        <div class="panel">
+          <p class="field-label">SENTENCE</p>
+          <p class="translation-sentence"></p>
+        </div>
+        <div class="panel">
+          <div class="keyboard-header">
+            <p class="field-label">YOUR ANSWER</p>
+            <div class="keyboard-switch">
+              <button class="switch-el switch-active">Word bank</button>
+              <button class="switch-el">Typing</button>
+            </div>
+          </div>
+          <div class="panel panel-translation">
+            <p class="field-label">SENTENCE</p>
+            <div class="translation-answer"></div>
+          </div>
+          <div class="panel">
+            <p class="field-label">KEYBOARD</p>
+            <div class="keyboard"></div>
+          </div>
+          <div class="hint-wrap">
+            <div class="hint" id="hint">
+              Tip: click a word to place it into the next slot. Click a placed
+              word to remove it.
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template id="key-template">
+      <div class="word-key"></div>
+    </template>
+    <!-- TRANSLATION task END -->
+
+    <!-- MATCHING task START-->
+    <template id="tpl-matching">
+      <div class="task-screen">
+        <div>
+          <p class="task-title">Match the words</p>
+          <p class="task-description">
+            Click on the elements on the left and right to make pairs.
+          </p>
+        </div>
+        <div class="panel">
+          <span class="field-label">YOUR ANSWER</span>
+          <div class="grid">
+            <div class="column col1"></div>
+            <div class="column col2"></div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template id="item-template">
+      <button class="item unselected"></button>
+    </template>
+    <!-- MATCHING tast END -->
+
+    <script>
+      // Global link to Python backend
+      let backend = null;
+
+      // Channel initialization
+      new QWebChannel(qt.webChannelTransport, function (channel) {
+        backend = channel.objects.backend;
+      });
+    </script>
+    <script src="backend-common.js"></script>
+    <script src="backend-explanation.js"></script>
+    <script src="backend-matching.js"></script>
+    <script src="backend-translation.js"></script>
+    <script src="backend-filling.js"></script>
+    <script src="backend-question.js"></script>
+  </body>
+</html>
