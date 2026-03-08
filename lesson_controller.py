@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from typing import Any, Callable, Optional
 
 from PySide6.QtCore import QObject
@@ -179,9 +180,12 @@ class LessonController(QObject):
         """
 
         def on_answer_received(answer: Optional[str]) -> None:
-            user_answer = (answer or "").strip()
-            expected = [str(a).lower() for a in self.answers]
-            is_correct = user_answer.lower() in expected
+            user_answer = self._normalize_translation_answer(answer)
+            expected = [
+                self._normalize_translation_answer(candidate)
+                for candidate in self.answers
+            ]
+            is_correct = user_answer in expected
 
             logger.debug(
                 "Translation answer received: user_answer=%r expected=%s is_correct=%s",
@@ -196,6 +200,14 @@ class LessonController(QObject):
         script = "getTranslationAnswerString();"
         self.view.page().runJavaScript(script, on_answer_received)
         return False
+
+    def _normalize_translation_answer(self, answer: Optional[str]) -> str:
+        """
+        Normalize translation text to keep answer checks consistent between
+        word-bank and typing modes.
+        """
+        normalized = re.sub(r"\s+", " ", str(answer or "")).strip()
+        return normalized.lower()
 
     def _translation_set_highlight(self, is_correct: bool) -> None:
         """Highlight translation field depending on correctness."""

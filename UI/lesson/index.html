@@ -136,21 +136,42 @@
           <p class="lesson-card__label">SENTENCE</p>
           <p class="translation-prompt"></p>
         </div>
-        <div class="lesson-card">
+          <div class="lesson-card">
           <div class="task-keyboard__header">
             <p class="lesson-card__label">YOUR ANSWER</p>
             <div class="task-keyboard__mode-switch">
-              <button class="task-keyboard__mode-button is-active">
-                Word bank
+              <button
+                class="task-keyboard__mode-button is-active"
+                data-mode="word-bank"
+                type="button"
+              >
+                Word Bank
               </button>
-              <button class="task-keyboard__mode-button">Typing</button>
+              <button
+                class="task-keyboard__mode-button"
+                data-mode="typing"
+                type="button"
+              >
+                Typing
+              </button>
             </div>
           </div>
           <div class="lesson-card task-answer-shell task-answer-shell--translation">
             <p class="lesson-card__label">SENTENCE</p>
-            <div class="task-answer task-answer--translation"></div>
+            <div class="task-answer-stack">
+              <div class="task-answer task-answer--translation"></div>
+              <div class="task-answer__typing-wrap">
+                <textarea
+                  class="task-answer__typing-input"
+                  type="text"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="Type your translation here..."
+                ></textarea>
+              </div>
+            </div>
           </div>
-          <div class="lesson-card">
+          <div class="lesson-card task-keyboard-block">
             <p class="lesson-card__label">KEYBOARD</p>
             <div class="task-keyboard"></div>
           </div>
@@ -205,6 +226,7 @@
       });
     </script>
     <script src="backend-common.js"></script>
+    <script src="mode-switch.js"></script>
     <script src="backend-explanation.js"></script>
     <script src="backend-matching.js"></script>
     <script src="backend-translation.js"></script>

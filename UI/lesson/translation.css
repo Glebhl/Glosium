@@ -1,14 +1,123 @@
+.task-answer-shell.task-answer-shell--translation {
+  border-style: dashed;
+}
+
+.task-answer-stack {
+  position: relative;
+  min-height: 90px;
+}
+
+.task-answer.task-answer--translation,
+.task-answer__typing-wrap {
+  position: absolute;
+  inset: 0;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
 .task-answer.task-answer--translation {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-content: start;
-  min-height: 90px;
-  transition: 100ms ease;
   font-size: 16px;
   color: var(--text);
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
-.task-answer-shell.task-answer-shell--translation {
-  border-style: dashed;
+.task-answer__typing-wrap {
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.task-answer__typing-input {
+  width: 100%;
+  /* min-height: 90px; */
+  height: 100%;
+  border: none;
+  background: none;
+  outline: none;
+  color: var(--text);
+  font-size: 16px;
+  resize: none;
+  font: inherit;
+  /* padding: 10px; */
+}
+
+/* .task-answer__typing-input {
+  width: 100%;
+
+
+
+
+  text-align: left;
+  vertical-align: top;
+
+  box-sizing: border-box;
+} */
+
+.lesson-task .task-keyboard-block {
+  overflow: visible;
+  max-height: 220px;
+  opacity: 1;
+  transform: translateY(0);
+  margin: 14px 0;
+  padding: 14px;
+  border-width: 1px;
+  transition:
+    max-height 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease,
+    margin 180ms ease,
+    padding 180ms ease,
+    border-width 180ms ease;
+}
+
+.lesson-task .task-hint-wrap {
+  overflow: hidden;
+  max-height: 70px;
+  opacity: 1;
+  transform: translateY(0);
+  margin: 0;
+  transition:
+    max-height 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.lesson-task.is-translation-typing .task-answer--translation {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.lesson-task.is-translation-typing .task-answer__typing-wrap {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.lesson-task.is-translation-typing .task-keyboard-block {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  pointer-events: none;
+}
+
+.lesson-task.is-translation-typing .task-hint-wrap {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
 }

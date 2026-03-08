@@ -1,18 +1,5 @@
 [
     {
-        "task_id": "question",
-        "task": {
-            // Поля "hint" нету, пользователь всегда видит "Answer the question"
-            "content": {
-                "text": "The weather was hot, so I bought an ice-cream.",
-                "question": "Why did they buy an ice-cream?",
-                "answers": ["They had to much money", "They were hungry"]
-            },
-            "audio": false,
-            "answers": "The weather was hot"
-        }
-    },
-    {
         "type_id": 4,
         "task": {
             "hint": "Correct the mistake",
@@ -21,14 +8,6 @@
             },
             "input": {
                 "answer": ["The sky is blue"],  // Только ручной ввод. Массив потому что может быть несколько варианто ответа
-            }
-        }
-    },
-    {
-        "type_id": 5,
-        "task": {
-            "given": {
-                "text": "Explanation"  // Объяснение чего-либо c markdown разметкой. Все в одну строчку, переносы через "\n"
             }
         }
     }
