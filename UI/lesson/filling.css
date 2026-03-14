@@ -5,13 +5,9 @@
   align-content: start;
   align-items: center;
   min-height: 94px;
-  transition: 100ms ease;
   font-size: 16px;
   color: var(--text);
-}
-
-.task-answer-shell.task-answer-shell--filling {
-  border-style: dashed;
+  transition: 100ms ease;
 }
 
 .filling-text {
@@ -20,11 +16,83 @@
   text-align: end;
 }
 
+.task-answer-shell.task-answer-shell--filling {
+  border-style: dashed;
+}
+
 .task-blank {
+  position: relative;
   display: inline-flex;
   min-width: 100px;
   min-height: 42px;
   border-bottom: 2px solid #8d8d8d;
   align-items: center;
   justify-content: center;
+  vertical-align: middle;
+}
+
+.task-blank__input-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.task-blank > .task-key {
+  position: relative;
+  z-index: 1;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.task-blank__input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  background: none;
+  outline: none;
+  color: var(--text);
+  font-size: 16px;
+  text-align: center;
+  font: inherit;
+}
+
+.lesson-task.is-filling-typing .task-blank__input-wrap {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.lesson-task.is-filling-typing .task-blank > .task-key {
+  opacity: 0;
+  transform: scale(0.94);
+  pointer-events: none;
+}
+
+.lesson-task.is-filling-typing .task-keyboard-block {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  pointer-events: none;
+}
+
+.lesson-task.is-filling-typing .task-hint-wrap {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
 }

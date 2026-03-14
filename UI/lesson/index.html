@@ -100,12 +100,30 @@
           </p>
         </div>
         <div class="lesson-card">
-          <span class="lesson-card__label">YOUR ANSWER</span>
+          <div class="task-keyboard__header">
+            <span class="lesson-card__label">YOUR ANSWER</span>
+            <div class="task-keyboard__mode-switch">
+              <button
+                class="task-keyboard__mode-button is-active"
+                data-mode="word-bank"
+                type="button"
+              >
+                Word Bank
+              </button>
+              <button
+                class="task-keyboard__mode-button"
+                data-mode="typing"
+                type="button"
+              >
+                Typing
+              </button>
+            </div>
+          </div>
           <div class="lesson-card task-answer-shell task-answer-shell--filling">
             <p class="lesson-card__label">SENTENCE</p>
             <div class="task-answer task-answer--filling"></div>
           </div>
-          <div class="lesson-card">
+          <div class="lesson-card task-keyboard-block">
             <p class="lesson-card__label">KEYBOARD</p>
             <div class="task-keyboard"></div>
           </div>

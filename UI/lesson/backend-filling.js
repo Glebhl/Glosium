@@ -2,12 +2,18 @@
 
 // Template used to create a keyboard key.
 const fillingKeyTemplate = document.getElementById("key-template");
+const FILLING_MODE_WORD_BANK = "word-bank";
+const FILLING_MODE_TYPING = "typing";
 
 // Shared state for the current fill-in-the-blanks task.
 const fillingState = {
   filledWordIds: [],
   blankNodes: [],
   root: null,
+  mode: FILLING_MODE_WORD_BANK,
+  answer: null,
+  keyboard: null,
+  switchController: null,
 };
 
 // Incremental unique ID for word keys.
@@ -20,26 +26,18 @@ let fillingWordIdSeq = 0;
 function initFillBlanks(el, fragmentsArray, keyboardArray) {
   const answer = el.querySelector(".task-answer--filling");
   const keyboard = el.querySelector(".task-keyboard");
+  const modeSwitchRoot = el.querySelector(".task-keyboard__mode-switch");
 
   const fragments = Array.isArray(fragmentsArray) ? fragmentsArray : [];
   const words = Array.isArray(keyboardArray) ? keyboardArray : [];
 
-  // Save root element for later access in helper functions.
-  fillingState.root = el;
+  resetFillingState(el, answer, keyboard);
 
   // Clear previous content.
   answer.replaceChildren();
   keyboard.replaceChildren();
 
-  // Build the answer area:
-  // fragment -> blank -> fragment -> blank -> ...
-  for (let i = 0; i !== fragments.length; i += 1) {
-    answer.append(createFillingTextNode(fragments[i]));
-
-    if (i !== fragments.length - 1) {
-      answer.append(createBlankNode());
-    }
-  }
+  buildFillingAnswerLayout(answer, fragments);
 
   // Cache blank nodes and reset filled values.
   fillingState.blankNodes = [...answer.querySelectorAll(".task-blank")];
@@ -57,6 +55,10 @@ function initFillBlanks(el, fragmentsArray, keyboardArray) {
   // - moving a word from keyboard to the first empty blank
   // - moving a word back from a blank to the keyboard
   function onKeyClick(event) {
+    if (fillingState.mode !== FILLING_MODE_WORD_BANK) {
+      return;
+    }
+
     const button = event.target.closest(".task-key");
 
     if (!button) {
@@ -93,6 +95,42 @@ function initFillBlanks(el, fragmentsArray, keyboardArray) {
   // Listen for clicks in both areas.
   keyboard.addEventListener("click", onKeyClick);
   answer.addEventListener("click", onKeyClick);
+
+  for (let i = 0; i < fillingState.blankNodes.length; i += 1) {
+    const input = fillingState.blankNodes[i].querySelector(".task-blank__input");
+
+    if (!input) {
+      continue;
+    }
+
+    input.addEventListener("input", updateFillingContinueState);
+  }
+
+  fillingState.switchController = window.lessonModeSwitch.attach(
+    modeSwitchRoot,
+    setFillingMode,
+    FILLING_MODE_WORD_BANK,
+  );
+}
+
+function resetFillingState(root, answer, keyboard) {
+  fillingState.filledWordIds = [];
+  fillingState.blankNodes = [];
+  fillingState.root = root;
+  fillingState.mode = FILLING_MODE_WORD_BANK;
+  fillingState.answer = answer;
+  fillingState.keyboard = keyboard;
+  fillingState.switchController = null;
+}
+
+function buildFillingAnswerLayout(container, fragments) {
+  for (let i = 0; i !== fragments.length; i += 1) {
+    container.append(createFillingTextNode(fragments[i]));
+
+    if (i !== fragments.length - 1) {
+      container.append(createBlankNode());
+    }
+  }
 }
 
 // Create a plain text fragment between blank slots.
@@ -105,11 +143,21 @@ function createFillingTextNode(text) {
   return node;
 }
 
-// Create an empty blank slot that can hold one selected word key.
+// Create an empty blank slot that can hold one selected word key or text input.
 function createBlankNode() {
   const node = document.createElement("span");
+  const inputWrap = document.createElement("span");
+  const input = document.createElement("input");
 
   node.className = "task-blank";
+  inputWrap.className = "task-blank__input-wrap";
+  input.className = "task-blank__input";
+  input.type = "text";
+  input.autocomplete = "off";
+  input.spellcheck = false;
+
+  inputWrap.append(input);
+  node.append(inputWrap);
 
   return node;
 }
@@ -149,7 +197,23 @@ function findFilledBlankIndex(id) {
 
 // Enable the continue button only when all blanks are filled.
 function updateFillingContinueState() {
-  if (fillingState.blankNodes.length === 0) {
+  const blankCount = fillingState.blankNodes.length;
+
+  if (blankCount === 0) {
+    lessonTaskUtils.setContinueEnabled(true);
+    return;
+  }
+
+  if (fillingState.mode === FILLING_MODE_TYPING) {
+    for (let i = 0; i !== fillingState.blankNodes.length; i += 1) {
+      const value = getTypingBlankValue(i);
+
+      if (value.length === 0) {
+        lessonTaskUtils.setContinueEnabled(false);
+        return;
+      }
+    }
+
     lessonTaskUtils.setContinueEnabled(true);
     return;
   }
@@ -166,13 +230,17 @@ function updateFillingContinueState() {
 
 // Extract selected answers in their current order and return them as JSON.
 function getFillingAnswerString() {
-  const root = fillingState.root;
+  if (fillingState.mode === FILLING_MODE_TYPING) {
+    const typedAnswers = [];
 
-  if (!root) {
-    return "[]";
+    for (let i = 0; i < fillingState.blankNodes.length; i += 1) {
+      typedAnswers.push(getTypingBlankValue(i));
+    }
+
+    return JSON.stringify(typedAnswers);
   }
 
-  const container = root.querySelector(".task-answer--filling");
+  const container = fillingState.answer;
 
   if (!container) {
     return "[]";
@@ -204,6 +272,79 @@ function getFillingAnswerString() {
   }
 
   return JSON.stringify(result);
+}
+
+function setFillingMode(nextMode) {
+  const mode =
+    nextMode === FILLING_MODE_TYPING
+      ? FILLING_MODE_TYPING
+      : FILLING_MODE_WORD_BANK;
+
+  fillingState.mode = mode;
+
+  const isWordBankMode = mode === FILLING_MODE_WORD_BANK;
+
+  fillingState.root?.classList.toggle("is-filling-word-bank", isWordBankMode);
+  fillingState.root?.classList.toggle("is-filling-typing", !isWordBankMode);
+
+  if (!isWordBankMode) {
+    syncTypingInputsFromWordBank();
+    focusFirstTypingBlank();
+  }
+
+  updateFillingContinueState();
+}
+
+function syncTypingInputsFromWordBank() {
+  for (let i = 0; i < fillingState.blankNodes.length; i += 1) {
+    const input = fillingState.blankNodes[i].querySelector(".task-blank__input");
+
+    if (!input) {
+      continue;
+    }
+
+    input.value = getWordBankBlankValue(i);
+  }
+}
+
+function focusFirstTypingBlank() {
+  for (let i = 0; i < fillingState.blankNodes.length; i += 1) {
+    const input = fillingState.blankNodes[i].querySelector(".task-blank__input");
+
+    if (!input) {
+      continue;
+    }
+
+    input.focus();
+    return;
+  }
+}
+
+function getTypingBlankValue(index) {
+  const blankNode = fillingState.blankNodes[index];
+  const input = blankNode?.querySelector(".task-blank__input");
+
+  return normalizeFillingText(input?.value || "");
+}
+
+function getWordBankBlankValue(index) {
+  const wordId = fillingState.filledWordIds[index];
+
+  if (!wordId || !fillingState.answer) {
+    return "";
+  }
+
+  const keyElement = fillingState.answer.querySelector(
+    `.task-key[data-id="${String(wordId)}"]`,
+  );
+
+  return normalizeFillingText(keyElement?.textContent || "");
+}
+
+function normalizeFillingText(text) {
+  return String(text || "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 // Highlight the answer panel when the answer is incorrect.
