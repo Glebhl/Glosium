@@ -105,9 +105,9 @@
   text-align: center;
   cursor: pointer;
   transition:
-    background-color var(--duration-normal) var(--easing-standard),
-    border-color var(--duration-normal) var(--easing-standard),
-    color var(--duration-normal) var(--easing-standard);
+    background-color var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
 }
 
 .task-choice.is-idle:hover,
