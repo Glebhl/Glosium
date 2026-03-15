@@ -1,6 +1,7 @@
 import logging
 
-from PySide6.QtCore import QUrl
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QTimer, QUrl, Qt
+from PySide6.QtWidgets import QGraphicsOpacityEffect, QLabel
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
 from backend import Backend
@@ -18,6 +19,28 @@ class Router:
         self.view = view
         self.backend = backend
         self._stack = []  # controller history stack
+        self._pending_controller = None
+        self._is_transitioning = False
+        self._fade_duration_ms = 90
+
+        self._transition_overlay = QLabel(self.view.parentWidget())
+        self._transition_overlay.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self._transition_overlay.setScaledContents(True)
+        self._transition_overlay.hide()
+
+        self._overlay_opacity_effect = QGraphicsOpacityEffect(self._transition_overlay)
+        self._overlay_opacity_effect.setOpacity(1.0)
+        self._transition_overlay.setGraphicsEffect(self._overlay_opacity_effect)
+
+        self._fade_animation = QPropertyAnimation(
+            self._overlay_opacity_effect,
+            b"opacity",
+            self._transition_overlay,
+        )
+        self._fade_animation.setDuration(self._fade_duration_ms)
+        self._fade_animation.setEasingCurve(QEasingCurve.InOutQuad)
+
+        self.view.loadFinished.connect(self._on_view_load_finished)
 
     def navigate_to(self, controller_cls, *args, **kwargs):
         """
@@ -35,8 +58,7 @@ class Router:
         self._stack.append(controller)
         logger.debug("Pushed new page to history stack (size=%d)", len(self._stack))
 
-        self._activate_controller(controller)
-        self._load_controller_url(controller)
+        self._transition_to(controller, use_fade=current is not None)
 
         logger.info('Page navigation completed: url="%s"', controller.url)
 
@@ -57,8 +79,7 @@ class Router:
         self._stack.pop()
         logger.debug("Popped current page from history stack (size=%d)", len(self._stack))
 
-        self._activate_controller(previous)
-        self._load_controller_url(previous)
+        self._transition_to(previous, use_fade=True)
 
         logger.info('Went back to previous page: url="%s"', previous.url)
 
@@ -87,6 +108,90 @@ class Router:
         """Load controller URL into the view."""
         self.view.setUrl(QUrl.fromLocalFile(controller.url))
         logger.debug('Requested page load: url="%s"', controller.url)
+
+    def _transition_to(self, controller, use_fade: bool):
+        """
+        Switch the current page using a fading snapshot overlay.
+        """
+        self._pending_controller = controller
+
+        if not use_fade:
+            self._show_controller(controller)
+            return
+
+        if self._is_transitioning:
+            self._fade_animation.stop()
+
+        self._is_transitioning = True
+        self._prepare_transition_overlay()
+        self._load_pending_controller()
+        logger.debug('Started overlay transition: url="%s"', controller.url)
+
+    def _show_controller(self, controller):
+        """Activate controller and request its page load."""
+        self._activate_controller(controller)
+        self._load_controller_url(controller)
+
+    def _load_pending_controller(self):
+        """Load the controller selected for the current transition."""
+        controller = self._pending_controller
+        if controller is None:
+            self._is_transitioning = False
+            return
+
+        self._show_controller(controller)
+        logger.debug('Fade-out completed, loading page: url="%s"', controller.url)
+
+    def _on_view_load_finished(self, is_ok: bool):
+        """Fade out the previous-page overlay after the new page has loaded."""
+        if not self._is_transitioning:
+            return
+
+        controller = self._pending_controller
+        logger.debug(
+            'View load finished during transition: url="%s" ok=%s',
+            controller.url if controller is not None else None,
+            is_ok,
+        )
+        QTimer.singleShot(0, lambda: self._run_fade(1.0, 0.0, self._finish_transition))
+
+    def _finish_transition(self):
+        """Mark the current transition as complete."""
+        controller = self._pending_controller
+        self._pending_controller = None
+        self._is_transitioning = False
+        self._transition_overlay.hide()
+        self._transition_overlay.clear()
+        logger.debug(
+            'Fade-in transition completed: url="%s"',
+            controller.url if controller is not None else None,
+        )
+
+    def _run_fade(self, start_value: float, end_value: float, on_finished):
+        """Configure and start opacity animation for the view."""
+        try:
+            self._fade_animation.finished.disconnect()
+        except (RuntimeError, TypeError):
+            pass
+
+        self._overlay_opacity_effect.setOpacity(start_value)
+        self._fade_animation.setStartValue(start_value)
+        self._fade_animation.setEndValue(end_value)
+        self._fade_animation.finished.connect(on_finished)
+        self._fade_animation.start()
+
+    def _prepare_transition_overlay(self):
+        """Capture the current page and place it over the view for a stable fade."""
+        pixmap = self.view.grab()
+        if pixmap.isNull():
+            logger.debug("Transition overlay skipped because view snapshot is empty")
+            return
+
+        self._transition_overlay.setGeometry(self.view.geometry())
+        self._transition_overlay.setPixmap(pixmap)
+        self._overlay_opacity_effect.setOpacity(1.0)
+        self._transition_overlay.show()
+        self._transition_overlay.raise_()
 
     @staticmethod
     def _safe_disconnect(signal, slot, signal_name: str):
