@@ -23,7 +23,12 @@ let fillingWordIdSeq = 0;
 // - render sentence fragments and blanks
 // - render keyboard keys
 // - attach click handlers
-function initFillBlanks(el, fragmentsArray, keyboardArray) {
+function initFillBlanks(
+  el,
+  fragmentsArray,
+  keyboardArray,
+  initialMode = FILLING_MODE_WORD_BANK,
+) {
   const answer = el.querySelector(".task-answer--filling");
   const keyboard = el.querySelector(".task-keyboard");
   const modeSwitchRoot = el.querySelector(".task-keyboard__mode-switch");
@@ -109,7 +114,7 @@ function initFillBlanks(el, fragmentsArray, keyboardArray) {
   fillingState.switchController = window.lessonModeSwitch.attach(
     modeSwitchRoot,
     setFillingMode,
-    FILLING_MODE_WORD_BANK,
+    initialMode,
   );
 }
 

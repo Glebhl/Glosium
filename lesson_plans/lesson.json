@@ -36,7 +36,8 @@
     "task_id": "filling",
     "content": {
       "sentence": ["I bought", "new car yesterday.", "car is very fast."],
-      "keyboard": ["a", "The"]
+      "keyboard": ["a", "The"],
+      "mode": "word-bank"
     },
     "answers": [
       "a", "The"
@@ -47,7 +48,8 @@
     "task_id": "filling",
     "content": {
       "sentence": ["The sky is", ". The grass is", "."],
-      "keyboard": ["blue", "green"]
+      "keyboard": ["blue", "green"],
+      "mode": "typing"
     },
     "answers": [
       "blue", "green"
@@ -58,7 +60,8 @@
     "task_id": "translation",
     "content": {
       "sentence": "This is a very nice book.",
-      "keyboard": ["Это", "очень", "книга", "хорошая", "лишние", "три", "слова"]
+      "keyboard": ["Это", "очень", "книга", "хорошая", "лишние", "три", "слова"],
+      "mode": "word-bank"
     },
     "answers": [
       "это очень хорошая книга",
@@ -70,7 +73,8 @@
     "task_id": "translation",
     "content": {
       "sentence": "This is a very bad book.",
-      "keyboard": ["Это", "очень", "плохая", "книга", "очень", "лишние", "четыре", "слова"]
+      "keyboard": ["Это", "очень", "плохая", "книга", "очень", "лишние", "четыре", "слова"],
+      "mode": "typing"
     },
     "answers": [
       "это очень плохая книга",

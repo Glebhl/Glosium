@@ -26,9 +26,15 @@ let translationWordIdCounter = 0;
  * @param {HTMLElement} rootElement
  * @param {string} sentenceText
  * @param {string[]} keyboardWords
+ * @param {string} [initialMode]
  * @returns {Function} highlightTranslation
  */
-function initTranslation(rootElement, sentenceText, keyboardWords) {
+function initTranslation(
+  rootElement,
+  sentenceText,
+  keyboardWords,
+  initialMode = TRANSLATION_MODE_WORD_BANK,
+) {
   const answerContainer = rootElement.querySelector(
     ".task-answer--translation",
   );
@@ -98,7 +104,7 @@ function initTranslation(rootElement, sentenceText, keyboardWords) {
   translationState.switchController = window.lessonModeSwitch.attach(
     modeSwitchRoot,
     setTranslationMode,
-    TRANSLATION_MODE_WORD_BANK,
+    initialMode,
   );
 
   return highlightTranslation;

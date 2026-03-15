@@ -29,11 +29,11 @@ const hydrators = {
   },
 
   translation(el, data) {
-    initTranslation(el, data.sentence, data.keyboard);
+    initTranslation(el, data.sentence, data.keyboard, data.mode);
   },
 
   filling(el, data) {
-    initFillBlanks(el, data.sentence, data.keyboard);
+    initFillBlanks(el, data.sentence, data.keyboard, data.mode);
   },
 
   question(el, data) {
