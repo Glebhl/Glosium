@@ -11,10 +11,11 @@ LexiForge/
 ├─ main.py                     # Application entry point
 ├─ backend.py                  # Python <-> UI bridge via Qt signals/slots
 ├─ router.py                   # Screen navigation and transitions
-├─ lesson_controller.py        # Lesson flow, task loading, answer checks
-├─ vocab_planner_controller.py # Vocabulary setup screen logic
 ├─ answer_matcher.py           # Text normalization and answer matching
 ├─ lesson_plans/               # Lesson content in JSON format
+├─ pages/                      # Python backend for web screens
+│  ├─ lesson.py                # Lesson flow, task loading, answer checks
+│  └─ vocab_setup.py           # Vocabulary setup screen logic
 └─ UI/                         # Frontend screens, styles, assets, and scripts
 ```
 

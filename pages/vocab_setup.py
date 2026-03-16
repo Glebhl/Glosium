@@ -1,7 +1,7 @@
 from PySide6.QtCore import QObject
 import random
 import logging
-from lesson_controller import LessonController
+from pages.lesson import LessonController
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ hints = [
 class VocabPlannerController(QObject):
     def __init__(self, router, view, backend):
         super().__init__()
-        self.url = r"\UI\vocab-lesson-setup\index.html"
+        self.url = r"\UI\vocab_setup\index.html"
         self.router = router
         self.view = view
         self.backend = backend

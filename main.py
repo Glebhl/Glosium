@@ -6,7 +6,7 @@ from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
 
 from backend import Backend
-from vocab_planner_controller import VocabPlannerController
+from pages.vocab_setup import VocabPlannerController
 from router import Router
 from logging_config import setup_logging
 
