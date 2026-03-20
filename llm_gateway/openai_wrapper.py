@@ -105,7 +105,7 @@ class OpenAITextClient:
         self,
         api_key: str,
         *,
-        model: str = "gpt-5-nano",
+        model: str = "gpt-5-mini",
         stream: bool = False,
         cache_config: PromptCacheConfig | None = None,
         base_url: str | None = None,

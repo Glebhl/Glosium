@@ -186,9 +186,6 @@ class OpenAIChatSession:
         temperature: float | None,
         max_output_tokens: int | None,
     ) -> Iterator[str]:
-        prompt_cache_key = self._client.cache_config.build_request_options(*cache_scope).get(
-            "prompt_cache_key"
-        )
         raw_stream = self._client.stream_response(
             instructions=self._system_prompt,
             input_items=request_input,
@@ -232,7 +229,6 @@ class OpenAIChatSession:
                             completed_response,
                             model=self._client.model,
                             operation="chat_stream_response",
-                            prompt_cache_key=prompt_cache_key,
                         )
                     assistant_text = "".join(chunks) if chunks else (finalized_text or "")
                     self._finalize_response(
