@@ -41,7 +41,7 @@
   grid-template-columns: 1fr 1fr;
   justify-content: center;
   align-content: start;
-  align-items: start;
+  align-items: stretch;
   width: 100%;
 }
 
@@ -89,13 +89,15 @@
 
 .card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   background-color: var(--panel);
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 16px;
   box-shadow: var(--main-shadow);
-  align-self: start;
+  height: 100%;
 }
 
 .card:hover {

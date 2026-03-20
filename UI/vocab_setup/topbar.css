@@ -92,7 +92,8 @@
   border: 1px solid var(--border);
   background: rgba(0, 0, 0, .03);
   box-shadow: var(--inner-shadow);
-  color: var(--text);
+  /* color: var(--text); */
+  color: var(--input-text);
   outline: none;
   transition: var(--transition);
 }

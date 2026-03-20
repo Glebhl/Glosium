@@ -1,6 +1,7 @@
 :root {
   --text: rgb(233, 233, 243);
   --muted: rgba(233, 233, 243, .66);
+  --input-text: rgba(233, 233, 243, 0.95);
 
   --background: #121314;
   --panel: rgba(255, 255, 255, .03);
