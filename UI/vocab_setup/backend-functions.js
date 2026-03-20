@@ -5,13 +5,7 @@ const tpl = document.getElementById('card-template');
 const list = document.getElementById('cards');
 
 function renumberCards() {
-  const cards = list.querySelectorAll('.card');
-
-  cards.forEach((card, i) => {
-    card.dataset.id = String(i);
-  });
-
-  nextId = cards.length;
+  nextId = list.querySelectorAll('.card').length;
 
   const suffix = nextId === 1 ? "" : "s";
 
@@ -60,12 +54,7 @@ function animateCardReflow(previousPositions) {
   });
 }
 
-function addCard(word, unit, part, level, transcription, translation, defenition, example) {
-  const node = tpl.content.cloneNode(true);
-  const card = node.querySelector('.card');
-  const id = String(nextId++);
-
-  card.dataset.id = id;
+function hydrateCard(card, word, unit, part, level, transcription, translation, defenition, example) {
   card.querySelector('.word').textContent = word;
   card.querySelector('.tag--purple').textContent = unit;
   card.querySelector('.tag--green').textContent = part;
@@ -74,7 +63,15 @@ function addCard(word, unit, part, level, transcription, translation, defenition
   card.querySelector('.translation').textContent = translation;
   card.querySelector('.defenition').textContent = defenition;
   card.querySelector('.example').textContent = example;
-  
+}
+
+function addCard(word, unit, part, level, transcription, translation, defenition, example, cardId = null) {
+  const node = tpl.content.cloneNode(true);
+  const card = node.querySelector('.card');
+  const id = cardId ?? `card-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+  card.dataset.cardId = id;
+  hydrateCard(card, word, unit, part, level, transcription, translation, defenition, example);
   list.append(node);
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -118,7 +115,7 @@ function animateCardRemoval(card, onRemoved) {
 }
 
 function removeCard(id) {
-  const card = list.querySelector(`.card[data-id="${id}"]`);
+  const card = list.querySelector(`.card[data-card-id="${id}"]`);
   animateCardRemoval(card);
 }
 
@@ -127,7 +124,7 @@ list.addEventListener('click', (e) => {
   if (!btn) return;
 
   const item = btn.closest('.card');
-  const removedId = item.dataset.id;
+  const removedId = item.dataset.cardId;
 
   animateCardRemoval(item, () => {
     backend.emitEvent('card-closed', { id: removedId });
@@ -138,6 +135,16 @@ function setHint(hint) {
   document.getElementById('hint').innerHTML = hint;
 }
 
+function setGenerating(isGenerating) {
+  const generateButton = document.getElementById('btn-go');
+  const startButton = document.getElementById('btn-start');
+  const prompt = document.getElementById('prompt');
+
+  generateButton.disabled = isGenerating;
+  startButton.disabled = isGenerating;
+  prompt.disabled = isGenerating;
+}
+
 // UI actions (JS -> Python)
 document.getElementById('btn-go').addEventListener('click', () => {
   backend.emitEvent('btn-click', { id: "generate" });
@@ -146,3 +153,8 @@ document.getElementById('btn-go').addEventListener('click', () => {
 document.getElementById("btn-start").addEventListener('click', () => {
   backend.emitEvent('btn-click', { id: 'start_lesson' });
 });
+
+function getPromtText() {
+  const prompt = document.getElementById("prompt");
+  return prompt.value;
+}

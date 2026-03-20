@@ -4,14 +4,18 @@ import logging
 from PySide6.QtWidgets import QApplication, QMainWindow
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebChannel import QWebChannel
+from dotenv import load_dotenv
 
 from backend import Backend
-from pages.vocab_setup import VocabPlannerController
+from pages.vocab_setup import VocabularySetupController
 from router import Router
 from logging_config import setup_logging
 
-
 logger = logging.getLogger(__name__)
+
+logger.debug("dotenv initialization started")
+load_dotenv()
+logger.info("dotenv was initializated")
 
 
 def excepthook(exc_type, exc, tb) -> None:
@@ -67,7 +71,7 @@ class MainWindow(QMainWindow):
 
     def _open_initial_page(self) -> None:
         """Navigate to the initial controller/page."""
-        self.router.navigate_to(VocabPlannerController)
+        self.router.navigate_to(VocabularySetupController)
         logger.debug("Navigated to VocabPlannerController")
 
 

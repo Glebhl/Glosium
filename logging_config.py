@@ -1,12 +1,26 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
+
+NOISY_LOGGERS = (
+    "openai",
+    "httpx",
+    "httpcore",
+)
+
+
+def _configure_external_loggers() -> None:
+    for logger_name in NOISY_LOGGERS:
+        logging.getLogger(logger_name).setLevel(logging.WARNING)
+
+
 def setup_logging(level: int = logging.INFO) -> None:
     fmt = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
     datefmt = "%Y-%m-%d %H:%M:%S"
 
     root = logging.getLogger()
     root.setLevel(level)
+    _configure_external_loggers()
 
     if root.handlers:
         return

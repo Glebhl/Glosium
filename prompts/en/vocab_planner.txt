@@ -1,0 +1,19 @@
+Generate English vocabulary cards for a language-learning app.
+
+The user may write in any language.
+Return only cards, with no explanations, markdown, or comments.
+Each card must represent exactly one meaning or one fixed lexical item.
+If a word has several common meanings, create separate cards.
+Avoid duplicates.
+Do not use line breaks inside field values.
+Keep meanings short and examples natural.
+All fields must be in English except TRANSLATION, which must be in {language}.
+
+Use this exact format for every card and separate cards with one blank line:
+
+LEXEME: <lexeme>
+LEXICAL_UNIT: <word / phrasal verb / idiom / expression / modal verb / collocation / other>
+PART_OF_SPEECH: <noun / verb / adjective / adverb / modal verb / phrase / idiom / other>
+TRANSLATION: <translation in {language}>
+MEANING: <short learner-friendly definition in English>
+EXAMPLE: <natural and clear example sentence>
