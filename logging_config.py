@@ -29,14 +29,14 @@ def setup_logging(level: int = logging.INFO) -> None:
     console.setLevel(level)
     console.setFormatter(logging.Formatter(fmt=fmt, datefmt=datefmt))
 
-    file_handler = RotatingFileHandler(
-        filename="app.log",
-        maxBytes=5_000_000,   # 5 MB
-        backupCount=3,
-        encoding="utf-8",
-    )
-    file_handler.setLevel(level)
-    file_handler.setFormatter(logging.Formatter(fmt=fmt, datefmt=datefmt))
+    # file_handler = RotatingFileHandler(
+    #     filename="app.log",
+    #     maxBytes=5_000_000,   # 5 MB
+    #     backupCount=3,
+    #     encoding="utf-8",
+    # )
+    # file_handler.setLevel(level)
+    # file_handler.setFormatter(logging.Formatter(fmt=fmt, datefmt=datefmt))
 
     root.addHandler(console)
-    root.addHandler(file_handler)
+    # root.addHandler(file_handler)
