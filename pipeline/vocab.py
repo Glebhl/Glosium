@@ -209,7 +209,7 @@ class VocabularyCardGenerator:
             text_verbosity=TEXT_VERBOSITY_LOW,
         )
 
-        prompt_path = Path("prompts") / lesson_language / "vocab_planner.txt"
+        prompt_path = Path("prompts") / lesson_language / "vocab_setup.txt"
         self._system_prompt = prompt_path.read_text(encoding="utf-8").format(
             language=LANGUAGE_MAP.get(translation_language, "English")
         )
