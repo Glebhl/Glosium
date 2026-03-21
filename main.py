@@ -83,7 +83,8 @@ def main() -> int:
     app = QApplication(sys.argv)
 
     main_window = MainWindow()
-    main_window.resize(1100, 860)
+    main_window.resize(1200, 860)
+    main_window.setMinimumSize(700, 500)
     main_window.show()
 
     logger.info("Application started successfully")

@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 LLM_MODEL = "gpt-5-mini"
 
 hints = [
-    "specify level, topic, and format (<code>with examples</code>, <code>phrasal verbs</code>, <code>medical terms</code>).",
     "specify your level and goal (<code>A2 travel</code>, <code>B1 conversation</code>).",
     "choose a topic and format (<code>food vocabulary</code>).",
     "include the situation (<code>at the airport</code>, <code>doctor appointment</code>).",

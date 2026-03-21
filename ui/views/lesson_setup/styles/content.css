@@ -1,0 +1,37 @@
+.brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.lesson-card__word {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.lesson-card__transcription {
+  font-size: 14px;
+  margin-top: 6px;
+  color: var(--color-text-muted);
+}
+
+.lesson-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  margin-bottom: 14px;
+}
+
+.lesson-card__section-value {
+  font-size: 17px;
+  color: rgba(233, 233, 243, 0.8);
+  font-weight: 700;
+}
+
+.lesson-card__example-text {
+  color: rgba(233, 233, 243, 0.78);
+  font-size: 16px;
+}

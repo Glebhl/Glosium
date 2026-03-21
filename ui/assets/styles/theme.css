@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Roboto";
-  src: url("../../../assets/fonts/Roboto.ttf") format("truetype");
+  src: url("../fonts/Roboto.ttf") format("truetype");
   font-display: swap;
 }
 
@@ -14,9 +14,10 @@
   --color-border: rgba(255, 255, 255, 0.07);
   --color-border-hover: rgba(255, 255, 255, 0.1);
   --color-border-active: rgba(255, 255, 255, 0.13);
-  /* --color-focus: rgba(123, 97, 255, 0.45); */
   --color-accent-start: rgba(123, 97, 255, 0.95);
   --color-accent-end: rgba(32, 227, 178, 0.75);
+  --color-accent-strong: rgba(123, 97, 255, 1);
+  --color-accent-soft: rgba(123, 97, 255, 0.18);
   --color-success-border: rgba(6, 255, 6, 0.59);
   --color-success-fill: rgba(6, 255, 6, 0.39);
   --color-danger-border: rgba(255, 6, 6, 0.5);
@@ -56,7 +57,7 @@ body {
   margin: 0;
   background-color: var(--color-background);
   color: var(--color-text);
-  font-family: "Roboto", Arial;
+  font-family: "Roboto", Arial, sans-serif;
   scrollbar-width: thin;
   scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
 }
@@ -105,4 +106,11 @@ code {
   color: rgba(231, 233, 238, 0.9);
   font-family: Consolas, monospace;
   font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --shell-inline-gap: 24px;
+    --shell-block-gap: 24px;
+  }
 }
