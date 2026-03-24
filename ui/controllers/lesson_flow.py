@@ -17,7 +17,7 @@ class LessonFlowController(QObject):
     def __init__(self, router, view, backend, lesson_plan):
         super().__init__()
 
-        # Public-ish fields kept for compatibility with existing codebase usage
+        # Public fields
         self.url = r"\ui\views\lesson_flow\index.html"
         self.router = router
         self.view = view
@@ -25,27 +25,27 @@ class LessonFlowController(QObject):
 
         # Save lesson plan
         self._lesson_plan = lesson_plan
-        self.tasksTotal = len(self._lesson_plan)
+        self._tasksTotal = len(self._lesson_plan)
 
-        # UI event handlers (external events -> internal methods)
-        self.handlers: dict[str, Callable[[dict], None]] = {
+        # UI event handlers
+        self._handlers: dict[str, Callable[[dict], None]] = {
             "btn-click": self._handle_button_click,
         }
 
         # Lesson/task state
-        self.taskIndex: int = 0  # 1-based index for UI; 0 means "not started"
-        self.taskID: str = ""
-        self.answers: list[str] = []
+        self._task_index: int = 0  # 1-based index for UI; 0 means "not started"
+        self._task_id: str = ""
+        self._answers: list[str] = []
 
         # Task loaders and verifiers
-        self.task_loaders: dict[str, Callable[[Any], None]] = {
+        self._task_loaders: dict[str, Callable[[Any], None]] = {
             "explanation": self._load_explanation_task,
             "matching": self._load_matching_task,
             "translation": self._load_translation_task,
             "filling": self._load_filling_task,
             "question": self._load_question_task,
         }
-        self.task_verifiers: dict[str, Callable[[], bool]] = {
+        self._task_verifiers: dict[str, Callable[[], bool]] = {
             "explanation": None,  # None to skip verification
             "matching": None,
             "translation": self._verify_translation_task,
@@ -55,7 +55,7 @@ class LessonFlowController(QObject):
 
         logger.debug(
             "LessonController initialized: tasks_total=%d, url=%s",
-            self.tasksTotal,
+            self._tasksTotal,
             self.url,
         )
 
@@ -70,7 +70,7 @@ class LessonFlowController(QObject):
         """Entry point for UI events from JS."""
         logger.debug("UI event received: name=%s payload=%s", name, payload)
 
-        handler = self.handlers.get(name)
+        handler = self._handlers.get(name)
         if not handler:
             logger.warning("No handler registered for UI event: %s", name)
             return
@@ -98,27 +98,27 @@ class LessonFlowController(QObject):
 
     def _open_next_task(self) -> None:
         """Advance to the next task and render it in the UI."""
-        self.taskIndex += 1
+        self._task_index += 1
 
-        if self.taskIndex > self.tasksTotal:
+        if self._task_index > self._tasksTotal:
             logger.info("All tasks completed, navigating back")
             self.router.go_back()
             return
 
-        self._set_step_ui(self.taskIndex, self.tasksTotal)
+        self._set_step_ui(self._task_index, self._tasksTotal)
 
-        task = self._lesson_plan[self.taskIndex - 1]
-        self.taskID = task.get("task_id", "")
+        task = self._lesson_plan[self._task_index - 1]
+        self._task_id = task.get("task_id", "")
         content = task.get("content")
-        self.answers = task.get("answers") or []
+        self._answers = task.get("answers") or []
 
-        loader = self.task_loaders.get(self.taskID)
+        loader = self._task_loaders.get(self._task_id)
         if not loader:
-            logger.error("Unknown task type: %s (taskIndex=%d)", self.taskID, self.taskIndex)
+            logger.error("Unknown task type: %s (taskIndex=%d)", self._task_id, self._task_index)
             self._open_next_task()
             return
 
-        logger.info("Opening task: index=%d/%d id=%s", self.taskIndex, self.tasksTotal, self.taskID)
+        logger.info("Opening task: index=%d/%d id=%s", self._task_index, self._tasksTotal, self._task_id)
         loader(content)
 
     def _set_step_ui(self, current_step: int, total_steps: int) -> None:
@@ -131,18 +131,18 @@ class LessonFlowController(QObject):
         Trigger current task verification.
         Returns a boolean only for synchronous verifiers.
         """
-        verifier = self.task_verifiers.get(self.taskID)
+        verifier = self._task_verifiers.get(self._task_id)
         if not verifier:
-            logger.debug("No verifier registered for task type: %s. Validating the task", self.taskID)
+            logger.debug("No verifier registered for task type: %s. Validating the task", self._task_id)
             self._on_check_result(True)
             return
 
-        logger.debug("Running verifier for task type: %s", self.taskID)
+        logger.debug("Running verifier for task type: %s", self._task_id)
         return verifier()
 
     def _on_check_result(self, is_correct: bool) -> None:
         """Central place to handle verification result."""
-        logger.info("Task check result: task_id=%s is_correct=%s", self.taskID, is_correct)
+        logger.info("Task check result: task_id=%s is_correct=%s", self._task_id, is_correct)
         if is_correct:
             self._open_next_task()
 
@@ -181,12 +181,12 @@ class LessonFlowController(QObject):
             language_code = self._get_task_answer_language()
             match_result = answer_matcher.evaluate_text_answer(
                 user_answer=answer,
-                expected_answers=self.answers,
+                expected_answers=self._answers,
                 language_code=language_code,
             )
             comparison_details = answer_matcher.explain_text_answer(
                 user_answer=answer,
-                expected_answers=self.answers,
+                expected_answers=self._answers,
                 language_code=language_code,
             )
 
@@ -194,7 +194,7 @@ class LessonFlowController(QObject):
                 "Translation answer received: raw_user_answer=%r expected=%s "
                 "language_code=%s comparison=%s is_correct=%s",
                 answer,
-                self.answers,
+                self._answers,
                 language_code,
                 comparison_details,
                 match_result.is_correct,
@@ -235,7 +235,7 @@ class LessonFlowController(QObject):
             language_code = self._get_task_answer_language()
             match_result = answer_matcher.evaluate_sequence_answer(
                 user_answers=user_answer,
-                expected_answers=self.answers,
+                expected_answers=self._answers,
                 language_code=language_code,
             )
 
@@ -243,7 +243,7 @@ class LessonFlowController(QObject):
                 "Filling answer received: user_answer=%r expected=%s language_code=%s "
                 "is_correct=%s",
                 user_answer,
-                self.answers,
+                self._answers,
                 language_code,
                 match_result.is_correct,
             )
@@ -283,7 +283,7 @@ class LessonFlowController(QObject):
         Supports several field names to keep lesson JSON flexible as more
         languages are introduced.
         """
-        task = self._lesson_plan[self.taskIndex - 1]
+        task = self._lesson_plan[self._task_index - 1]
         content = task.get("content") or {}
 
-        return content.get("language") or self._lesson_language
+        return content.get("typing_language")

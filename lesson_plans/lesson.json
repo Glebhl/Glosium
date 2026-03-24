@@ -37,7 +37,8 @@
     "content": {
       "sentence": ["I bought", "new car yesterday.", "car is very fast."],
       "keyboard": ["a", "The"],
-      "mode": "word-bank"
+      "mode": "word-bank",
+      "typing_language": "en"
     },
     "answers": [
       "a", "The"
@@ -49,7 +50,8 @@
     "content": {
       "sentence": ["The sky is", ". The grass is", "."],
       "keyboard": ["blue", "green"],
-      "mode": "typing"
+      "mode": "typing",
+      "typing_language": "en"
     },
     "answers": [
       "blue", "green"
@@ -61,7 +63,8 @@
     "content": {
       "sentence": "This is a very nice book.",
       "keyboard": ["Это", "очень", "книга", "хорошая", "лишние", "три", "слова"],
-      "mode": "word-bank"
+      "mode": "word-bank",
+      "typing_language": "ru"
     },
     "answers": [
       "это очень хорошая книга",
@@ -74,7 +77,8 @@
     "content": {
       "sentence": "This is a very bad book.",
       "keyboard": ["Это", "очень", "плохая", "книга", "еще", "лишние", "четыре", "слова"],
-      "mode": "typing"
+      "mode": "typing",
+      "typing_language": "ru"
     },
     "answers": [
       "это очень плохая книга",

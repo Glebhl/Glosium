@@ -35,6 +35,13 @@ TEXT_VERBOSITIES = (
     TEXT_VERBOSITY_HIGH,
 )
 
+SERVICE_TIER_AUTO = "auto"
+SERVICE_TIER_FLEX = "flex"
+SERVICE_TIERS = (
+    SERVICE_TIER_AUTO,
+    SERVICE_TIER_FLEX,
+)
+
 
 def build_input_message(role: str, content: str) -> dict[str, str]:
     return {"role": role, "content": content}
@@ -111,6 +118,7 @@ class OpenAITextClient:
         base_url: str | None = None,
         reasoning_effort: str | None = None,
         text_verbosity: str | None = None,
+        service_tier: str | None = None,
     ) -> None:
         client_kwargs: dict[str, Any] = {}
         client_kwargs["api_key"] = api_key
@@ -123,6 +131,7 @@ class OpenAITextClient:
         self.cache_config = cache_config or PromptCacheConfig()
         self.reasoning_effort = reasoning_effort
         self.text_verbosity = text_verbosity
+        self.service_tier = service_tier
 
     def generate_text(
         self,
@@ -212,6 +221,8 @@ class OpenAITextClient:
             request["reasoning"] = {"effort": self.reasoning_effort}
         if self.text_verbosity:
             request["text"] = {"verbosity": self.text_verbosity}
+        if self.service_tier:
+            request["service_tier"] = self.service_tier
 
         request.update(self.cache_config.build_request_options(*cache_scope))
         return request

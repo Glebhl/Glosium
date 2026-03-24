@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Iterator
-from dataclasses import dataclass
 from pathlib import Path
 
 from llm_gateway import OpenAITextClient
 from llm_gateway.openai_wrapper import REASONING_EFFORT_MINIMAL, TEXT_VERBOSITY_LOW
 from language_converter import get_language_display_name
+from .vocabulary_card import VocabularyCard
 
 
 logger = logging.getLogger(__name__)
@@ -23,30 +23,6 @@ CARD_FIELDS = (
     "EXAMPLE",
 )
 CARD_FIELDS_SET = set(CARD_FIELDS)
-
-
-@dataclass(frozen=True, slots=True)
-class VocabularyCard:
-    lexeme: str
-    lexical_unit: str
-    part_of_speech: str
-    level: str
-    translation: str
-    transcription: str
-    meaning: str
-    example: str
-
-    def to_dict(self) -> dict[str, str]:
-        return {
-            "LEXEME": self.lexeme,
-            "LEXICAL_UNIT": self.lexical_unit,
-            "PART_OF_SPEECH": self.part_of_speech,
-            "TRANSLATION": self.translation,
-            "LEVEL": self.level,
-            "TRANSCRIPTION": self.transcription,
-            "MEANING": self.meaning,
-            "EXAMPLE": self.example,
-        }
 
 
 class VocabularyCardStreamParser:
@@ -139,9 +115,9 @@ class VocabularyCardGenerator:
     def __init__(
         self,
         api_key: str,
+        model: str,
         lesson_language: str,
         translation_language: str,
-        model: str,
     ) -> None:
         self._text_client = OpenAITextClient(
             api_key=api_key,

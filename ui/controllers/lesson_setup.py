@@ -10,7 +10,8 @@ from typing import Any
 from PySide6.QtCore import QObject, QThread, Signal, Slot
 
 from ui.controllers import LessonFlowController
-from pipeline import VocabularyCard, VocabularyCardGenerator
+from pipeline import VocabularyCard
+from pipeline import VocabularyCardGenerator, MacroPlanner
 
 logger = logging.getLogger(__name__)
 
@@ -87,27 +88,184 @@ class LessonSetupController(QObject):
         self.router = router
         self.view = view
         self.backend = backend
-        self.handlers = {
+        self._handlers = {
             "btn-click": self._on_btn_click,
             "card-closed": self._on_card_closed,
         }
-        self.cards_by_ui_id: dict[str, VocabularyCard] = {}
-        self._next_ui_card_id = 0
+        self._cards: list[VocabularyCard] = []
         self._api_key = os.getenv("OPENAI_API_KEY") or ""
-        self._lesson_language = "en"
-        self._translation_language = "ru"
         self._worker_thread: QThread | None = None
         self._worker: VocabularyGenerationWorker | None = None
         self._generation_error_message: str | None = None
 
+        # Settings placeholders
+        self._lesson_language = "en"
+        self._translation_language = "ru"
+
     def on_load_finished(self):
-        self.cards_by_ui_id = {}
-        self._next_ui_card_id = 0
+        self._cards = []
         self._set_hint(f"Tip: {random.choice(hints)}")
         self._set_generating(False)
 
+        self._append_card_to_ui(
+            VocabularyCard(
+                "approach",
+                "word",
+                "verb",
+                "B1",
+                "подходить; подход",
+                "/əˈproʊtʃ/",
+                "to deal with something or think about it in a particular way",
+                "She approached the problem from a different angle.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "deal with",
+                "phrasal_verb",
+                "verb",
+                "B1",
+                "иметь дело с",
+                "/diːl wɪð/",
+                "to handle or manage a situation or problem",
+                "He knows how to deal with difficult clients.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "come up with",
+                "phrasal_verb",
+                "verb",
+                "B1",
+                "придумать",
+                "/kʌm ʌp wɪð/",
+                "to think of or produce an idea or solution",
+                "She came up with a brilliant idea.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "solution",
+                "word",
+                "noun",
+                "B1",
+                "решение",
+                "/səˈluːʃən/",
+                "an answer to a problem",
+                "We finally found a solution to the issue.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "solve a problem",
+                "collocation",
+                "verb",
+                "B1",
+                "решить проблему",
+                "/sɒlv ə ˈprɒbləm/",
+                "to find an answer to a difficulty",
+                "We need to solve this problem quickly.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "figure out",
+                "phrasal_verb",
+                "verb",
+                "B1",
+                "разобраться",
+                "/ˈfɪɡjər aʊt/",
+                "to understand or find the answer to something",
+                "I’m trying to figure out how this works.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "issue",
+                "word",
+                "noun",
+                "B1",
+                "проблема, вопрос",
+                "/ˈɪʃuː/",
+                "an important topic or problem for discussion",
+                "This issue needs immediate attention.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "take into account",
+                "phrasal_verb",
+                "verb",
+                "B2",
+                "учитывать",
+                "/teɪk ˈɪntu əˈkaʊnt/",
+                "to consider something when making a decision",
+                "You should take all factors into account.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "consider",
+                "word",
+                "verb",
+                "B1",
+                "рассматривать, обдумывать",
+                "/kənˈsɪdər/",
+                "to think carefully about something",
+                "We need to consider all possible options.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "option",
+                "word",
+                "noun",
+                "B1",
+                "вариант",
+                "/ˈɒpʃən/",
+                "a choice or alternative",
+                "We have several options to choose from.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "make a decision",
+                "collocation",
+                "verb",
+                "B1",
+                "принять решение",
+                "/meɪk ə dɪˈsɪʒən/",
+                "to decide something",
+                "It’s time to make a final decision.",
+            )
+        )
+
+        self._append_card_to_ui(
+            VocabularyCard(
+                "decision",
+                "word",
+                "noun",
+                "B1",
+                "решение",
+                "/dɪˈsɪʒən/",
+                "a choice made after thinking",
+                "That was a difficult decision.",
+            )
+        )
+
+
     def on_ui_event(self, name: str, payload: dict):
-        handler = self.handlers.get(name)
+        handler = self._handlers.get(name)
         if handler:
             handler(payload)
 
@@ -115,14 +273,9 @@ class LessonSetupController(QObject):
         serialized_args = ", ".join(json.dumps(arg) for arg in args)
         self.view.page().runJavaScript(f"{function_name}({serialized_args});")
 
-    def _allocate_ui_card_id(self) -> str:
-        card_id = str(self._next_ui_card_id)
-        self._next_ui_card_id += 1
-        return card_id
-
     def _append_card_to_ui(self, card: VocabularyCard) -> None:
-        ui_card_id = self._allocate_ui_card_id()
-        self.cards_by_ui_id[ui_card_id] = card
+        self._cards.append(card)
+        ui_card_id = str(len(self._cards) - 1)
 
         self._run_js(
             "addCard",
@@ -205,17 +358,32 @@ class LessonSetupController(QObject):
                     self._start_card_generation,
                 )
             case "start_lesson":
-                 # Placeholder for lesson generation
-                with open("lesson_plans/lesson.json", encoding="utf-8") as file:
-                    lesson_plan: list[dict[str, Any]] = json.load(file)
+                # for i, card in enumerate(self._cards):
+                #     print(f"{i}. {card}")
 
-                self.router.navigate_to(
-                    LessonFlowController,
-                    lesson_plan
-                )
+                    
+                macro_planner = MacroPlanner(self._api_key, LLM_MODEL, self._lesson_language, self._translation_language)
+
+                macro_plan = macro_planner.generate_plan(self._cards)
+                print(macro_plan)
+                # # Placeholder for lesson generation
+                # with open("lesson_plans/lesson.json", encoding="utf-8") as file:
+                #     lesson_plan: list[dict[str, Any]] = json.load(file)
+
+                # self.router.navigate_to(
+                #     LessonFlowController,
+                #     lesson_plan
+                # )
 
     def _on_card_closed(self, payload: dict):
         card_id = str(payload.get("id", ""))
-        if card_id in self.cards_by_ui_id:
-            self.cards_by_ui_id.pop(card_id)
+        try:
+            card_index = int(card_id)
+        except (TypeError, ValueError):
+            logger.warning("Received invalid UI card id: %r", card_id)
+            return
+
+        if 0 <= card_index < len(self._cards):
+            self._cards.pop(card_index)
+            self._run_js("syncCardIds")
             logger.debug("The card %s was closed by the UI", card_id)

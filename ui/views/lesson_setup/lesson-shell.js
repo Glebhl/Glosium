@@ -104,6 +104,12 @@
     removeCardElement(cardElement);
   }
 
+  function syncCardIds() {
+    cardListElement.querySelectorAll(".lesson-card").forEach(function (cardElement, index) {
+      cardElement.dataset.cardId = String(index);
+    });
+  }
+
   function setHint(hint) {
     hintElement.innerHTML = hint || "";
   }
@@ -144,6 +150,7 @@
   globalObject.addCard = addCard;
   globalObject.getPromtText = getPromtText;
   globalObject.removeCard = removeCard;
+  globalObject.syncCardIds = syncCardIds;
   globalObject.setGenerating = setGenerating;
   globalObject.setHint = setHint;
 
