@@ -108,6 +108,7 @@ class LessonSetupController(QObject):
         self._lesson_language = "en"
         self._translation_language = "ru"
         self._lerner_level = "B2"
+        self._user_request = None
         self._cards_generation_model = "gpt-5.4-nano"
         self._plan_generation_model = "gpt-5.4-mini"
         self._task_generation_model = "gpt-5.4-nano"
@@ -271,11 +272,9 @@ class LessonSetupController(QObject):
                     lesson_plan = self._dev_fixtures.load_lesson_plan()
                     logger.info("Using lesson fixture from %s", self._dev_fixtures.lesson_path)
                 else:
-                    macro_plan = self._macro_planner.generate_plan(cards=self._cards)
+                    macro_plan = self._macro_planner.generate_plan(cards=self._cards, user_request=self._user_request)
+                    print(macro_plan)
                     lesson_plan = self._task_generator.generate_tasks(macro_plan)
-
-                for i, task in enumerate(lesson_plan):
-                    print(f"{i}. {task}")
 
                 self.router.navigate_to(
                     LessonFlowController,

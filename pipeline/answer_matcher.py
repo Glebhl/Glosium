@@ -6,6 +6,7 @@ from llm_gateway import OpenAITextClient
 from llm_gateway.openai_wrapper import (
     REASONING_EFFORT_LOW,
     TEXT_VERBOSITY_LOW,
+    SERVICE_TIER_FLEX,
 )
 
 CORRECT = "correct"
@@ -32,7 +33,7 @@ class AnswerMatcher:
             model=model,
             reasoning_effort=REASONING_EFFORT_LOW,
             text_verbosity=TEXT_VERBOSITY_LOW,
-            # service_tier=SERVICE_TIER_FLEX,
+            service_tier=SERVICE_TIER_FLEX,
         )
 
         prompt_dir = Path("prompts") / lesson_language
@@ -141,8 +142,6 @@ class AnswerMatcher:
             f"{index}. {answer}"
             for index, answer in enumerate(user_answers, start=1)
         )
-
-        print("\n".join(lines))
 
         return "\n".join(lines)
 

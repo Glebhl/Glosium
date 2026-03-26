@@ -74,7 +74,6 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
                 targets=targets,
             ),
         )
-        # print(response)
         return self.parser(response)
 
     def _build_user_prompt(

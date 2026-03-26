@@ -142,9 +142,11 @@ class OpenAITextClient:
         temperature: float | None = None,
         max_output_tokens: int | None = None,
     ) -> str | Iterator[str]:
+        input_items = build_input_message("user", user_text)
+        logger.debug("LLM input:\n%s", input_items)
         request = self.build_request(
             instructions=system_prompt,
-            input_items=[build_input_message("user", user_text)],
+            input_items=[input_items],
             cache_scope=("single-shot", self.model, system_prompt or ""),
             temperature=temperature,
             max_output_tokens=max_output_tokens,
@@ -154,6 +156,7 @@ class OpenAITextClient:
             return self._stream_text(request)
 
         response = self._client.responses.create(**request)
+        logger.debug("LLM output:\n%s", response)
         log_response_usage(
             response,
             model=self.model,
