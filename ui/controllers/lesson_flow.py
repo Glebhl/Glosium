@@ -6,6 +6,10 @@ from typing import Any, Callable, Optional
 from PySide6.QtCore import QObject
 
 from exception_logging import make_logged_callback
+from ui.controllers.answer_precheck import (
+    is_filling_answer_correct,
+    is_translation_answer_correct,
+)
 from pipeline import AnswerMatcher
 from pipeline.answer_matcher import (
     CORRECT,
@@ -14,6 +18,7 @@ from pipeline.answer_matcher import (
 )
 
 logger = logging.getLogger(__name__)
+
 
 class LessonFlowController(QObject):
     """
@@ -201,6 +206,23 @@ class LessonFlowController(QObject):
         """
 
         def on_answer_received(answer: str) -> None:
+            expected_answers = self._task.get("answers") or []
+            python_match = is_translation_answer_correct(
+                user_answer=answer,
+                expected_answers=expected_answers,
+                language_code=self._translation_language,
+            )
+
+            if python_match:
+                logger.debug(
+                    "Translation answer matched by Python checker: raw_user_answer=%r expected_answers=%r",
+                    answer,
+                    expected_answers,
+                )
+                self._translation_set_highlight(True)
+                self._on_check_result(True)
+                return
+
             match_result = self._answer_matcher.evaluate_text_answer(
                 original_text=self._task.get("sentence"),
                 user_answer=answer,
@@ -249,10 +271,28 @@ class LessonFlowController(QObject):
 
         def on_answer_received(answer: Optional[str]) -> None:
             user_answer = json.loads(answer or "[]")
+            expected_answers = self._task.get("answers") or []
+
+            python_match = is_filling_answer_correct(
+                user_answers=user_answer,
+                expected_answers=expected_answers,
+                language_code=self._lesson_language,
+            )
+
+            if python_match:
+                logger.debug(
+                    "Filling answer matched by Python checker: raw_user_answer=%r parsed_user_answer=%r expected_answers=%r",
+                    answer,
+                    user_answer,
+                    expected_answers,
+                )
+                self._filling_set_highlight(True)
+                self._on_check_result(True)
+                return
 
             match_result = self._answer_matcher.evaluate_filling_answer(
                 sentence_parts=self._task.get("sentence") or [],
-                expected_answers=self._task.get("answers") or [],
+                expected_answers=expected_answers,
                 user_answers=user_answer,
             )
 

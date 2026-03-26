@@ -111,8 +111,8 @@ class LessonSetupController(QObject):
         self._user_request = None
         self._cards_generation_model = "gpt-5.4-nano"
         self._plan_generation_model = "gpt-5.4-mini"
-        self._task_generation_model = "gpt-5.4-nano"
-        self._answer_matcher_model = "gpt-5-nano"  # Does not do anything from this place yet
+        self._task_generation_model = "gpt-5.4-mini"
+        self._answer_matcher_model = "gpt-5.4-nano"  # Does not do anything from this place yet
 
         # Initialize pipeline
         self._macro_planner: MacroPlanner | None = None
