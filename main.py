@@ -7,19 +7,12 @@ from PySide6.QtWebChannel import QWebChannel
 from dotenv import load_dotenv
 
 from backend import Backend
+from exception_logging import install_global_exception_logging
 from ui.controllers import LessonSetupController
 from router import Router
 from logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
-
-def excepthook(exc_type, exc, tb) -> None:
-    """Global exception hook to log any unhandled exceptions."""
-    logger.critical("Unhandled exception", exc_info=(exc_type, exc, tb))
-
-
-# Register global exception handler
-sys.excepthook = excepthook
 
 
 class MainWindow(QMainWindow):
@@ -72,7 +65,8 @@ class MainWindow(QMainWindow):
 
 def main() -> int:
     """Application entry point."""
-    setup_logging(logging.DEBUG)
+    setup_logging(logging.DEBUG, log_to_file=True)
+    install_global_exception_logging(logger)
     
     logger.debug("dotenv initialization")
     load_dotenv()
@@ -93,3 +87,21 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+    # For debugging
+    # from pipeline import AnswerMatcher
+    # import os
+
+    # load_dotenv()
+
+    # matcher = AnswerMatcher(
+    #     api_key=os.getenv("OPENAI_API_KEY"),
+    #     model="gpt-5.4-nano",
+    #     lesson_language="en",
+    # )
+
+    # response = matcher.evaluate_text_answer(
+    #     "Я не могу придумать решение.",
+    #     "I can’t came with a problem",
+    # )
+    # print(response)

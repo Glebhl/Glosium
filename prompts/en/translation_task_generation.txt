@@ -1,0 +1,15 @@
+Create one translation exercise from one language to another.
+
+Requirements:
+- Write a cohesive paragraph consisting of preferably 1 sentence or 2-3 very short.
+- Use all of the listed targets.
+- Do not create sentence without any of the listed targets.
+- Provide all acceptable full-sentence answers. Do not duplicate answers that differ only by expanded contractions.
+- Provide word bank containing 3-5 extra distractor words.
+
+Output format:
+PARAGRAPH: <text to be translated>
+ANSWERS:
+- <translation of the PARAGRAPH in another language>
+- ...
+DISTRACTORS: <comma-separated words>

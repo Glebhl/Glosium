@@ -1,10 +1,17 @@
 import json
 import logging
+import os
 from typing import Any, Callable, Optional
 
 from PySide6.QtCore import QObject
 
-from answer_matcher import answer_matcher
+from exception_logging import make_logged_callback
+from pipeline import AnswerMatcher
+from pipeline.answer_matcher import (
+    CORRECT,
+    MINOR_MISTAKE,
+    MISTAKE
+)
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +21,7 @@ class LessonFlowController(QObject):
     and validates user answers using JS callbacks where needed.
     """
 
-    def __init__(self, router, view, backend, lesson_plan):
+    def __init__(self, router, view, backend, lesson_plan, lesson_language, translation_language):
         super().__init__()
 
         # Public fields
@@ -26,6 +33,8 @@ class LessonFlowController(QObject):
         # Save lesson plan
         self._lesson_plan = lesson_plan
         self._tasksTotal = len(self._lesson_plan)
+        self._lesson_language = lesson_language
+        self._translation_language = translation_language
 
         # UI event handlers
         self._handlers: dict[str, Callable[[dict], None]] = {
@@ -57,6 +66,21 @@ class LessonFlowController(QObject):
             "LessonController initialized: tasks_total=%d, url=%s",
             self._tasksTotal,
             self.url,
+        )
+
+        # Settings placeholder
+        self._api_key = os.getenv("OPENAI_API_KEY")
+        self._answer_matcher_model = "gpt-5.4-nano"
+
+        # Initialize pipeline
+        self._answer_matcher: AnswerMatcher | None = None
+        self._load_pipeline_modules()
+    
+    def _load_pipeline_modules(self):
+        self._answer_matcher = AnswerMatcher(
+            api_key=self._api_key,
+            model=self._answer_matcher_model,
+            lesson_language=self._lesson_language,
         )
 
     # --- External API (keep signatures for compatibility) ---
@@ -107,10 +131,9 @@ class LessonFlowController(QObject):
 
         self._set_step_ui(self._task_index, self._tasksTotal)
 
-        task = self._lesson_plan[self._task_index - 1]
-        self._task_id = task.get("task_id", "")
-        content = task.get("content")
-        self._answers = task.get("answers") or []
+        self._task = self._lesson_plan[self._task_index - 1]
+        self._task_id = self._task.get("task_id", "")
+        self._answers = self._task.get("answers") or []
 
         loader = self._task_loaders.get(self._task_id)
         if not loader:
@@ -119,7 +142,7 @@ class LessonFlowController(QObject):
             return
 
         logger.info("Opening task: index=%d/%d id=%s", self._task_index, self._tasksTotal, self._task_id)
-        loader(content)
+        loader(self._task)
 
     def _set_step_ui(self, current_step: int, total_steps: int) -> None:
         """Update step indicator in the UI."""
@@ -177,39 +200,33 @@ class LessonFlowController(QObject):
         Returns False because result is delivered via callback.
         """
 
-        def on_answer_received(answer: Optional[str]) -> None:
-            language_code = self._get_task_answer_language()
-            match_result = answer_matcher.evaluate_text_answer(
+        def on_answer_received(answer: str) -> None:
+            match_result = self._answer_matcher.evaluate_text_answer(
+                original_text=self._task.get("sentence"),
                 user_answer=answer,
-                expected_answers=self._answers,
-                language_code=language_code,
-            )
-            comparison_details = answer_matcher.explain_text_answer(
-                user_answer=answer,
-                expected_answers=self._answers,
-                language_code=language_code,
             )
 
             logger.debug(
-                "Translation answer received: raw_user_answer=%r expected=%s "
-                "language_code=%s comparison=%s is_correct=%s",
+                "Translation answer received: raw_user_answer=%r evaluation=%s correct_answer=%s",
                 answer,
-                self._answers,
-                language_code,
-                comparison_details,
-                match_result.is_correct,
-            )
-            logger.debug(
-                "Translation close match: is_close_match=%s closest_answer=%r",
-                match_result.is_close_match,
-                match_result.closest_answer,
+                match_result.evaluation,
+                match_result.correct_answer,
             )
 
-            self._translation_set_highlight(match_result.is_correct)
-            self._on_check_result(match_result.is_correct)
+            is_correct = match_result.evaluation in (CORRECT, MINOR_MISTAKE)
+            
+            self._translation_set_highlight(is_correct)
+            self._on_check_result(is_correct)
 
         script = "getTranslationAnswerString();"
-        self.view.page().runJavaScript(script, on_answer_received)
+        self.view.page().runJavaScript(
+            script,
+            make_logged_callback(
+                on_answer_received,
+                logger=logger,
+                message="Unhandled exception while validating the translation task answer",
+            ),
+        )
         return False
 
     def _translation_set_highlight(self, is_correct: bool) -> None:
@@ -226,38 +243,41 @@ class LessonFlowController(QObject):
 
     def _verify_filling_task(self) -> bool:
         """
-        Translation verification: request answer from JS and validate asynchronously.
+        Fill-in-the-blank verification: request answer from JS and validate asynchronously.
         Returns False because result is delivered via callback.
         """
 
         def on_answer_received(answer: Optional[str]) -> None:
             user_answer = json.loads(answer or "[]")
-            language_code = self._get_task_answer_language()
-            match_result = answer_matcher.evaluate_sequence_answer(
+
+            match_result = self._answer_matcher.evaluate_filling_answer(
+                sentence_parts=self._task.get("sentence") or [],
+                expected_answers=self._task.get("answers") or [],
                 user_answers=user_answer,
-                expected_answers=self._answers,
-                language_code=language_code,
             )
 
             logger.debug(
-                "Filling answer received: user_answer=%r expected=%s language_code=%s "
-                "is_correct=%s",
+                "Filling answer received: raw_user_answer=%r parsed_user_answer=%r evaluation=%s correct_answer=%s",
+                answer,
                 user_answer,
-                self._answers,
-                language_code,
-                match_result.is_correct,
-            )
-            logger.debug(
-                "Filling close match: is_close_match=%s closest_answer=%r",
-                match_result.is_close_match,
-                match_result.closest_answer,
+                match_result.evaluation,
+                match_result.correct_answer,
             )
 
-            self._filling_set_highlight(match_result.is_correct)
-            self._on_check_result(match_result.is_correct)
+            is_correct = match_result.evaluation in (CORRECT, MINOR_MISTAKE)
+
+            self._filling_set_highlight(is_correct)
+            self._on_check_result(is_correct)
 
         script = "getFillingAnswerString();"
-        self.view.page().runJavaScript(script, on_answer_received)
+        self.view.page().runJavaScript(
+            script,
+            make_logged_callback(
+                on_answer_received,
+                logger=logger,
+                message="Unhandled exception while validating the filling task answer",
+            ),
+        )
         return False
     
     def _filling_set_highlight(self, is_correct):
@@ -276,14 +296,3 @@ class LessonFlowController(QObject):
         """Render question task."""
         script = f'setTask("question", "next", {json.dumps(content)});'
         self.view.page().runJavaScript(script)
-
-    def _get_task_answer_language(self) -> Optional[str]:
-        """
-        Returns an optional answer language code for the current task.
-        Supports several field names to keep lesson JSON flexible as more
-        languages are introduced.
-        """
-        task = self._lesson_plan[self._task_index - 1]
-        content = task.get("content") or {}
-
-        return content.get("typing_language")

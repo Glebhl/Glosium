@@ -36,13 +36,15 @@ class VocabularyCardStreamParser:
     def __init__(self) -> None:
         self._line_buffer = ""
         self._pending_fields: dict[str, str] = {}
+        self._chunk_count = 0
 
     def feed(self, chunk: str) -> list[VocabularyCard]:
-        print(chunk, end="")
         completed_cards: list[VocabularyCard] = []
         if not chunk:
+            logger.debug("Received empty chunk from vocabulary card stream.")
             return completed_cards
 
+        self._chunk_count += 1
         self._line_buffer += chunk
         while True:
             newline_index = self._line_buffer.find("\n")
@@ -74,6 +76,7 @@ class VocabularyCardStreamParser:
 
         field_name = field_name.strip().upper()
         if field_name not in CARD_FIELDS_SET:
+            logger.debug("Ignoring unknown field in stream: %s", field_name)
             return []
 
         completed_cards: list[VocabularyCard] = []
@@ -109,6 +112,7 @@ class VocabularyCardStreamParser:
             example=self._pending_fields["EXAMPLE"],
         )
         self._pending_fields = {}
+        logger.debug("Parsed vocabulary card for lexeme '%s'.", card.lexeme)
         return [card]
 
 
@@ -122,27 +126,40 @@ class VocabularyCardGenerator:
     ) -> None:
         self._text_client = OpenAITextClient(
             api_key=api_key,
-            model="gpt-5.4-nano",
-            # model=model,
+            model=model,
             reasoning_effort=REASONING_EFFORT_NONE,
             text_verbosity=TEXT_VERBOSITY_LOW,
-            # service_tier=SERVICE_TIER_FLEX,
+            service_tier=SERVICE_TIER_FLEX,
         )
 
         prompt_path = Path("prompts") / lesson_language / "vocabulary_card_generation.txt"
+        logger.debug("Loading vocabulary card prompt from %s", prompt_path)
         self._system_prompt = prompt_path.read_text(encoding="utf-8").format(
             language=get_language_display_name(translation_language)
         )
+        logger.debug(
+            "Initialized VocabularyCardGenerator with model='%s', lesson_language='%s', translation_language='%s'.",
+            model,
+            lesson_language,
+            translation_language,
+        )
 
     def generate_cards(self, query: str) -> list[VocabularyCard]:
-        return list(self.stream_cards(query))
+        cards = list(self.stream_cards(query))
+        logger.debug("Generated %s vocabulary cards.", len(cards))
+        return cards
 
     def stream_cards(self, query: str) -> Iterator[VocabularyCard]:
         parser = VocabularyCardStreamParser()
+        emitted_count = 0
         for text_delta in self._text_client.stream_text(
             system_prompt=self._system_prompt,
             user_text=query,
         ):
-            yield from parser.feed(text_delta)
+            for card in parser.feed(text_delta):
+                emitted_count += 1
+                yield card
 
-        yield from parser.finalize()
+        for card in parser.finalize():
+            emitted_count += 1
+            yield card

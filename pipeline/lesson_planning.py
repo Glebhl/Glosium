@@ -1,6 +1,7 @@
 import logging
+import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 from llm_gateway import OpenAITextClient
 from llm_gateway.openai_wrapper import REASONING_EFFORT_MEDIUM, TEXT_VERBOSITY_MEDIUM, SERVICE_TIER_FLEX
@@ -9,6 +10,63 @@ from .card_models import VocabularyCard
 from language_converter import get_language_display_name
 
 logger = logging.getLogger(__name__)
+FIELD_RE = re.compile(r"^(STEP_ID|DESCRIPTION|EXERCISE_ID|MODE|TARGETS):[ \t]*(.*)$", re.MULTILINE)
+TARGET_ID_RE = re.compile(r"^[A-Za-z](\d+)$")
+
+
+# TEST_PLAN = """
+# STEP_ID: S1  
+# DESCRIPTION: Introduce the contrast between a verb for dealing with a problem and a verb for thinking carefully about a topic, focusing on meaning, usage, and register.        
+# EXERCISE_ID: explanation
+# MODE: none
+# TARGETS: U1, U2
+
+# STEP_ID: S5
+# DESCRIPTION: Run quick recognition matching for the first pair of handling and considering verbs.
+# EXERCISE_ID: matching
+# MODE: none
+# TARGETS: U1, U2, U8, U9
+
+
+# STEP_ID: S10
+# DESCRIPTION: Use guided translation with support to retrieve the related word forms for beginning a solution process.
+# EXERCISE_ID: translation
+# MODE: word-bank
+# TARGETS: U3, U4
+
+# STEP_ID: S20
+# DESCRIPTION: Check delayed recall with a short scenario that mixes handling, problem-solving, and idea-generation vocabulary.
+# EXERCISE_ID: question
+# MODE: none
+# TARGETS: U1, U3, U7
+# """
+TEST_PLAN = """
+STEP_ID: S8
+DESCRIPTION: Use guided sentence completion to choose the correct verb for handling a situation.
+EXERCISE_ID: filling
+MODE: typing
+TARGETS: U1, U2
+"""
+# STEP_ID: S10
+# DESCRIPTION: Use guided russian to english translation with support to retrieve the related word forms for beginning a solution process.
+# EXERCISE_ID: translation
+# MODE: word-bank
+# TARGETS: U3, U4
+
+# STEP_ID: S10
+# DESCRIPTION: Use guided russian to english translation with support to retrieve the related word forms for beginning a solution process.
+# EXERCISE_ID: translation
+# MODE: word-bank
+# TARGETS: U3, U4
+# """
+
+
+@dataclass(frozen=True)
+class MacroPlanStep:
+    description: str
+    exercise_id: str
+    mode: str
+    targets: list[VocabularyCard]
 
 
 class MacroPlanner:
@@ -18,13 +76,20 @@ class MacroPlanner:
         model: str,
         lesson_language: str,
         translation_language: str,
+        lerner_level: str,
     ):
-        self._lesson_language = lesson_language
         self._translation_language = translation_language
+        self._lerner_level = lerner_level
+        logger.debug(
+            "Initializing MacroPlanner with model=%s, lesson_language=%s, translation_language=%s, learner_level=%s",
+            model,
+            lesson_language,
+            translation_language,
+            lerner_level,
+        )
         self._text_client = OpenAITextClient(
             api_key=api_key,
-            model="gpt-5.4-mini",
-            # model=model,
+            model=model,
             reasoning_effort=REASONING_EFFORT_MEDIUM,
             text_verbosity=TEXT_VERBOSITY_MEDIUM,
             service_tier=SERVICE_TIER_FLEX,
@@ -32,31 +97,41 @@ class MacroPlanner:
 
         prompt_path = Path("prompts") / lesson_language / "lesson_macro_planning.txt"
         self._system_prompt = prompt_path.read_text(encoding="utf-8")
+        logger.debug("Loaded macro planning system prompt from %s", prompt_path)
 
     def generate_plan(
         self,
         *,
         cards: list[VocabularyCard],
         user_request: str | None = None,
-    ) -> list:
+    ) -> list[MacroPlanStep]:
+        logger.debug(
+            "Generating macro plan for %d cards%s",
+            len(cards),
+            " with" if user_request else " without" + " user request",
+        )
         payload = self._build_user_prompt(
             translation_language=get_language_display_name(self._translation_language),
+            lerner_level=self._lerner_level,
             user_request=user_request,
             learning_units=cards,
         )
-
-        print(payload)
 
         macro_plan = self._text_client.generate_text(
             system_prompt=self._system_prompt,
             user_text=payload,
         )
 
-        return macro_plan
+        # macro_plan = TEST_PLAN
+
+        plan = self._parse_macro_plan(macro_plan, cards)
+        return plan
 
     def _build_user_prompt(
         self,
+        *,
         translation_language: str,
+        lerner_level: str,
         learning_units: list[VocabularyCard],
         user_request: str | None = None
     ) -> str:
@@ -67,6 +142,9 @@ class MacroPlanner:
         lines: list[str] = []
 
         lines.append(f"LERNER_LANGUAGE: {translation_language}")
+        lines.append("")
+
+        lines.append(f"LERNER_LEVEL: {lerner_level}")
         lines.append("")
 
         if user_request:
@@ -84,4 +162,89 @@ class MacroPlanner:
 
             lines.append(base)
 
-        return "\n".join(lines)
+        prompt = "\n".join(lines)
+        return prompt
+
+    def _parse_macro_plan(self, raw_text: str, cards: list[VocabularyCard]) -> list[MacroPlanStep]:
+        normalized = raw_text.replace("\r\n", "\n").replace("\r", "\n").strip()
+        sections = self._collect_step_sections(normalized)
+        return [self._build_step(section, cards) for section in sections]
+
+    def _collect_step_sections(self, text: str) -> list[dict[str, str]]:
+        matches = list(FIELD_RE.finditer(text))
+        if not matches:
+            logger.error("No recognizable macro plan fields found in LLM response")
+            raise ValueError("No recognizable macro plan fields found in LLM response.")
+
+        steps: list[dict[str, str]] = []
+        current_step: dict[str, str] = {}
+
+        for index, match in enumerate(matches):
+            field_name = match.group(1).upper()
+            inline_value = match.group(2).strip()
+            value_start = match.end()
+            value_end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+            trailing_value = text[value_start:value_end].strip()
+
+            if inline_value and trailing_value:
+                value = f"{inline_value}\n{trailing_value}"
+            else:
+                value = inline_value or trailing_value
+
+            if field_name == "STEP_ID" and current_step:
+                steps.append(current_step)
+                current_step = {}
+
+            current_step[field_name] = value.strip()
+
+        if current_step:
+            steps.append(current_step)
+
+        logger.debug("Parsed %d raw macro plan steps", len(steps))
+        return steps
+
+    def _build_step(self, raw_step: dict[str, str], cards: list[VocabularyCard]) -> MacroPlanStep:
+        step = MacroPlanStep(
+            description=self._require_field(raw_step, "DESCRIPTION"),
+            exercise_id=self._require_field(raw_step, "EXERCISE_ID"),
+            mode=self._require_field(raw_step, "MODE"),
+            targets=self._parse_targets(self._require_field(raw_step, "TARGETS"), cards),
+        )
+        return step
+
+    def _require_field(self, step: dict[str, str], field_name: str) -> str:
+        value = step.get(field_name, "").strip()
+        if not value:
+            logger.error("Macro plan step is missing required field %s", field_name)
+            raise ValueError(f"Missing required macro plan field: {field_name}")
+        return value
+
+    def _parse_targets(self, raw_targets: str, cards: list[VocabularyCard]) -> list[VocabularyCard]:
+        parsed_targets: list[VocabularyCard] = []
+
+        for raw_target in raw_targets.split(","):
+            target = raw_target.strip()
+            if not target:
+                continue
+
+            match = TARGET_ID_RE.match(target)
+            if not match:
+                logger.error("Invalid macro plan target identifier: %r", target)
+                raise ValueError(f"Invalid target identifier in macro plan: {target!r}")
+
+            card_index = int(match.group(1)) - 1
+            if card_index < 0 or card_index >= len(cards):
+                logger.error(
+                    "Macro plan target %r is out of range for %d cards",
+                    target,
+                    len(cards),
+                )
+                raise ValueError(f"Macro plan target is out of range: {target!r}")
+
+            parsed_targets.append(cards[card_index])
+
+        if not parsed_targets:
+            logger.error("Macro plan step contains no valid targets")
+            raise ValueError("Macro plan step contains no targets.")
+
+        return parsed_targets

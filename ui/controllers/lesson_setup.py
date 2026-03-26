@@ -7,23 +7,27 @@ import random
 import time
 from typing import Any
 
-from PySide6.QtCore import QObject, QThread, Signal, Slot
+from PySide6.QtCore import QObject, QThread, Qt, Signal, Slot
 
+from exception_logging import get_logged_bound_method, make_logged_callback
 from ui.controllers import LessonFlowController
 from pipeline import VocabularyCard
-from pipeline import VocabularyCardGenerator, MacroPlanner
+from pipeline import (
+    TaskGenerator,
+    VocabularyCardGenerator,
+    MacroPlanner,
+)
+
 
 logger = logging.getLogger(__name__)
 
-LLM_MODEL = "gpt-5-mini"
-
 hints = [
     "specify your level and goal (<code>A2 travel</code>, <code>B1 conversation</code>).",
-    "choose a topic and format (<code>food vocabulary</code>).",
+    "choose a topic and format (<code>food vocabulary</code>, <code>short sentences</code>).",
     "include the situation (<code>at the airport</code>, <code>doctor appointment</code>).",
     "request difficulty and pace (<code>simple sentences</code>, <code>challenge me</code>).",
     "focus on a grammar point (<code>present perfect</code>, <code>conditionals</code>).",
-    "set the number of new words (<code>teach 10 words</code>, <code>only 5 new words</code>).",
+    "set the number of new words (<code>teach 10 B2 words</code>, <code>only 5 new B1 words</code>).",
     "pick a register (<code>formal</code>, <code>casual</code>, <code>business</code>).",
     "ask for phrasal verbs by theme (<code>phrasal verbs for work</code>, <code>for travel</code>).",
     "include your interests (<code>music</code>, <code>gaming</code>, <code>fitness</code>).",
@@ -93,175 +97,201 @@ class LessonSetupController(QObject):
             "card-closed": self._on_card_closed,
         }
         self._cards: list[VocabularyCard] = []
-        self._api_key = os.getenv("OPENAI_API_KEY") or ""
         self._worker_thread: QThread | None = None
         self._worker: VocabularyGenerationWorker | None = None
         self._generation_error_message: str | None = None
 
         # Settings placeholders
+        self._api_key = os.getenv("OPENAI_API_KEY")
         self._lesson_language = "en"
         self._translation_language = "ru"
+        self._lerner_level = "B2"
+        self._cards_generation_model = "gpt-5.4-nano"
+        self._plan_generation_model = "gpt-5.4-mini"
+        self._task_generation_model = "gpt-5.4-nano"
+        self._answer_matcher_model = "gpt-5-nano"  # Does not do anything from this place yet
+
+        # Initialize pipeline
+        self._macro_planner: MacroPlanner | None = None
+        self._task_generator: TaskGenerator | None = None
+        self._load_pipeline_modules()
+    
+    def _load_pipeline_modules(self):
+        self._macro_planner = MacroPlanner(
+            self._api_key,
+            self._plan_generation_model,
+            self._lesson_language,
+            self._translation_language,
+            self._lerner_level,
+        )
+        self._task_generator = TaskGenerator(
+            self._api_key,
+            self._task_generation_model,
+            self._lesson_language,
+            self._translation_language,
+            self._lerner_level,
+        )
 
     def on_load_finished(self):
         self._cards = []
         self._set_hint(f"Tip: {random.choice(hints)}")
         self._set_generating(False)
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "approach",
-                "word",
-                "verb",
-                "B1",
-                "подходить; подход",
-                "/əˈproʊtʃ/",
-                "to deal with something or think about it in a particular way",
-                "She approached the problem from a different angle.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "approach",
+        #         "word",
+        #         "verb",
+        #         "B1",
+        #         "подходить; подход",
+        #         "/əˈproʊtʃ/",
+        #         "to deal with something or think about it in a particular way",
+        #         "She approached the problem from a different angle.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "deal with",
-                "phrasal_verb",
-                "verb",
-                "B1",
-                "иметь дело с",
-                "/diːl wɪð/",
-                "to handle or manage a situation or problem",
-                "He knows how to deal with difficult clients.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "deal with",
+        #         "phrasal_verb",
+        #         "verb",
+        #         "B1",
+        #         "иметь дело с",
+        #         "/diːl wɪð/",
+        #         "to handle or manage a situation or problem",
+        #         "He knows how to deal with difficult clients.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "come up with",
-                "phrasal_verb",
-                "verb",
-                "B1",
-                "придумать",
-                "/kʌm ʌp wɪð/",
-                "to think of or produce an idea or solution",
-                "She came up with a brilliant idea.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "come up with",
+        #         "phrasal_verb",
+        #         "verb",
+        #         "B1",
+        #         "придумать",
+        #         "/kʌm ʌp wɪð/",
+        #         "to think of or produce an idea or solution",
+        #         "She came up with a brilliant idea.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "solution",
-                "word",
-                "noun",
-                "B1",
-                "решение",
-                "/səˈluːʃən/",
-                "an answer to a problem",
-                "We finally found a solution to the issue.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "solution",
+        #         "word",
+        #         "noun",
+        #         "B1",
+        #         "решение",
+        #         "/səˈluːʃən/",
+        #         "an answer to a problem",
+        #         "We finally found a solution to the issue.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "solve a problem",
-                "collocation",
-                "verb",
-                "B1",
-                "решить проблему",
-                "/sɒlv ə ˈprɒbləm/",
-                "to find an answer to a difficulty",
-                "We need to solve this problem quickly.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "solve a problem",
+        #         "collocation",
+        #         "verb",
+        #         "B1",
+        #         "решить проблему",
+        #         "/sɒlv ə ˈprɒbləm/",
+        #         "to find an answer to a difficulty",
+        #         "We need to solve this problem quickly.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "figure out",
-                "phrasal_verb",
-                "verb",
-                "B1",
-                "разобраться",
-                "/ˈfɪɡjər aʊt/",
-                "to understand or find the answer to something",
-                "I’m trying to figure out how this works.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "figure out",
+        #         "phrasal_verb",
+        #         "verb",
+        #         "B1",
+        #         "разобраться",
+        #         "/ˈfɪɡjər aʊt/",
+        #         "to understand or find the answer to something",
+        #         "I’m trying to figure out how this works.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "issue",
-                "word",
-                "noun",
-                "B1",
-                "проблема, вопрос",
-                "/ˈɪʃuː/",
-                "an important topic or problem for discussion",
-                "This issue needs immediate attention.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "issue",
+        #         "word",
+        #         "noun",
+        #         "B1",
+        #         "проблема, вопрос",
+        #         "/ˈɪʃuː/",
+        #         "an important topic or problem for discussion",
+        #         "This issue needs immediate attention.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "take into account",
-                "phrasal_verb",
-                "verb",
-                "B2",
-                "учитывать",
-                "/teɪk ˈɪntu əˈkaʊnt/",
-                "to consider something when making a decision",
-                "You should take all factors into account.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "take into account",
+        #         "phrasal_verb",
+        #         "verb",
+        #         "B2",
+        #         "учитывать",
+        #         "/teɪk ˈɪntu əˈkaʊnt/",
+        #         "to consider something when making a decision",
+        #         "You should take all factors into account.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "consider",
-                "word",
-                "verb",
-                "B1",
-                "рассматривать, обдумывать",
-                "/kənˈsɪdər/",
-                "to think carefully about something",
-                "We need to consider all possible options.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "consider",
+        #         "word",
+        #         "verb",
+        #         "B1",
+        #         "рассматривать, обдумывать",
+        #         "/kənˈsɪdər/",
+        #         "to think carefully about something",
+        #         "We need to consider all possible options.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "option",
-                "word",
-                "noun",
-                "B1",
-                "вариант",
-                "/ˈɒpʃən/",
-                "a choice or alternative",
-                "We have several options to choose from.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "option",
+        #         "word",
+        #         "noun",
+        #         "B1",
+        #         "вариант",
+        #         "/ˈɒpʃən/",
+        #         "a choice or alternative",
+        #         "We have several options to choose from.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "make a decision",
-                "collocation",
-                "verb",
-                "B1",
-                "принять решение",
-                "/meɪk ə dɪˈsɪʒən/",
-                "to decide something",
-                "It’s time to make a final decision.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "make a decision",
+        #         "collocation",
+        #         "verb",
+        #         "B1",
+        #         "принять решение",
+        #         "/meɪk ə dɪˈsɪʒən/",
+        #         "to decide something",
+        #         "It’s time to make a final decision.",
+        #     )
+        # )
 
-        self._append_card_to_ui(
-            VocabularyCard(
-                "decision",
-                "word",
-                "noun",
-                "B1",
-                "решение",
-                "/dɪˈsɪʒən/",
-                "a choice made after thinking",
-                "That was a difficult decision.",
-            )
-        )
+        # self._append_card_to_ui(
+        #     VocabularyCard(
+        #         "decision",
+        #         "word",
+        #         "noun",
+        #         "B1",
+        #         "решение",
+        #         "/dɪˈsɪʒən/",
+        #         "a choice made after thinking",
+        #         "That was a difficult decision.",
+        #     )
+        # )
 
 
     def on_ui_event(self, name: str, payload: dict):
@@ -311,7 +341,7 @@ class LessonSetupController(QObject):
         self._worker_thread = QThread(self)
         self._worker = VocabularyGenerationWorker(
             api_key=self._api_key,
-            model=LLM_MODEL,
+            model=self._cards_generation_model,
             query=clean_query,
             lesson_language=self._lesson_language,
             translation_language=self._translation_language,
@@ -319,34 +349,49 @@ class LessonSetupController(QObject):
         self._worker.moveToThread(self._worker_thread)
 
         self._worker_thread.started.connect(self._worker.run)
-        self._worker.card_generated.connect(self._handle_card_generated)
-        self._worker.generation_failed.connect(self._handle_generation_error)
-        self._worker.finished.connect(self._finish_generation)
+        # Keep these connections bound to QObject slots on the controller so Qt
+        # delivers them to the GUI thread instead of invoking a plain Python
+        # wrapper in the worker thread.
+        self._worker.card_generated.connect(self._handle_card_generated, Qt.ConnectionType.QueuedConnection)
+        self._worker.generation_failed.connect(self._handle_generation_error, Qt.ConnectionType.QueuedConnection)
+        self._worker.finished.connect(self._finish_generation, Qt.ConnectionType.QueuedConnection)
         self._worker.finished.connect(self._worker_thread.quit)
         self._worker.finished.connect(self._worker.deleteLater)
         self._worker_thread.finished.connect(self._worker_thread.deleteLater)
-        self._worker_thread.finished.connect(self._cleanup_worker_refs)
+        self._worker_thread.finished.connect(self._cleanup_worker_refs, Qt.ConnectionType.QueuedConnection)
         self._worker_thread.start()
 
     @Slot(object)
     def _handle_card_generated(self, card: VocabularyCard) -> None:
-        self._append_card_to_ui(card)
+        try:
+            self._append_card_to_ui(card)
+        except Exception:  # noqa: BLE001
+            logger.exception("Unhandled exception while appending a generated vocabulary card")
 
     @Slot(str)
     def _handle_generation_error(self, message: str) -> None:
-        self._generation_error_message = message
-        logger.error("Vocabulary generation failed: %s", message)
+        try:
+            self._generation_error_message = message
+            logger.error("Vocabulary generation failed: %s", message)
+        except Exception:  # noqa: BLE001
+            logger.exception("Unhandled exception while handling a vocabulary generation error")
 
     @Slot()
     def _finish_generation(self) -> None:
-        self._set_generating(False)
-        if self._generation_error_message:
-            self._set_hint("Generation failed. Check the logs and try again.")
+        try:
+            self._set_generating(False)
+            if self._generation_error_message:
+                self._set_hint("Generation failed. Check the logs and try again.")
+        except Exception:  # noqa: BLE001
+            logger.exception("Unhandled exception while finalizing vocabulary generation")
 
     @Slot()
     def _cleanup_worker_refs(self) -> None:
-        self._worker = None
-        self._worker_thread = None
+        try:
+            self._worker = None
+            self._worker_thread = None
+        except Exception:  # noqa: BLE001
+            logger.exception("Unhandled exception while cleaning up vocabulary generation worker references")
 
     def _on_btn_click(self, payload: dict):
         logger.debug("Clicked the button with the id='%s'", payload.get("id"))
@@ -355,25 +400,32 @@ class LessonSetupController(QObject):
             case "generate":
                 self.view.page().runJavaScript(
                     "getPromtText();",
-                    self._start_card_generation,
+                    make_logged_callback(
+                        self._start_card_generation,
+                        logger=logger,
+                        message="Unhandled exception while starting vocabulary generation from JS callback",
+                    ),
                 )
             case "start_lesson":
-                # for i, card in enumerate(self._cards):
-                #     print(f"{i}. {card}")
+                for i, card in enumerate(self._cards):
+                    print(f"{i}. {card}")
 
-                    
-                macro_planner = MacroPlanner(self._api_key, LLM_MODEL, self._lesson_language, self._translation_language)
+                macro_plan = self._macro_planner.generate_plan(cards=self._cards)
+                lesson_plan = self._task_generator.generate_tasks(macro_plan)
+                # print(lesson_plan)
 
-                macro_plan = macro_planner.generate_plan(self._cards)
-                print(macro_plan)
-                # # Placeholder for lesson generation
-                # with open("lesson_plans/lesson.json", encoding="utf-8") as file:
+                for i, task in enumerate(lesson_plan):
+                    print(f"{i}. {task}")
+                
+                # Placeholder for lesson generation
+                # with open("lesson.json", encoding="utf-8") as file:
                 #     lesson_plan: list[dict[str, Any]] = json.load(file)
-
-                # self.router.navigate_to(
-                #     LessonFlowController,
-                #     lesson_plan
-                # )
+                self.router.navigate_to(
+                    LessonFlowController,
+                    lesson_plan,
+                    self._lesson_language,
+                    self._translation_language,
+                )
 
     def _on_card_closed(self, payload: dict):
         card_id = str(payload.get("id", ""))

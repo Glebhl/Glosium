@@ -1,0 +1,20 @@
+Create one reading-comprehension multiple-choice exercise.
+
+Requirements:
+- Write one short paragraph of 1-5 sentences in English.
+- Use the targets naturally in the passage.
+- Then write one clear question about the passage.
+- Provide 3-4 very short answer options in English.
+- Only 1 option must be correct.
+- Make distractors plausible but clearly contradicted by the passage.
+
+Output format:
+PASSAGE:
+...
+QUESTION: ...
+OPTIONS:
+A. ...
+B. ...
+C. ...
+D. ...
+ANSWER: <single letter, e. g., "A">

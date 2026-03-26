@@ -5,6 +5,7 @@ from PySide6.QtWidgets import QGraphicsOpacityEffect, QLabel
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
 from backend import Backend
+from exception_logging import get_logged_bound_method, make_logged_callback
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,14 @@ class Router:
         self._fade_animation.setDuration(self._fade_duration_ms)
         self._fade_animation.setEasingCurve(QEasingCurve.InOutQuad)
 
-        self.view.loadFinished.connect(self._on_view_load_finished)
+        self.view.loadFinished.connect(
+            get_logged_bound_method(
+                self,
+                "_on_view_load_finished",
+                logger=logger,
+                message="Unhandled exception while processing QWebEngineView.loadFinished",
+            )
+        )
 
     def navigate_to(self, controller_cls, *args, **kwargs):
         """
@@ -92,16 +100,38 @@ class Router:
     def _activate_controller(self, controller):
         """Connect signals for the active controller."""
         # Connect UI event stream to the controller
-        self.backend.uiEvent.connect(controller.on_ui_event)
+        self.backend.uiEvent.connect(
+            get_logged_bound_method(
+                controller,
+                "on_ui_event",
+                logger=logger,
+                message=f'Unhandled exception in controller UI event handler for "{controller.__class__.__name__}"',
+            )
+        )
         # Connect page load signal to controller hook
-        self.view.loadFinished.connect(controller.on_load_finished)
+        self.view.loadFinished.connect(
+            get_logged_bound_method(
+                controller,
+                "on_load_finished",
+                logger=logger,
+                message=f'Unhandled exception in controller load-finished handler for "{controller.__class__.__name__}"',
+            )
+        )
         logger.debug('Activated controller signals: url="%s"', controller.url)
 
     def _deactivate_controller(self, controller):
         """Disconnect signals for the previously active controller."""
         # Note: disconnecting can raise if already disconnected; keep behavior stable and safe.
-        self._safe_disconnect(self.backend.uiEvent, controller.on_ui_event, "backend.uiEvent")
-        self._safe_disconnect(self.view.loadFinished, controller.on_load_finished, "view.loadFinished")
+        self._safe_disconnect(
+            self.backend.uiEvent,
+            get_logged_bound_method(controller, "on_ui_event", logger=logger),
+            "backend.uiEvent",
+        )
+        self._safe_disconnect(
+            self.view.loadFinished,
+            get_logged_bound_method(controller, "on_load_finished", logger=logger),
+            "view.loadFinished",
+        )
         logger.debug('Deactivated controller signals: url="%s"', controller.url)
 
     def _load_controller_url(self, controller):
@@ -153,7 +183,15 @@ class Router:
             controller.url if controller is not None else None,
             is_ok,
         )
-        QTimer.singleShot(0, lambda: self._run_fade(1.0, 0.0, self._finish_transition))
+        QTimer.singleShot(
+            0,
+            get_logged_bound_method(
+                self,
+                "_deferred_finish_transition",
+                logger=logger,
+                message="Unhandled exception during deferred router transition",
+            ),
+        )
 
     def _finish_transition(self):
         """Mark the current transition as complete."""
@@ -167,6 +205,10 @@ class Router:
             controller.url if controller is not None else None,
         )
 
+    def _deferred_finish_transition(self) -> None:
+        """Run the fade-out after the view load signal has been processed."""
+        self._run_fade(1.0, 0.0, self._finish_transition)
+
     def _run_fade(self, start_value: float, end_value: float, on_finished):
         """Configure and start opacity animation for the view."""
         try:
@@ -177,7 +219,13 @@ class Router:
         self._overlay_opacity_effect.setOpacity(start_value)
         self._fade_animation.setStartValue(start_value)
         self._fade_animation.setEndValue(end_value)
-        self._fade_animation.finished.connect(on_finished)
+        self._fade_animation.finished.connect(
+            make_logged_callback(
+                on_finished,
+                logger=logger,
+                message="Unhandled exception in router fade animation callback",
+            )
+        )
         self._fade_animation.start()
 
     def _prepare_transition_overlay(self):

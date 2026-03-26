@@ -1,0 +1,42 @@
+[
+  {
+    "task_id": "question",
+    "question": "What is the sky color according to the text?",
+    "paragraph": "The sky is blue.",
+    "options": ["blue", "green", "red"],
+    "answer": 0,
+    "audio": false
+  },
+  {
+    "task_id": "filling",
+    "sentence": ["I bought", "new car yesterday.", "car is very fast."],
+    "keyboard": ["a", "The"],
+    "mode": "word-bank",
+    "typing_language": "en",
+    "answers": ["a", "The"],
+    "audio": false
+  },
+  {
+    "task_id": "translation",
+    "sentence": "This is a very nice book.",
+    "keyboard": ["Это", "очень", "книга", "хорошая", "лишние", "три", "слова"],
+    "mode": "word-bank",
+    "typing_language": "ru",
+    "answers": [
+      "это очень хорошая книга",
+      "лишние три слова"
+    ],
+    "audio": false
+  },
+  {
+    "task_id": "matching",
+    "pairs": [
+    ["refine", "доработать"],
+    ["fill", "заполнить"],
+    ["computer", "компьютер"],
+    ["flashlight", "фонарик"]
+    ],
+    "answers": [],
+    "audio": false
+  }
+]

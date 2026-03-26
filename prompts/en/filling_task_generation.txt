@@ -1,0 +1,20 @@
+Create one fill-in-the-blank exercise.
+
+Requirements:
+- Write a cohesive paragraph consisting of 1-2 sentences or 3 very short.
+- Each blank should involve only one TARGET.
+- Spread all of the listed targets evenly across the whole exercise.
+- Do not create sentence without any of the listed targets.
+- Provide one word bank containing 2-4 extra distractor words.
+
+Output format:
+PARAGRAPH: <text with blanks enclosed in square brackets.>
+DISTRACTORS:
+- ...
+- ...
+
+Example output:
+PARAGRAPH: The [sky] is blue. The [grass] is green.
+DISTRACTORS:
+- ski
+- gross

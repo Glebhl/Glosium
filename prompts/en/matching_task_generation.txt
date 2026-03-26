@@ -1,0 +1,14 @@
+Create one matching exercise.
+
+Requirements:
+- Create pairs with all the TARGETS.
+- Default for vocabulary: lexeme in English / translation in LERNER_LANGUAGE.
+- Default for grammar: short example in English / meaning, function, or rule label.
+- Keep both sides short.
+- Do not shuffle the columns.
+
+Output format:
+COLUMNS:
+... / ...
+... / ...
+... / ...
