@@ -1,0 +1,5 @@
+STEP_ID: S8
+DESCRIPTION: Use guided sentence completion to choose the correct verb for handling a situation.
+EXERCISE_ID: filling
+MODE: typing
+TARGETS: U1, U2

@@ -1,0 +1,22 @@
+[
+  {
+    "lexeme": "approach",
+    "lexical_unit": "word",
+    "part_of_speech": "verb",
+    "level": "B1",
+    "translation": "подходить; подход",
+    "transcription": "/əˈprəʊtʃ/",
+    "meaning": "to deal with something or think about it in a particular way",
+    "example": "She approached the problem from a different angle."
+  },
+  {
+    "lexeme": "deal with",
+    "lexical_unit": "phrasal_verb",
+    "part_of_speech": "verb",
+    "level": "B1",
+    "translation": "иметь дело с",
+    "transcription": "/diːl wɪð/",
+    "meaning": "to handle or manage a situation or problem",
+    "example": "He knows how to deal with difficult clients."
+  }
+]

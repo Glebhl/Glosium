@@ -7,58 +7,12 @@ from llm_gateway import OpenAITextClient
 from llm_gateway.openai_wrapper import REASONING_EFFORT_MEDIUM, TEXT_VERBOSITY_MEDIUM, SERVICE_TIER_FLEX
 
 from .card_models import VocabularyCard
+from .dev_fixtures import DevFixtureSettings
 from language_converter import get_language_display_name
 
 logger = logging.getLogger(__name__)
 FIELD_RE = re.compile(r"^(STEP_ID|DESCRIPTION|EXERCISE_ID|MODE|TARGETS):[ \t]*(.*)$", re.MULTILINE)
 TARGET_ID_RE = re.compile(r"^[A-Za-z](\d+)$")
-
-
-# TEST_PLAN = """
-# STEP_ID: S1  
-# DESCRIPTION: Introduce the contrast between a verb for dealing with a problem and a verb for thinking carefully about a topic, focusing on meaning, usage, and register.        
-# EXERCISE_ID: explanation
-# MODE: none
-# TARGETS: U1, U2
-
-# STEP_ID: S5
-# DESCRIPTION: Run quick recognition matching for the first pair of handling and considering verbs.
-# EXERCISE_ID: matching
-# MODE: none
-# TARGETS: U1, U2, U8, U9
-
-
-# STEP_ID: S10
-# DESCRIPTION: Use guided translation with support to retrieve the related word forms for beginning a solution process.
-# EXERCISE_ID: translation
-# MODE: word-bank
-# TARGETS: U3, U4
-
-# STEP_ID: S20
-# DESCRIPTION: Check delayed recall with a short scenario that mixes handling, problem-solving, and idea-generation vocabulary.
-# EXERCISE_ID: question
-# MODE: none
-# TARGETS: U1, U3, U7
-# """
-TEST_PLAN = """
-STEP_ID: S8
-DESCRIPTION: Use guided sentence completion to choose the correct verb for handling a situation.
-EXERCISE_ID: filling
-MODE: typing
-TARGETS: U1, U2
-"""
-# STEP_ID: S10
-# DESCRIPTION: Use guided russian to english translation with support to retrieve the related word forms for beginning a solution process.
-# EXERCISE_ID: translation
-# MODE: word-bank
-# TARGETS: U3, U4
-
-# STEP_ID: S10
-# DESCRIPTION: Use guided russian to english translation with support to retrieve the related word forms for beginning a solution process.
-# EXERCISE_ID: translation
-# MODE: word-bank
-# TARGETS: U3, U4
-# """
 
 
 @dataclass(frozen=True)
@@ -87,6 +41,7 @@ class MacroPlanner:
             translation_language,
             lerner_level,
         )
+        self._dev_fixtures = DevFixtureSettings.from_env()
         self._text_client = OpenAITextClient(
             api_key=api_key,
             model=model,
@@ -117,12 +72,14 @@ class MacroPlanner:
             learning_units=cards,
         )
 
-        macro_plan = self._text_client.generate_text(
-            system_prompt=self._system_prompt,
-            user_text=payload,
-        )
-
-        # macro_plan = TEST_PLAN
+        if self._dev_fixtures.use_macro_plan_fixture:
+            macro_plan = self._dev_fixtures.load_macro_plan_text()
+            logger.info("Using macro plan fixture from %s", self._dev_fixtures.macro_plan_path)
+        else:
+            macro_plan = self._text_client.generate_text(
+                system_prompt=self._system_prompt,
+                user_text=payload,
+            )
 
         plan = self._parse_macro_plan(macro_plan, cards)
         return plan

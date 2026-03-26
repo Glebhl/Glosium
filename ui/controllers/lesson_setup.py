@@ -9,7 +9,7 @@ from typing import Any
 
 from PySide6.QtCore import QObject, QThread, Qt, Signal, Slot
 
-from exception_logging import get_logged_bound_method, make_logged_callback
+from exception_logging import make_logged_callback
 from ui.controllers import LessonFlowController
 from pipeline import VocabularyCard
 from pipeline import (
@@ -17,6 +17,7 @@ from pipeline import (
     VocabularyCardGenerator,
     MacroPlanner,
 )
+from pipeline.dev_fixtures import DevFixtureSettings
 
 
 logger = logging.getLogger(__name__)
@@ -100,6 +101,7 @@ class LessonSetupController(QObject):
         self._worker_thread: QThread | None = None
         self._worker: VocabularyGenerationWorker | None = None
         self._generation_error_message: str | None = None
+        self._dev_fixtures = DevFixtureSettings.from_env()
 
         # Settings placeholders
         self._api_key = os.getenv("OPENAI_API_KEY")
@@ -115,7 +117,7 @@ class LessonSetupController(QObject):
         self._macro_planner: MacroPlanner | None = None
         self._task_generator: TaskGenerator | None = None
         self._load_pipeline_modules()
-    
+        
     def _load_pipeline_modules(self):
         self._macro_planner = MacroPlanner(
             self._api_key,
@@ -136,163 +138,8 @@ class LessonSetupController(QObject):
         self._cards = []
         self._set_hint(f"Tip: {random.choice(hints)}")
         self._set_generating(False)
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "approach",
-        #         "word",
-        #         "verb",
-        #         "B1",
-        #         "подходить; подход",
-        #         "/əˈproʊtʃ/",
-        #         "to deal with something or think about it in a particular way",
-        #         "She approached the problem from a different angle.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "deal with",
-        #         "phrasal_verb",
-        #         "verb",
-        #         "B1",
-        #         "иметь дело с",
-        #         "/diːl wɪð/",
-        #         "to handle or manage a situation or problem",
-        #         "He knows how to deal with difficult clients.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "come up with",
-        #         "phrasal_verb",
-        #         "verb",
-        #         "B1",
-        #         "придумать",
-        #         "/kʌm ʌp wɪð/",
-        #         "to think of or produce an idea or solution",
-        #         "She came up with a brilliant idea.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "solution",
-        #         "word",
-        #         "noun",
-        #         "B1",
-        #         "решение",
-        #         "/səˈluːʃən/",
-        #         "an answer to a problem",
-        #         "We finally found a solution to the issue.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "solve a problem",
-        #         "collocation",
-        #         "verb",
-        #         "B1",
-        #         "решить проблему",
-        #         "/sɒlv ə ˈprɒbləm/",
-        #         "to find an answer to a difficulty",
-        #         "We need to solve this problem quickly.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "figure out",
-        #         "phrasal_verb",
-        #         "verb",
-        #         "B1",
-        #         "разобраться",
-        #         "/ˈfɪɡjər aʊt/",
-        #         "to understand or find the answer to something",
-        #         "I’m trying to figure out how this works.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "issue",
-        #         "word",
-        #         "noun",
-        #         "B1",
-        #         "проблема, вопрос",
-        #         "/ˈɪʃuː/",
-        #         "an important topic or problem for discussion",
-        #         "This issue needs immediate attention.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "take into account",
-        #         "phrasal_verb",
-        #         "verb",
-        #         "B2",
-        #         "учитывать",
-        #         "/teɪk ˈɪntu əˈkaʊnt/",
-        #         "to consider something when making a decision",
-        #         "You should take all factors into account.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "consider",
-        #         "word",
-        #         "verb",
-        #         "B1",
-        #         "рассматривать, обдумывать",
-        #         "/kənˈsɪdər/",
-        #         "to think carefully about something",
-        #         "We need to consider all possible options.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "option",
-        #         "word",
-        #         "noun",
-        #         "B1",
-        #         "вариант",
-        #         "/ˈɒpʃən/",
-        #         "a choice or alternative",
-        #         "We have several options to choose from.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "make a decision",
-        #         "collocation",
-        #         "verb",
-        #         "B1",
-        #         "принять решение",
-        #         "/meɪk ə dɪˈsɪʒən/",
-        #         "to decide something",
-        #         "It’s time to make a final decision.",
-        #     )
-        # )
-
-        # self._append_card_to_ui(
-        #     VocabularyCard(
-        #         "decision",
-        #         "word",
-        #         "noun",
-        #         "B1",
-        #         "решение",
-        #         "/dɪˈsɪʒən/",
-        #         "a choice made after thinking",
-        #         "That was a difficult decision.",
-        #     )
-        # )
-
+        
+        self._load_dev_cards_if_needed()
 
     def on_ui_event(self, name: str, payload: dict):
         handler = self._handlers.get(name)
@@ -326,6 +173,16 @@ class LessonSetupController(QObject):
 
     def _set_generating(self, is_generating: bool) -> None:
         self._run_js("setGenerating", is_generating)
+
+    def _load_dev_cards_if_needed(self) -> None:
+        if not self._dev_fixtures.preload_cards:
+            return
+
+        try:
+            for card in self._dev_fixtures.load_cards():
+                self._append_card_to_ui(card)
+        except Exception:  # noqa: BLE001
+            logger.exception("Failed to load dev cards fixture")
 
     def _start_card_generation(self, query: str) -> None:
         clean_query = (query or "").strip()
@@ -410,16 +267,16 @@ class LessonSetupController(QObject):
                 for i, card in enumerate(self._cards):
                     print(f"{i}. {card}")
 
-                macro_plan = self._macro_planner.generate_plan(cards=self._cards)
-                lesson_plan = self._task_generator.generate_tasks(macro_plan)
-                # print(lesson_plan)
+                if self._dev_fixtures.use_lesson_fixture:
+                    lesson_plan = self._dev_fixtures.load_lesson_plan()
+                    logger.info("Using lesson fixture from %s", self._dev_fixtures.lesson_path)
+                else:
+                    macro_plan = self._macro_planner.generate_plan(cards=self._cards)
+                    lesson_plan = self._task_generator.generate_tasks(macro_plan)
 
                 for i, task in enumerate(lesson_plan):
                     print(f"{i}. {task}")
-                
-                # Placeholder for lesson generation
-                # with open("lesson.json", encoding="utf-8") as file:
-                #     lesson_plan: list[dict[str, Any]] = json.load(file)
+
                 self.router.navigate_to(
                     LessonFlowController,
                     lesson_plan,
