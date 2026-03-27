@@ -4,8 +4,6 @@ import logging
 import time
 from typing import Any, Iterable, Iterator
 
-from openai import OpenAI
-
 from .openai_cache import PromptCacheConfig
 
 
@@ -158,18 +156,26 @@ class OpenAITextClient:
         text_verbosity: str | None = None,
         service_tier: str | None = None,
     ) -> None:
-        client_kwargs: dict[str, Any] = {}
-        client_kwargs["api_key"] = api_key
+        client_kwargs: dict[str, Any] = {"api_key": api_key}
         if base_url:
             client_kwargs["base_url"] = base_url
 
-        self._client = OpenAI(**client_kwargs)
+        self._client_kwargs = client_kwargs
+        self._client: Any | None = None
         self.model = model
         self.stream = stream
         self.cache_config = cache_config or PromptCacheConfig()
         self.reasoning_effort = reasoning_effort
         self.text_verbosity = text_verbosity
         self.service_tier = service_tier
+
+    @property
+    def _responses_api(self) -> Any:
+        if self._client is None:
+            from openai import OpenAI
+
+            self._client = OpenAI(**self._client_kwargs)
+        return self._client.responses
 
     def generate_text(
         self,
@@ -180,7 +186,7 @@ class OpenAITextClient:
         temperature: float | None = None,
         max_output_tokens: int | None = None,
     ) -> str | Iterator[str]:
-        logger.debug("LLM input\nsystem:\n%s\nuser:%s\n", system_prompt, user_text)
+        # logger.debug("LLM input\nsystem:\n%s\nuser:%s\n", system_prompt, user_text)
         request = self.build_request(
             instructions=system_prompt,
             input_items=[build_input_message("user", user_text)],
@@ -192,9 +198,9 @@ class OpenAITextClient:
         if self._resolve_stream(stream):
             return self._stream_text(request)
 
-        response = self._client.responses.create(**request)
+        response = self._responses_api.create(**request)
         response_text = ensure_response_text(response)
-        logger.debug("LLM extracted text:\n%s", response_text)
+        # logger.debug("LLM extracted text:\n%s", response_text)
         log_response_usage(
             response,
             model=self.model,
@@ -291,7 +297,7 @@ class OpenAITextClient:
             previous_response_id=previous_response_id,
         )
         request["stream"] = True
-        return self._client.responses.create(**request)
+        return self._responses_api.create(**request)
 
     def create_response(
         self,
@@ -311,7 +317,7 @@ class OpenAITextClient:
             max_output_tokens=max_output_tokens,
             previous_response_id=previous_response_id,
         )
-        response = self._client.responses.create(**request)
+        response = self._responses_api.create(**request)
         log_response_usage(
             response,
             model=self.model,
@@ -321,7 +327,7 @@ class OpenAITextClient:
         return response
 
     def _stream_text(self, request: dict[str, Any]) -> Iterator[str]:
-        raw_stream = self._client.responses.create(**request, stream=True)
+        raw_stream = self._responses_api.create(**request, stream=True)
 
         def iterator() -> Iterator[str]:
             started_at = time.perf_counter()
