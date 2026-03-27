@@ -3,6 +3,16 @@ from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
 LOG_FILE_PATH = Path("app.log")
+NOISY_LOGGER_LEVELS = {
+    "httpcore.http11": logging.WARNING,
+    "httpcore.connection": logging.WARNING,
+    "openai._base_client": logging.WARNING,
+}
+
+
+def _configure_library_loggers() -> None:
+    for logger_name, level in NOISY_LOGGER_LEVELS.items():
+        logging.getLogger(logger_name).setLevel(level)
 
 
 def setup_logging(level: int = logging.INFO, log_to_file: bool = False) -> None:
@@ -37,3 +47,5 @@ def setup_logging(level: int = logging.INFO, log_to_file: bool = False) -> None:
         file_handler.setLevel(level)
         file_handler.setFormatter(formatter)
         root.addHandler(file_handler)
+
+    _configure_library_loggers()

@@ -12,7 +12,7 @@ from app import make_logged_callback
 from dev_fixtures import DevFixtureSettings
 from ui.controllers import LessonFlowController
 from ui.services import CardGenerationWorker, LessonGenerationWorker
-from pipeline import VocabularyCard
+from models import VocabularyCard
 
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ class LessonSetupController(QObject):
         self._lerner_level = "A1"
         self._user_request = None
         self._cards_generation_model = "gpt-5.4-nano"
-        self._plan_generation_model = "gpt-5.4-mini"
+        self._plan_generation_model = "o3"
         self._task_generation_model = "gpt-5.4-mini"
         self._answer_matcher_model = "gpt-5.4-nano"  # Does not do anything from this place yet
 

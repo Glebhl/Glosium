@@ -1,4 +1,4 @@
-Create one reading-comprehension multiple-choice exercise.
+Create one reading-comprehension multiple-choice exercise entirely in English.
 
 Requirements:
 - Write one short paragraph of 1-5 sentences in English.

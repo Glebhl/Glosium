@@ -6,8 +6,8 @@ import time
 from PySide6.QtCore import QObject, Signal, Slot
 
 from dev_fixtures import DevFixtureSettings
-from pipeline import MacroPlanner, TaskGenerator, VocabularyCard, VocabularyCardGenerator
-
+from pipeline import MacroPlanner, TaskGenerator, VocabularyCardGenerator
+from models import VocabularyCard
 
 logger = logging.getLogger(__name__)
 
@@ -118,6 +118,8 @@ class LessonGenerationWorker(QObject):
                     cards=self._cards,
                     user_request=self._user_request,
                 )
+                for i, task in enumerate(macro_plan):
+                    logger.debug("%s. %s", i, task)
                 logger.debug(
                     "Macro plan was generated in %.2fs",
                     time.perf_counter() - started_at,

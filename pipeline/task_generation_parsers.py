@@ -17,13 +17,8 @@ __all__ = [
     "parse_translation_exercise",
 ]
 
-
 from collections import Counter
 from typing import Iterable
-
-
-from collections import Counter
-from collections.abc import Iterable
 
 
 def tokenize_for_word_bank(text: str) -> list[str]:

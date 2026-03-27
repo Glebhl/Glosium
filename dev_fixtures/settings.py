@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from pipeline.card_models import VocabularyCard
+from models import VocabularyCard
 
 
 logger = logging.getLogger(__name__)

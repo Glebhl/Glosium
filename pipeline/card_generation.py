@@ -6,8 +6,12 @@ from pathlib import Path
 
 from app.language_registry import get_language_display_name
 from llm_gateway import OpenAITextClient
-from llm_gateway.openai_wrapper import REASONING_EFFORT_NONE, TEXT_VERBOSITY_LOW, SERVICE_TIER_FLEX
-from .card_models import VocabularyCard
+from llm_gateway import (
+    REASONING_EFFORT_NONE,
+    TEXT_VERBOSITY_LOW,
+    SERVICE_TIER_FLEX,
+)
+from models import VocabularyCard
 
 
 logger = logging.getLogger(__name__)

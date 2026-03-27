@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Callable, Generic, TypeVar
 
@@ -22,8 +23,10 @@ from .task_generation_parsers import (
     parse_multiple_choice_exercise,
     parse_translation_exercise,
 )
-from pipeline import VocabularyCard
+from models import VocabularyCard
 from app.language_registry import get_language_display_name
+
+logger = logging.getLogger(__name__)
 
 ParsedExerciseT = TypeVar("ParsedExerciseT")
 ExerciseParser = Callable[[str], ParsedExerciseT]
@@ -74,6 +77,7 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
                 targets=targets,
             ),
         )
+        logger.debug("task raw content:\n%s", response)
         return self.parser(response)
 
     def _build_user_prompt(
