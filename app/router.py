@@ -4,8 +4,8 @@ from PySide6.QtCore import QEasingCurve, QPropertyAnimation, QTimer, QUrl, Qt
 from PySide6.QtWidgets import QGraphicsOpacityEffect, QLabel
 from PySide6.QtWebEngineWidgets import QWebEngineView
 
-from backend import Backend
-from exception_logging import get_logged_bound_method, make_logged_callback
+from .backend import Backend
+from .exception_logging import get_logged_bound_method, make_logged_callback
 
 logger = logging.getLogger(__name__)
 

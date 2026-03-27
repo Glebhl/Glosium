@@ -15,6 +15,11 @@ LANGUAGE_CONTRACTION_RULES: dict[str, dict[str, tuple[str, ...]]] = {
         "'s": (" is", ""),
     },
 }
+IRREGULAR_CONTRACTIONS = {
+    "can't": ("cannot", "can not"),
+    "won't": ("will not",),
+    "shan't": ("shall not",),
+}
 
 
 def is_translation_answer_correct(
@@ -97,6 +102,10 @@ def expand_token_variants(
     rules: dict[str, tuple[str, ...]],
 ) -> list[str]:
     token_casefold = token.casefold()
+
+    if token_casefold in IRREGULAR_CONTRACTIONS:
+        return [token, *IRREGULAR_CONTRACTIONS[token_casefold]]
+
     variants = {token}
 
     for suffix, replacements in rules.items():
@@ -104,6 +113,7 @@ def expand_token_variants(
             continue
 
         token_stem = token[: len(token) - len(suffix)]
+
         for replacement in replacements:
             variants.add(f"{token_stem}{replacement}")
 

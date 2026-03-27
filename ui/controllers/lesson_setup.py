@@ -9,7 +9,8 @@ from typing import Any
 
 from PySide6.QtCore import QObject, QThread, Qt, Signal, Slot
 
-from exception_logging import make_logged_callback
+from app import make_logged_callback
+from dev_fixtures import DevFixtureSettings
 from ui.controllers import LessonFlowController
 from pipeline import VocabularyCard
 from pipeline import (
@@ -17,7 +18,6 @@ from pipeline import (
     VocabularyCardGenerator,
     MacroPlanner,
 )
-from pipeline.dev_fixtures import DevFixtureSettings
 
 
 logger = logging.getLogger(__name__)

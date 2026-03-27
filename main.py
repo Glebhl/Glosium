@@ -1,16 +1,16 @@
-import sys
 import logging
+import sys
 
-from PySide6.QtWidgets import QApplication, QMainWindow
-from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWebChannel import QWebChannel
 from dotenv import load_dotenv
+from PySide6.QtWebChannel import QWebChannel
+from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWidgets import QApplication, QMainWindow
 
-from backend import Backend
-from exception_logging import install_global_exception_logging
+from app import Backend
+from app import Router
+from app import install_global_exception_logging
+from app import setup_logging
 from ui.controllers import LessonSetupController
-from router import Router
-from logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -42,11 +42,9 @@ class MainWindow(QMainWindow):
 
     def _init_backend_and_routing(self) -> None:
         """Initialize backend bridge object and router."""
-        # Backend (Python object accessible from JavaScript via QWebChannel)
         self.backend = Backend()
         logger.debug("Backend object created")
 
-        # Router controls navigation within the WebEngine-based UI
         self.router = Router(self.web_view, self.backend)
         logger.debug("Router created")
 
@@ -67,7 +65,7 @@ def main() -> int:
     """Application entry point."""
     setup_logging(logging.DEBUG, log_to_file=True)
     install_global_exception_logging(logger)
-    
+
     logger.debug("dotenv initialization")
     load_dotenv()
     logger.debug("dotenv was initializated")
@@ -87,21 +85,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-    # For debugging
-    # from pipeline import AnswerMatcher
-    # import os
-
-    # load_dotenv()
-
-    # matcher = AnswerMatcher(
-    #     api_key=os.getenv("OPENAI_API_KEY"),
-    #     model="gpt-5.4-nano",
-    #     lesson_language="en",
-    # )
-
-    # response = matcher.evaluate_text_answer(
-    #     "Я не могу придумать решение.",
-    #     "I can’t came with a problem",
-    # )
-    # print(response)

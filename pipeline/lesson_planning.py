@@ -3,12 +3,12 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from app.language_registry import get_language_display_name
+from dev_fixtures import DevFixtureSettings
 from llm_gateway import OpenAITextClient
 from llm_gateway.openai_wrapper import REASONING_EFFORT_MEDIUM, TEXT_VERBOSITY_MEDIUM, SERVICE_TIER_FLEX
 
 from .card_models import VocabularyCard
-from .dev_fixtures import DevFixtureSettings
-from language_converter import get_language_display_name
 
 logger = logging.getLogger(__name__)
 FIELD_RE = re.compile(r"^(STEP_ID|DESCRIPTION|EXERCISE_ID|MODE|TARGETS):[ \t]*(.*)$", re.MULTILINE)

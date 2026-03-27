@@ -23,7 +23,7 @@ from .task_generation_parsers import (
     parse_translation_exercise,
 )
 from pipeline import VocabularyCard
-from language_converter import get_language_display_name
+from app.language_registry import get_language_display_name
 
 ParsedExerciseT = TypeVar("ParsedExerciseT")
 ExerciseParser = Callable[[str], ParsedExerciseT]

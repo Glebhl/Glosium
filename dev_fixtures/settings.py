@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .card_models import VocabularyCard
+from pipeline.card_models import VocabularyCard
 
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ _ROOT_DIR = Path(__file__).resolve().parent.parent
 _DEFAULT_FIXTURES_DIR = _ROOT_DIR / "dev_fixtures"
 _DEFAULT_CARDS_PATH = _DEFAULT_FIXTURES_DIR / "cards.json"
 _DEFAULT_MACRO_PLAN_PATH = _DEFAULT_FIXTURES_DIR / "macro_plan.txt"
-_DEFAULT_LESSON_PATH = _ROOT_DIR / "lesson.json"
+_DEFAULT_LESSON_PATH = _DEFAULT_FIXTURES_DIR / "lesson.json"
 _TRUE_VALUES = {"1", "true", "yes", "on"}
 
 

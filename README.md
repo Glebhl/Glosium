@@ -14,35 +14,32 @@ LexiForge is a desktop prototype for language learning built with `PySide6`, `Qt
 
 - Vocabulary card generation through the OpenAI Responses API
 - Lesson flow with multiple task types: explanation, matching, translation, filling, and question
-- Local JSON lesson plan used as a temporary lesson source
+- Development fixtures for cards, macro plans, and temporary lesson plans
 
 ## Project Layout
 
 ```text
 LexiForge/
-├─ main.py                         # Application entry point and dotenv bootstrap
-├─ backend.py                      # Python <-> UI bridge via Qt signals/slots
-├─ router.py                       # Screen navigation and controller routing
-├─ logging_config.py               # Logging setup
-├─ answer_matcher.py               # Answer normalization and validation
-├─ language_converter.py           # Language labels/helpers
-├─ requirements.txt                # Python dependencies
-├─ .env                            # Local environment variables (OpenAI key)
-├─ lesson_plans/
-│  └─ lesson.json                  # Temporary lesson data
-├─ llm_gateway/
-│  ├─ openai_wrapper.py            # OpenAI Responses API client wrapper
-│  ├─ openai_chat.py               # Chat session helper
-│  └─ openai_cache.py              # Prompt cache helpers/state
-├─ pipeline/
-│  └─ vocab.py                     # Vocabulary card generation pipeline
-├─ prompts/
-│  └─ en/
-│     └─ vocab_setup.txt           # System prompt for vocabulary generation
-└─ ui/
-   ├─ controllers/                 # Python controllers for setup and lesson flow
-   ├─ views/                       # HTML/CSS/JS screens
-   └─ assets/                      # Fonts, icons, shared theme files
+|-- main.py                         # Application entry point
+|-- app/                            # Application shell and shared runtime utilities
+|   |-- backend.py                  # Python <-> UI bridge via Qt signals/slots
+|   |-- router.py                   # Screen navigation and controller routing
+|   |-- logging_config.py           # Logging setup
+|   |-- exception_logging.py        # Global exception and callback logging
+|   `-- language_registry.py        # Language labels and lookup helpers
+|-- dev_fixtures/                   # Local fixture data and fixture loading settings
+|   |-- settings.py
+|   |-- cards.json
+|   |-- macro_plan.txt
+|   `-- lesson.json
+|-- llm_gateway/                    # OpenAI client wrappers and cache helpers
+|-- pipeline/                       # Lesson and task generation pipeline
+|-- prompts/                        # Prompt templates
+`-- ui/
+    |-- controllers/                # Screen controllers
+    |-- services/                   # Controller-adjacent UI services
+    |-- views/                      # HTML/CSS/JS screens
+    `-- assets/                     # Fonts, icons, shared theme files
 ```
 
 ## Getting Started
@@ -92,9 +89,9 @@ This project is still an early prototype. The vocabulary setup flow already uses
 Planned next steps include:
 
 - Generate full lessons from the selected vocabulary cards
-- Add support for more languages.
+- Add support for more languages
 - Add grammar support
-- Add localization other than English.
+- Add localization other than English
 - Replace temporary lesson templates with fully AI-driven lesson creation
 - Add progress tracking
 

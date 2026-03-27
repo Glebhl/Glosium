@@ -4,9 +4,9 @@ import logging
 from collections.abc import Iterator
 from pathlib import Path
 
+from app.language_registry import get_language_display_name
 from llm_gateway import OpenAITextClient
 from llm_gateway.openai_wrapper import REASONING_EFFORT_NONE, TEXT_VERBOSITY_LOW, SERVICE_TIER_FLEX
-from language_converter import get_language_display_name
 from .card_models import VocabularyCard
 
 

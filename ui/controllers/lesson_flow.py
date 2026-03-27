@@ -5,8 +5,8 @@ from typing import Any, Callable, Optional
 
 from PySide6.QtCore import QObject
 
-from exception_logging import make_logged_callback
-from ui.controllers.answer_precheck import (
+from app import make_logged_callback
+from ui.services.answer_precheck import (
     is_filling_answer_correct,
     is_translation_answer_correct,
 )
