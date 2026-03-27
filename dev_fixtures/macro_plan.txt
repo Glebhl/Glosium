@@ -1,5 +1,71 @@
-STEP_ID: S8
-DESCRIPTION: Use guided sentence completion to choose the correct verb for handling a situation.
+STEP_ID: S1
+DESCRIPTION: Introduce the meanings of chair, table, and sofa as common furniture items, and show the contrast between a seat for one person, a flat surface for objects, and a soft seat for several people.
+EXERCISE_ID: explanation
+MODE: none
+TARGETS: U1, U2, U3
+
+STEP_ID: S2
+DESCRIPTION: Match bed, lamp, window, chair, and table or short clues showing a place to sleep, a light source, a wall opening with glass, a seat, and a flat furniture surface.
+EXERCISE_ID: matching
+MODE: none
+TARGETS: U4, U5, U6, U1, U2
+
+STEP_ID: S3
+DESCRIPTION: Complete short sentences with chair or table from a word bank, choosing the word that fits the meaning and the furniture function in the room.
+EXERCISE_ID: filling
+MODE: word-bank
+TARGETS: U1, U2
+
+STEP_ID: S4
+DESCRIPTION: Translate the Russian word диван into English using a word bank.
+EXERCISE_ID: translation
+MODE: word-bank
+TARGETS: U3
+
+STEP_ID: S5
+DESCRIPTION: Read a short sentence about a room with light and type the exact full English word lamp.
 EXERCISE_ID: filling
 MODE: typing
+TARGETS: U5
+
+STEP_ID: S6
+DESCRIPTION: Read a short sentence about a wall opening in a room and type the exact full English word window.
+EXERCISE_ID: filling
+MODE: typing
+TARGETS: U6
+
+STEP_ID: S7
+DESCRIPTION: Translate the Russian words стул and стол from Russian into English and type the exact full English word for each one.
+EXERCISE_ID: translation
+MODE: typing
 TARGETS: U1, U2
+
+STEP_ID: S8
+DESCRIPTION: Ask short room-scene questions that make the learner identify sofa as a soft seat for several people and lamp as the item that gives light.
+EXERCISE_ID: question
+MODE: none
+TARGETS: U3, U5
+
+STEP_ID: S9
+DESCRIPTION: Ask short room-scene questions that make the learner identify bed as the furniture for sleeping and window as the wall opening with glass.
+EXERCISE_ID: question
+MODE: none
+TARGETS: U4, U6
+
+STEP_ID: S10
+DESCRIPTION: Read a short sentence about a living room seat and type the exact full English word sofa.
+EXERCISE_ID: filling
+MODE: typing
+TARGETS: U3
+
+STEP_ID: S11
+DESCRIPTION: Ask short room-scene questions that make the learner choose between chair, table, and sofa by function or placement in the room.
+EXERCISE_ID: question
+MODE: none
+TARGETS: U1, U2, U3
+
+STEP_ID: S12
+DESCRIPTION: Read a short sentence about a piece of furniture used for sleeping and type the exact full English word bed.
+EXERCISE_ID: filling
+MODE: typing
+TARGETS: U4

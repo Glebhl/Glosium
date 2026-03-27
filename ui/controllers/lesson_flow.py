@@ -6,7 +6,7 @@ from typing import Any, Callable, Optional
 from PySide6.QtCore import QObject
 
 from app import make_logged_callback
-from ui.services.answer_precheck import (
+from ui.services import (
     is_filling_answer_correct,
     is_translation_answer_correct,
 )
@@ -31,6 +31,7 @@ class LessonFlowController(QObject):
 
         # Public fields
         self.url = r"\ui\views\lesson_flow\index.html"
+        self.disable_transition = True
         self.router = router
         self.view = view
         self.backend = backend
@@ -50,6 +51,7 @@ class LessonFlowController(QObject):
         self._task_index: int = 0  # 1-based index for UI; 0 means "not started"
         self._task_id: str = ""
         self._answers: list[str] = []
+        self._initial_task_opened = False
 
         # Task loaders and verifiers
         self._task_loaders: dict[str, Callable[[Any], None]] = {
@@ -77,21 +79,26 @@ class LessonFlowController(QObject):
         self._api_key = os.getenv("OPENAI_API_KEY")
         self._answer_matcher_model = "gpt-5.4-nano"
 
-        # Initialize pipeline
         self._answer_matcher: AnswerMatcher | None = None
-        self._load_pipeline_modules()
-    
-    def _load_pipeline_modules(self):
-        self._answer_matcher = AnswerMatcher(
-            api_key=self._api_key,
-            model=self._answer_matcher_model,
-            lesson_language=self._lesson_language,
-        )
+
+    def _get_answer_matcher(self) -> AnswerMatcher:
+        if self._answer_matcher is None:
+            self._answer_matcher = AnswerMatcher(
+                api_key=self._api_key,
+                model=self._answer_matcher_model,
+                lesson_language=self._lesson_language,
+            )
+        return self._answer_matcher
 
     # --- External API (keep signatures for compatibility) ---
 
     def on_load_finished(self):
         """Called by the view when the HTML page has finished loading."""
+        if self._initial_task_opened:
+            logger.debug("Ignoring repeated UI load finished event for lesson flow page")
+            return
+
+        self._initial_task_opened = True
         logger.debug("UI load finished, opening the first task")
         self._open_next_task()
 
@@ -223,7 +230,7 @@ class LessonFlowController(QObject):
                 self._on_check_result(True)
                 return
 
-            match_result = self._answer_matcher.evaluate_text_answer(
+            match_result = self._get_answer_matcher().evaluate_text_answer(
                 original_text=self._task.get("sentence"),
                 user_answer=answer,
             )
@@ -290,7 +297,7 @@ class LessonFlowController(QObject):
                 self._on_check_result(True)
                 return
 
-            match_result = self._answer_matcher.evaluate_filling_answer(
+            match_result = self._get_answer_matcher().evaluate_filling_answer(
                 sentence_parts=self._task.get("sentence") or [],
                 expected_answers=expected_answers,
                 user_answers=user_answer,

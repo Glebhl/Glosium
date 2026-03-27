@@ -14,6 +14,7 @@ from .task_generation import (
 class TaskGenerator:
     def __init__(
         self,
+        *,
         api_key: str,
         model: str,
         lesson_language: str,
@@ -55,21 +56,25 @@ class TaskGenerator:
         tasks: list[dict] = []
 
         for step in macro_plan:
-            exercise_id = step.exercise_id.strip().lower()
-            if exercise_id == "explanation":
-                continue
+            try:
+                exercise_id = step.exercise_id.strip().lower()
+                if exercise_id == "explanation":  # Not supported yet
+                    continue
 
-            generator = self._generator_by_exercise_id.get(exercise_id)
-            if generator is None:
-                raise ValueError(f"Unsupported exercise_id in macro plan: {step.exercise_id!r}")
+                generator = self._generator_by_exercise_id.get(exercise_id)
+                if generator is None:
+                    print(f"Unsupported exercise_id in macro plan: {step.exercise_id!r}")
+                    continue
 
-            task = generator.generate_task(
-                description=step.description,
-                targets=step.targets,
-            )
-            if hasattr(task, "mode"):
-                task = replace(task, mode=step.mode)
+                task = generator.generate_task(
+                    description=step.description,
+                    targets=step.targets,
+                )
+                if hasattr(task, "mode"):
+                    task = replace(task, mode=step.mode)
 
-            tasks.append(asdict(task))
+                tasks.append(asdict(task))
+            except Exception as exc:
+                print(exc)
 
         return tasks

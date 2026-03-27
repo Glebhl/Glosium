@@ -103,7 +103,7 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
         for index, unit in enumerate(targets, start=1):
             base = (
                 f"U{index} | lexeme | "
-                f"{unit.lexeme} | {unit.meaning} "
+                f"{unit.lexeme} | {unit.meaning} | "
                 f"{unit.part_of_speech} | {unit.translation}"
             )
 

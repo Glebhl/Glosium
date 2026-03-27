@@ -40,6 +40,7 @@ class Router:
         )
         self._fade_animation.setDuration(self._fade_duration_ms)
         self._fade_animation.setEasingCurve(QEasingCurve.InOutQuad)
+        self._fade_finished_handler = None
 
         self.view.loadFinished.connect(
             get_logged_bound_method(
@@ -66,7 +67,8 @@ class Router:
         self._stack.append(controller)
         logger.debug("Pushed new page to history stack (size=%d)", len(self._stack))
 
-        self._transition_to(controller, use_fade=current is not None)
+        use_fade = current is not None and not getattr(controller, "disable_transition", False)
+        self._transition_to(controller, use_fade=use_fade)
 
         logger.info('Page navigation completed: url="%s"', controller.url)
 
@@ -211,21 +213,23 @@ class Router:
 
     def _run_fade(self, start_value: float, end_value: float, on_finished):
         """Configure and start opacity animation for the view."""
-        try:
-            self._fade_animation.finished.disconnect()
-        except (RuntimeError, TypeError):
-            pass
+        if self._fade_finished_handler is not None:
+            self._safe_disconnect(
+                self._fade_animation.finished,
+                self._fade_finished_handler,
+                "fade_animation.finished",
+            )
+            self._fade_finished_handler = None
 
         self._overlay_opacity_effect.setOpacity(start_value)
         self._fade_animation.setStartValue(start_value)
         self._fade_animation.setEndValue(end_value)
-        self._fade_animation.finished.connect(
-            make_logged_callback(
-                on_finished,
-                logger=logger,
-                message="Unhandled exception in router fade animation callback",
-            )
+        self._fade_finished_handler = make_logged_callback(
+            on_finished,
+            logger=logger,
+            message="Unhandled exception in router fade animation callback",
         )
+        self._fade_animation.finished.connect(self._fade_finished_handler)
         self._fade_animation.start()
 
     def _prepare_transition_overlay(self):

@@ -6,6 +6,7 @@ Requirements:
 - Spread all of the listed targets evenly across the whole exercise.
 - Do not create sentence without any of the listed targets.
 - Provide one word bank containing 2-4 extra distractor words.
+- The paragraph must contain explicit clues (actions, attributes, or relations) that clearly identify the correct word.
 
 Output format:
 PARAGRAPH: <text with blanks enclosed in square brackets.>

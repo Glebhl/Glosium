@@ -2,14 +2,12 @@ import logging
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
-
 NOISY_LOGGERS = (
     "openai",
     "httpx",
     "httpcore",
 )
-LOG_FILE_PATH = Path(__file__).resolve().parent / "app.log"
-
+LOG_FILE_PATH = Path("app.log")
 
 def _configure_external_loggers() -> None:
     for logger_name in NOISY_LOGGERS:
@@ -31,8 +29,14 @@ def setup_logging(level: int = logging.INFO, log_to_file: bool = False) -> None:
         console.setFormatter(formatter)
         root.addHandler(console)
 
-    has_file_handler = any(isinstance(handler, RotatingFileHandler) for handler in root.handlers)
-    if log_to_file and not has_file_handler:
+    if log_to_file:
+        # Recreate the file handler on each startup so the log file is cleared.
+        for handler in list(root.handlers):
+            if isinstance(handler, RotatingFileHandler):
+                root.removeHandler(handler)
+                handler.close()
+
+        LOG_FILE_PATH.write_text("", encoding="utf-8")
         file_handler = RotatingFileHandler(
             filename=LOG_FILE_PATH,
             mode="w",

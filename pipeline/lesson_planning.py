@@ -26,6 +26,7 @@ class MacroPlanStep:
 class MacroPlanner:
     def __init__(
         self,
+        *,
         api_key: str,
         model: str,
         lesson_language: str,

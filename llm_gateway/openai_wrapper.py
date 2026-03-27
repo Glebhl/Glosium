@@ -48,8 +48,14 @@ def build_input_message(role: str, content: str) -> dict[str, str]:
 
 
 def extract_response_text(response: Any) -> str:
+    if response is None:
+        return ""
+
+    if isinstance(response, str):
+        return response
+
     text = getattr(response, "output_text", None)
-    if text:
+    if isinstance(text, str) and text:
         return text
 
     chunks: list[str] = []
@@ -62,7 +68,39 @@ def extract_response_text(response: Any) -> str:
                 chunks.append(getattr(content, "text", ""))
             elif content_type == "refusal":
                 chunks.append(getattr(content, "refusal", ""))
-    return "".join(chunks)
+    if chunks:
+        return "".join(chunks)
+
+    # Some SDK versions expose the final message text under a plain `text` field
+    # or via Pydantic-style dumps instead of `output_text`.
+    fallback_text = getattr(response, "text", None)
+    if isinstance(fallback_text, str) and fallback_text:
+        return fallback_text
+
+    model_dump = getattr(response, "model_dump", None)
+    if callable(model_dump):
+        dumped = model_dump()
+        dumped_output = dumped.get("output", []) if isinstance(dumped, dict) else []
+        for item in dumped_output:
+            if item.get("type") != "message":
+                continue
+            for content in item.get("content", []) or []:
+                content_type = content.get("type")
+                if content_type == "output_text":
+                    chunks.append(content.get("text", ""))
+                elif content_type == "refusal":
+                    chunks.append(content.get("refusal", ""))
+        if chunks:
+            return "".join(chunks)
+
+    return ""
+
+
+def ensure_response_text(response: Any) -> str:
+    text = extract_response_text(response)
+    if isinstance(text, str):
+        return text
+    return str(text)
 
 
 def extract_stream_error(event: Any) -> str:
@@ -155,15 +193,19 @@ class OpenAITextClient:
             return self._stream_text(request)
 
         response = self._client.responses.create(**request)
-        response_text = extract_response_text(response)
-        logger.debug("LLM output:\n%s", response)
+        response_text = ensure_response_text(response)
+        logger.debug("LLM extracted text:\n%s", response_text)
         log_response_usage(
             response,
             model=self.model,
             operation="generate_text",
             prompt_cache_key=request.get("prompt_cache_key"),
         )
-        return extract_response_text(response_text)
+        if not isinstance(response_text, str):
+            raise TypeError(
+                f"generate_text() expected str after extraction, got {type(response_text).__name__}"
+            )
+        return response_text
 
     def stream_text(
         self,

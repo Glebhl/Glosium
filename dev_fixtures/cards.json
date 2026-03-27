@@ -1,22 +1,62 @@
 [
   {
-    "lexeme": "approach",
+    "lexeme": "chair",
     "lexical_unit": "word",
-    "part_of_speech": "verb",
-    "level": "B1",
-    "translation": "подходить; подход",
-    "transcription": "/əˈprəʊtʃ/",
-    "meaning": "to deal with something or think about it in a particular way",
-    "example": "She approached the problem from a different angle."
+    "part_of_speech": "noun",
+    "level": "A2",
+    "translation": "стул",
+    "transcription": "N/A",
+    "meaning": "предмет мебели для сидения",
+    "example": "N/A"
   },
   {
-    "lexeme": "deal with",
-    "lexical_unit": "phrasal_verb",
-    "part_of_speech": "verb",
-    "level": "B1",
-    "translation": "иметь дело с",
-    "transcription": "/diːl wɪð/",
+    "lexeme": "table",
+    "lexical_unit": "word",
+    "part_of_speech": "noun",
+    "level": "A2",
+    "translation": "стол",
+    "transcription": "N/A",
     "meaning": "to handle or manage a situation or problem",
-    "example": "He knows how to deal with difficult clients."
+    "example": "N/A"
+  },
+  {
+    "lexeme": "sofa",
+    "lexical_unit": "word",
+    "part_of_speech": "noun",
+    "level": "A2",
+    "translation": "диван",
+    "transcription": "N/A",
+    "meaning": "мягкий предмет мебели для сидения нескольких людей",
+    "example": "N/A"
+  },
+  {
+    "lexeme": "bed",
+    "lexical_unit": "word",
+    "part_of_speech": "noun",
+    "level": "A1",
+    "translation": "кровать",
+    "transcription": "N/A",
+    "meaning": "предмет мебели, на котором спят",
+    "example": "N/A"
+  },
+  {
+    "lexeme": "lamp",
+    "lexical_unit": "word",
+    "part_of_speech": "noun",
+    "level": "A2",
+    "translation": "лампа",
+    "transcription": "N/A",
+    "meaning": "прибор для света",
+    "example": "N/A"
+  },
+  {
+    "lexeme": "window",
+    "lexical_unit": "word",
+    "part_of_speech": "noun",
+    "level": "A2",
+    "translation": "окно",
+    "transcription": "N/A",
+    "meaning": "отверстие в стене с прозрачным стеклом",
+    "example": "N/A"
   }
 ]
