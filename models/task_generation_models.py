@@ -3,13 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
-__all__ = [
-    "FillInTheBlankExercise",
-    "MatchingExercise",
-    "MultipleChoiceExercise",
-    "TranslationExercise",
-]
-
 
 @dataclass(frozen=True, slots=True)
 class FillInTheBlankExercise:

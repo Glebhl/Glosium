@@ -122,7 +122,7 @@ class VocabularyCardGenerator:
         api_key: str,
         model: str,
         lesson_language: str,
-        translation_language: str,
+        lerner_language: str,
     ) -> None:
         settings = get_settings_store()
         self._text_client = OpenAITextClient(
@@ -136,13 +136,13 @@ class VocabularyCardGenerator:
         prompt_path = Path("prompts") / lesson_language / "vocabulary_card_generation.txt"
         logger.debug("Loading vocabulary card prompt from %s", prompt_path)
         self._system_prompt = prompt_path.read_text(encoding="utf-8").format(
-            language=get_language_display_name(translation_language)
+            language=get_language_display_name(lerner_language)
         )
         logger.debug(
-            "Initialized VocabularyCardGenerator with model='%s', lesson_language='%s', translation_language='%s'.",
+            "Initialized VocabularyCardGenerator with model='%s', lesson_language='%s', lerner_language='%s'.",
             model,
             lesson_language,
-            translation_language,
+            lerner_language,
         )
 
     def generate_cards(self, query: str) -> list[VocabularyCard]:

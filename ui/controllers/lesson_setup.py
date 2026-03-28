@@ -53,7 +53,7 @@ class LessonSetupController(QObject):
 
         self._api_key = os.getenv("OPENAI_API_KEY")
         self._lesson_language = settings.get_value("lesson/language")
-        self._translation_language = settings.get_value("lesson/translation_language")
+        self._translation_language = settings.get_value("lesson/lerner_language")
         self._lerner_level = settings.get_value("lesson/learner_level")
         self._user_request = None
         self._cards_generation_model = settings.get_value("models/card_generation")

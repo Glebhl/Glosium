@@ -9,12 +9,7 @@ from app.settings import get_settings_store
 from app.language_registry import get_language_display_name
 from llm_gateway import OpenAITextClient
 
-from .task_generation_models import (
-    FillInTheBlankExercise,
-    MatchingExercise,
-    MultipleChoiceExercise,
-    TranslationExercise,
-)
+from models import MacroPlanStep
 from .task_generation_parsers import (
     parse_fill_in_the_blank_exercise,
     parse_matching_exercise,
@@ -22,7 +17,12 @@ from .task_generation_parsers import (
     parse_translation_exercise,
 )
 from models import VocabularyCard
-from .lesson_planning import MacroPlanStep
+from models import (
+    FillInTheBlankExercise,
+    MatchingExercise,
+    MultipleChoiceExercise,
+    TranslationExercise,
+)
 
 logger = logging.getLogger(__name__)
 

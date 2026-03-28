@@ -41,7 +41,7 @@ class CardGenerationWorker(QObject):
             card_generator = VocabularyCardGenerator(
                 api_key=self._api_key,
                 lesson_language=self._lesson_language,
-                translation_language=self._translation_language,
+                lerner_language=self._translation_language,
                 model=self._model,
             )
             for card in card_generator.stream_cards(self._query):
@@ -104,7 +104,7 @@ class LessonGenerationWorker(QObject):
                     api_key=self._api_key,
                     model=self._plan_generation_model,
                     lesson_language=self._lesson_language,
-                    translation_language=self._translation_language,
+                    lerner_language=self._translation_language,
                     lerner_level=self._lerner_level,
                 )
                 task_generator = TaskGenerator(

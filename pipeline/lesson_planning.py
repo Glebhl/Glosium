@@ -1,6 +1,5 @@
 import logging
 import re
-from dataclasses import dataclass
 from pathlib import Path
 
 from app.settings import get_settings_store
@@ -8,18 +7,11 @@ from app.language_registry import get_language_display_name
 from dev_fixtures import DevFixtureSettings
 from llm_gateway import OpenAITextClient
 from models import VocabularyCard
+from models import MacroPlanStep
 
 logger = logging.getLogger(__name__)
 FIELD_RE = re.compile(r"^(STEP_ID|DESCRIPTION|EXERCISE_ID|MODE|TARGETS):[ \t]*(.*)$", re.MULTILINE)
 TARGET_ID_RE = re.compile(r"^[A-Za-z](\d+)$")
-
-
-@dataclass(frozen=True)
-class MacroPlanStep:
-    description: str
-    exercise_id: str
-    mode: str
-    targets: list[VocabularyCard]
 
 
 class MacroPlanner:
@@ -29,16 +21,16 @@ class MacroPlanner:
         api_key: str,
         model: str,
         lesson_language: str,
-        translation_language: str,
+        lerner_language: str,
         lerner_level: str,
     ):
-        self._translation_language = translation_language
+        self._lerner_language = lerner_language
         self._lerner_level = lerner_level
         logger.debug(
             "Initializing MacroPlanner with model=%s, lesson_language=%s, translation_language=%s, learner_level=%s",
             model,
             lesson_language,
-            translation_language,
+            lerner_language,
             lerner_level,
         )
         self._dev_fixtures = DevFixtureSettings.from_env()
@@ -67,8 +59,6 @@ class MacroPlanner:
             " with" if user_request else " without" + " user request",
         )
         payload = self._build_user_prompt(
-            translation_language=get_language_display_name(self._translation_language),
-            lerner_level=self._lerner_level,
             user_request=user_request,
             learning_units=cards,
         )
@@ -88,8 +78,6 @@ class MacroPlanner:
     def _build_user_prompt(
         self,
         *,
-        translation_language: str,
-        lerner_level: str,
         learning_units: list[VocabularyCard],
         user_request: str | None = None
     ) -> str:
@@ -99,10 +87,10 @@ class MacroPlanner:
 
         lines: list[str] = []
 
-        lines.append(f"LERNER_LANGUAGE: {translation_language}")
+        lines.append(f"LERNER_LANGUAGE: {get_language_display_name(self._lerner_language)}")
         lines.append("")
 
-        lines.append(f"LERNER_LEVEL: {lerner_level}")
+        lines.append(f"LERNER_LEVEL: {self._lerner_level}")
         lines.append("")
 
         if user_request:

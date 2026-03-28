@@ -1,6 +1,6 @@
 lesson:
   language: en
-  translation_language: ru
+  lerner_language: ru
   learner_level: A1
 models:
   card_generation: gpt-5.4-nano
