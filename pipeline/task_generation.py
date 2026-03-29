@@ -34,37 +34,27 @@ class TaskGenerator:
     def __init__(
         self,
         *,
-        api_key: str,
-        model: str,
         lesson_language: str,
         translation_language: str,
         lerner_level: str,
     ) -> None:
         self._generator_by_exercise_id = {
             "filling": FillingTaskGenerator(
-                api_key=api_key,
-                model=model,
                 lesson_language=lesson_language,
                 translation_language=translation_language,
                 lerner_level=lerner_level,
             ),
             "matching": MatchingTaskGenerator(
-                api_key=api_key,
-                model=model,
                 lesson_language=lesson_language,
                 translation_language=translation_language,
                 lerner_level=lerner_level,
             ),
             "question": QuestionTaskGenerator(
-                api_key=api_key,
-                model=model,
                 lesson_language=lesson_language,
                 translation_language=translation_language,
                 lerner_level=lerner_level,
             ),
             "translation": TranslationTaskGenerator(
-                api_key=api_key,
-                model=model,
                 lesson_language=lesson_language,
                 translation_language=translation_language,
                 lerner_level=lerner_level,
@@ -106,8 +96,6 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
     def __init__(
         self,
         *,
-        api_key: str,
-        model: str,
         lesson_language: str,
         translation_language: str,
         lerner_level: str,
@@ -116,8 +104,7 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
         self._lerner_level = lerner_level
         settings = get_settings_store()
         self._text_client = OpenAITextClient(
-            api_key=api_key,
-            model=model,
+            model=settings.get_value("models/task_generation"),
             reasoning_effort=settings.get_value("pipeline/task_generation/reasoning_effort"),
             text_verbosity=settings.get_value("pipeline/task_generation/text_verbosity"),
             service_tier=settings.get_value("pipeline/task_generation/service_tier"),

@@ -119,15 +119,12 @@ class VocabularyCardStreamParser:
 class VocabularyCardGenerator:
     def __init__(
         self,
-        api_key: str,
-        model: str,
         lesson_language: str,
         lerner_language: str,
     ) -> None:
         settings = get_settings_store()
         self._text_client = OpenAITextClient(
-            api_key=api_key,
-            model=model,
+            model=settings.get_value("models/card_generation"),
             reasoning_effort=settings.get_value("pipeline/card_generation/reasoning_effort"),
             text_verbosity=settings.get_value("pipeline/card_generation/text_verbosity"),
             service_tier=settings.get_value("pipeline/card_generation/service_tier"),
@@ -139,8 +136,7 @@ class VocabularyCardGenerator:
             language=get_language_display_name(lerner_language)
         )
         logger.debug(
-            "Initialized VocabularyCardGenerator with model='%s', lesson_language='%s', lerner_language='%s'.",
-            model,
+            "Initialized VocabularyCardGenerator with lesson_language='%s', lerner_language='%s'.",
             lesson_language,
             lerner_language,
         )

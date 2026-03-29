@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 import random
 from typing import Any
 
 from PySide6.QtCore import QObject, QThread, Qt, Slot
 
-from app import get_settings_store, make_logged_callback
+from app import get_settings_store
 from dev_fixtures import DevFixtureSettings
 from ui.controllers.loading_screen import LoadingScreenController
 from ui.services import CardGenerationWorker
@@ -49,12 +48,10 @@ class LessonSetupController(QObject):
 
         settings = get_settings_store()
 
-        self._api_key = os.getenv("OPENAI_API_KEY")
         self._lesson_language = settings.get_value("lesson/language")
         self._translation_language = settings.get_value("lesson/lerner_language")
         self._lerner_level = settings.get_value("lesson/learner_level")
         self._user_request = None
-        self._cards_generation_model = settings.get_value("models/card_generation")
         self._plan_generation_model = settings.get_value("models/lesson_planning")
         self._task_generation_model = settings.get_value("models/task_generation")
 
@@ -124,8 +121,6 @@ class LessonSetupController(QObject):
 
         worker_thread = QThread(self)
         worker = CardGenerationWorker(
-            api_key=self._api_key,
-            model=self._cards_generation_model,
             query=clean_query,
             lesson_language=self._lesson_language,
             translation_language=self._translation_language,
@@ -180,11 +175,7 @@ class LessonSetupController(QObject):
             case "generate":
                 self.view.page().runJavaScript(
                     "getPromtText();",
-                    make_logged_callback(
-                        self._start_card_generation,
-                        logger=logger,
-                        message="Unhandled exception while starting vocabulary generation from JS callback",
-                    ),
+                    self._start_card_generation,
                 )
             case "start_lesson":
                 for i, card in enumerate(self._cards):

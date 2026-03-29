@@ -20,14 +20,11 @@ class AnswerMatcher:
     def __init__(
             self,
             *,
-            api_key: str,
-            model: str,
             lesson_language: str,
         ) -> None:
         settings = get_settings_store()
         self._text_client = OpenAITextClient(
-            api_key=api_key,
-            model=model,
+            model=settings.get_value("models/answer_matcher"),
             reasoning_effort=settings.get_value("pipeline/answer_matcher/reasoning_effort"),
             text_verbosity=settings.get_value("pipeline/answer_matcher/text_verbosity"),
             service_tier=settings.get_value("pipeline/answer_matcher/service_tier"),

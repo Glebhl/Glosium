@@ -37,7 +37,7 @@ class MacroPlanner:
         settings = get_settings_store()
         self._text_client = OpenAITextClient(
             api_key=api_key,
-            model=model,
+            model=settings.get_value("models/lesson_planning"),
             reasoning_effort=settings.get_value("pipeline/lesson_planning/reasoning_effort"),
             text_verbosity=settings.get_value("pipeline/lesson_planning/text_verbosity"),
             service_tier=settings.get_value("pipeline/lesson_planning/service_tier"),

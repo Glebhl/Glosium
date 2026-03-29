@@ -8,7 +8,6 @@ from PySide6.QtWidgets import QApplication, QMainWindow
 
 from app import Backend
 from app import Router
-from app import install_global_exception_logging
 from app import setup_logging
 from ui.controllers import LessonSetupController
 
@@ -64,7 +63,6 @@ class MainWindow(QMainWindow):
 def main() -> int:
     """Application entry point."""
     setup_logging(logging.DEBUG, log_to_file=True)
-    install_global_exception_logging(logger)
 
     logger.debug("dotenv initialization")
     load_dotenv()
@@ -85,5 +83,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-    # print("Исправь промпт для macro plan: two short sentences—one with the verb, one with the phrase; no word bank")
-    # print("Генератор создает неправильное задание: Я хочу hit мяч, а потом мы hit the road.")

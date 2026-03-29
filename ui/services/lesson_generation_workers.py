@@ -20,18 +20,14 @@ class CardGenerationWorker(QObject):
     def __init__(
         self,
         *,
-        api_key: str,
         query: str,
         lesson_language: str,
         translation_language: str,
-        model: str,
     ) -> None:
         super().__init__()
-        self._api_key = api_key
         self._query = query
         self._lesson_language = lesson_language
         self._translation_language = translation_language
-        self._model = model
 
     @Slot()
     def run(self) -> None:
@@ -39,10 +35,8 @@ class CardGenerationWorker(QObject):
         first_card_logged = False
         try:
             card_generator = VocabularyCardGenerator(
-                api_key=self._api_key,
                 lesson_language=self._lesson_language,
                 lerner_language=self._translation_language,
-                model=self._model,
             )
             for card in card_generator.stream_cards(self._query):
                 if not first_card_logged:
@@ -71,9 +65,6 @@ class LessonGenerationWorker(QObject):
     def __init__(
         self,
         *,
-        api_key: str,
-        plan_generation_model: str,
-        task_generation_model: str,
         cards: list[VocabularyCard],
         user_request: str | None,
         lerner_level: str,
@@ -85,9 +76,6 @@ class LessonGenerationWorker(QObject):
         self._dev_fixtures = DevFixtureSettings.from_env()
         self._cards = cards
         self._user_request = user_request
-        self._api_key = api_key
-        self._plan_generation_model = plan_generation_model
-        self._task_generation_model = task_generation_model
         self._lesson_language = lesson_language
         self._translation_language = translation_language
         self._lerner_level = lerner_level
@@ -101,15 +89,11 @@ class LessonGenerationWorker(QObject):
                 logger.info("Using lesson fixture from %s", self._dev_fixtures.lesson_path)
             else:
                 macro_planner = MacroPlanner(
-                    api_key=self._api_key,
-                    model=self._plan_generation_model,
                     lesson_language=self._lesson_language,
                     lerner_language=self._translation_language,
                     lerner_level=self._lerner_level,
                 )
                 task_generator = TaskGenerator(
-                    api_key=self._api_key,
-                    model=self._task_generation_model,
                     lesson_language=self._lesson_language,
                     translation_language=self._translation_language,
                     lerner_level=self._lerner_level,

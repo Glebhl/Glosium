@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import time
 from typing import Any, Iterable, Iterator
+import os
 
 from .openai_cache import PromptCacheConfig
 
@@ -146,7 +147,6 @@ class OpenAITextClient:
 
     def __init__(
         self,
-        api_key: str,
         *,
         model: str = "gpt-5-mini",
         stream: bool = False,
@@ -156,7 +156,7 @@ class OpenAITextClient:
         text_verbosity: str | None = None,
         service_tier: str | None = None,
     ) -> None:
-        client_kwargs: dict[str, Any] = {"api_key": api_key}
+        client_kwargs: dict[str, Any] = {"api_key": os.getenv("OPENAI_API_KEY")}
         if base_url:
             client_kwargs["base_url"] = base_url
 

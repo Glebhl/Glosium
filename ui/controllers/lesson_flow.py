@@ -1,11 +1,9 @@
 import json
 import logging
-import os
 from typing import Any, Callable, Optional
 
 from PySide6.QtCore import QObject
 
-from app import get_settings_store, make_logged_callback
 from ui.services import (
     is_filling_answer_correct,
     is_translation_answer_correct,
@@ -75,21 +73,9 @@ class LessonFlowController(QObject):
             self.url,
         )
 
-        settings = get_settings_store()
-
-        self._api_key = os.getenv("OPENAI_API_KEY")
-        self._answer_matcher_model = settings.get_value("models/answer_matcher")
-
-        self._answer_matcher: AnswerMatcher | None = None
-
-    def _get_answer_matcher(self) -> AnswerMatcher:
-        if self._answer_matcher is None:
-            self._answer_matcher = AnswerMatcher(
-                api_key=self._api_key,
-                model=self._answer_matcher_model,
-                lesson_language=self._lesson_language,
-            )
-        return self._answer_matcher
+        self._answer_matcher = AnswerMatcher(
+            lesson_language=self._lesson_language,
+        )
 
     # --- External API (keep signatures for compatibility) ---
 
@@ -231,7 +217,7 @@ class LessonFlowController(QObject):
                 self._on_check_result(True)
                 return
 
-            match_result = self._get_answer_matcher().evaluate_text_answer(
+            match_result = self._answer_matcher.evaluate_text_answer(
                 original_text=self._task.get("sentence"),
                 user_answer=answer,
             )
@@ -248,14 +234,9 @@ class LessonFlowController(QObject):
             self._translation_set_highlight(is_correct)
             self._on_check_result(is_correct)
 
-        script = "getTranslationAnswerString();"
         self.view.page().runJavaScript(
-            script,
-            make_logged_callback(
-                on_answer_received,
-                logger=logger,
-                message="Unhandled exception while validating the translation task answer",
-            ),
+            "getTranslationAnswerString();",
+            on_answer_received,
         )
         return False
 
@@ -298,7 +279,7 @@ class LessonFlowController(QObject):
                 self._on_check_result(True)
                 return
 
-            match_result = self._get_answer_matcher().evaluate_filling_answer(
+            match_result = self._answer_matcher.evaluate_filling_answer(
                 sentence_parts=self._task.get("sentence") or [],
                 expected_answers=expected_answers,
                 user_answers=user_answer,
@@ -317,14 +298,9 @@ class LessonFlowController(QObject):
             self._filling_set_highlight(is_correct)
             self._on_check_result(is_correct)
 
-        script = "getFillingAnswerString();"
         self.view.page().runJavaScript(
-            script,
-            make_logged_callback(
-                on_answer_received,
-                logger=logger,
-                message="Unhandled exception while validating the filling task answer",
-            ),
+            "getFillingAnswerString();",
+            on_answer_received,
         )
         return False
     
