@@ -5,10 +5,13 @@ import time
 from typing import Any, Iterable, Iterator
 import os
 
+from app.api_keys import get_api_keys_store
 from .openai_cache import PromptCacheConfig
 
 
 logger = logging.getLogger(__name__)
+
+OPENAI_API_KEY_PATH = "openai/api_key"
 
 REASONING_EFFORT_NONE = "none"
 REASONING_EFFORT_MINIMAL = "minimal"
@@ -156,7 +159,8 @@ class OpenAITextClient:
         text_verbosity: str | None = None,
         service_tier: str | None = None,
     ) -> None:
-        client_kwargs: dict[str, Any] = {"api_key": os.getenv("OPENAI_API_KEY")}
+        api_keys = get_api_keys_store()
+        client_kwargs: dict[str, Any] = {"api_key": api_keys.get_value(OPENAI_API_KEY_PATH)}
         if base_url:
             client_kwargs["base_url"] = base_url
 

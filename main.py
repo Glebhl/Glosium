@@ -1,7 +1,10 @@
+import ctypes
 import logging
 import sys
+from pathlib import Path
 
 from dotenv import load_dotenv
+from PySide6.QtGui import QIcon
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QApplication, QMainWindow
@@ -12,6 +15,8 @@ from app import setup_logging
 from ui.controllers import LessonSetupController
 
 logger = logging.getLogger(__name__)
+ASSETS_DIR = Path(__file__).resolve().parent / "ui" / "assets" / "icons"
+APP_ICON_PATH = ASSETS_DIR / "logo.ico"
 
 
 class MainWindow(QMainWindow):
@@ -32,6 +37,7 @@ class MainWindow(QMainWindow):
     def _configure_window(self) -> None:
         """Configure basic window properties."""
         self.setWindowTitle("Glosium")
+        self.setWindowIcon(QIcon(str(APP_ICON_PATH)))
 
     def _create_web_view(self) -> None:
         """Create and attach the WebEngine view."""
@@ -70,7 +76,11 @@ def main() -> int:
 
     logger.debug("Application startup")
 
+    if sys.platform == "win32":
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("glosium.desktop.app")
+
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(str(APP_ICON_PATH)))
 
     main_window = MainWindow()
     main_window.resize(1200, 860)

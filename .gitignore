@@ -10,3 +10,6 @@ __pycache__/
 
 # Envirement
 .env
+
+# Nuitka
+build/
