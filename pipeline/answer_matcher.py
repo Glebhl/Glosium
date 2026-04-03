@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Sequence
 
 from app.settings import get_settings_store
-from llm_gateway import OpenAITextClient
+from llm_gateway import LLMTextClient
 
 CORRECT = "correct"
 MISTAKE = "mistake"
@@ -23,7 +23,7 @@ class AnswerMatcher:
             lesson_language: str,
         ) -> None:
         settings = get_settings_store()
-        self._text_client = OpenAITextClient(
+        self._text_client = LLMTextClient(
             model=settings.get_value("models/answer_matcher"),
             reasoning_effort=settings.get_value("pipeline/answer_matcher/reasoning_effort"),
             text_verbosity=settings.get_value("pipeline/answer_matcher/text_verbosity"),

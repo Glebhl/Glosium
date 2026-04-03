@@ -15,7 +15,7 @@ Glosium/
 |   |-- logging_config.py
 |-- models/                         # Typed models for cards, macro plan steps, and generated exercises
 |-- pipeline/                       # Vocabulary generation, macro planning, task generation, and parsing
-|-- llm_gateway/                    # OpenAI client wrappers and cache helpers
+|-- llm_gateway/                    # Provider-agnostic LLM gateway and provider adapters
 |-- prompts/                        # Prompt templates used by the generation pipeline
 |-- dev_fixtures/                   # Optional local fixtures for development and debugging
 |-- ui/
@@ -68,7 +68,7 @@ Without `OPENAI_API_KEY`, card generation and live lesson generation will not wo
 
 ### 5. Adjust runtime settings
 
-Edit `settings.yaml` to choose lesson languages, learner level, model assignments, and pipeline options:
+Edit `settings.yaml` to choose lesson languages, learner level, model assignments, and pipeline options. Models now use the `provider:model` format so the gateway can support more backends later:
 
 ```yaml
 lesson:
@@ -76,10 +76,10 @@ lesson:
   lerner_language: ru
   learner_level: B2
 models:
-  card_generation: gpt-5.4-nano
-  lesson_planning: o3
-  task_generation: gpt-5.4-mini
-  answer_matcher: gpt-5.4-nano
+  card_generation: openai:gpt-5.4-nano
+  lesson_planning: openai:o3
+  task_generation: openai:gpt-5.4-mini
+  answer_matcher: openai:gpt-5.4-nano
 pipeline:
   card_generation:
     reasoning_effort: none

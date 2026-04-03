@@ -6,7 +6,7 @@ from pathlib import Path
 
 from app.settings import get_settings_store
 from app.language_registry import get_language_display_name
-from llm_gateway import OpenAITextClient
+from llm_gateway import LLMTextClient
 from models import VocabularyCard
 
 
@@ -123,7 +123,7 @@ class VocabularyCardGenerator:
         lerner_language: str,
     ) -> None:
         settings = get_settings_store()
-        self._text_client = OpenAITextClient(
+        self._text_client = LLMTextClient(
             model=settings.get_value("models/card_generation"),
             reasoning_effort=settings.get_value("pipeline/card_generation/reasoning_effort"),
             text_verbosity=settings.get_value("pipeline/card_generation/text_verbosity"),

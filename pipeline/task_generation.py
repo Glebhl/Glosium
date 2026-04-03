@@ -7,7 +7,7 @@ from dataclasses import asdict, replace
 
 from app.settings import get_settings_store
 from app.language_registry import get_language_display_name
-from llm_gateway import OpenAITextClient
+from llm_gateway import LLMTextClient
 
 from models import MacroPlanStep
 from .task_generation_parsers import (
@@ -108,7 +108,7 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
         self._translation_language = translation_language
         self._lerner_level = lerner_level
         settings = get_settings_store()
-        self._text_client = OpenAITextClient(
+        self._text_client = LLMTextClient(
             model=settings.get_value("models/task_generation"),
             reasoning_effort=settings.get_value("pipeline/task_generation/reasoning_effort"),
             text_verbosity=settings.get_value("pipeline/task_generation/text_verbosity"),

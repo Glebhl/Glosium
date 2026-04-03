@@ -3,10 +3,10 @@ lesson:
   lerner_language: ru
   learner_level: B2
 models:
-  card_generation: gpt-5.4-nano
-  lesson_planning: o3
-  task_generation: gpt-5.4-mini
-  answer_matcher: gpt-5.4-nano
+  card_generation: openai:gpt-5.4-nano
+  lesson_planning: openai:o3
+  task_generation: openai:gpt-5.4-mini
+  answer_matcher: openai:gpt-5.4-nano
 pipeline:
   card_generation:
     reasoning_effort: none

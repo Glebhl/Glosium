@@ -5,7 +5,7 @@ from pathlib import Path
 from app.settings import get_settings_store
 from app.language_registry import get_language_display_name
 from dev_fixtures import DevFixtureSettings
-from llm_gateway import OpenAITextClient
+from llm_gateway import LLMTextClient
 from models import VocabularyCard
 from models import MacroPlanStep
 
@@ -32,7 +32,7 @@ class MacroPlanner:
         )
         self._dev_fixtures = DevFixtureSettings.from_env()
         settings = get_settings_store()
-        self._text_client = OpenAITextClient(
+        self._text_client = LLMTextClient(
             model=settings.get_value("models/lesson_planning"),
             reasoning_effort=settings.get_value("pipeline/lesson_planning/reasoning_effort"),
             text_verbosity=settings.get_value("pipeline/lesson_planning/text_verbosity"),
