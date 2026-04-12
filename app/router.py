@@ -20,6 +20,7 @@ class Router:
         self.project_root = Path(project_root).resolve()
         self._stack: list[Any] = []
 
+        self.backend.attach_window(window)
         self.window.events.loaded += self._on_view_loaded
 
     def navigate_to(self, controller_cls, *args, **kwargs) -> None:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 from threading import Lock, Thread
 from collections.abc import Callable, Mapping
@@ -15,8 +16,12 @@ class Backend:
 
     def __init__(self) -> None:
         self._ui_event_handler: Callable[[str, dict[str, Any]], None] | None = None
+        self._window: Any | None = None
         self._state: dict[str, Any] = {}
         self._state_lock = Lock()
+
+    def attach_window(self, window: Any) -> None:
+        self._window = window
 
     def set_ui_event_handler(
         self,
@@ -48,9 +53,13 @@ class Backend:
     def log(self, message: str) -> None:
         logger.debug("JS: %s", message)
 
-    def set_state(self, key: str, value: Any) -> None:
+    def publish_state(self, key: str, value: Any) -> None:
         with self._state_lock:
             self._state[key] = value
+        self._push_state_to_ui(key, value)
+
+    def set_state(self, key: str, value: Any) -> None:
+        self.publish_state(key, value)
 
     def get_state(self, key: str) -> Any:
         with self._state_lock:
@@ -59,3 +68,21 @@ class Backend:
     def clear_state(self, key: str) -> None:
         with self._state_lock:
             self._state.pop(key, None)
+        self._push_state_to_ui(key, None)
+
+    def _push_state_to_ui(self, key: str, value: Any) -> None:
+        window = self._window
+        if window is None:
+            return
+
+        key_json = json.dumps(key)
+        value_json = json.dumps(value)
+        script = (
+            "window.appBridge && "
+            f"window.appBridge.__deliverStateUpdate({key_json}, {value_json});"
+        )
+
+        try:
+            window.evaluate_js(script)
+        except Exception:  # noqa: BLE001
+            logger.debug("Failed to push UI state for key=%s", key, exc_info=True)

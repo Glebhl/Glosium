@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Iterator, Sequence
-from typing import Any
+from typing import Any, Callable
 
 from .model_spec import ModelSpec
 from .providers.registry import get_provider, get_registered_providers
+from .retries import request_with_retry, stream_with_retry
 from .types import LLMMessage, LLMResponse
 
 
@@ -39,15 +40,20 @@ class TextProviderProtocol:
         temperature: float | None = None,
         max_output_tokens: int | None = None,
     ) -> LLMResponse:
-        return self._provider.request_response(
-            messages=list(messages),
+        return request_with_retry(
+            lambda: self._provider.request_response(
+                messages=list(messages),
+                model=self.model_name,
+                reasoning_effort=self.reasoning_effort,
+                text_verbosity=self.text_verbosity,
+                service_tier=self.service_tier,
+                provider_options=self.provider_options,
+                temperature=temperature,
+                max_output_tokens=max_output_tokens,
+            ),
+            provider=self.provider_name,
             model=self.model_name,
-            reasoning_effort=self.reasoning_effort,
-            text_verbosity=self.text_verbosity,
-            service_tier=self.service_tier,
-            provider_options=self.provider_options,
-            temperature=temperature,
-            max_output_tokens=max_output_tokens,
+            operation_name="request_response",
         )
 
     def generate_response(
@@ -94,16 +100,23 @@ class TextProviderProtocol:
         user_text: str,
         temperature: float | None = None,
         max_output_tokens: int | None = None,
+        on_complete: Callable[[LLMResponse], None] | None = None,
     ) -> Iterator[str]:
-        return self._provider.stream_response(
-            messages=self._build_messages(system_prompt=system_prompt, user_text=user_text),
+        return stream_with_retry(
+            lambda: self._provider.stream_response(
+                messages=self._build_messages(system_prompt=system_prompt, user_text=user_text),
+                model=self.model_name,
+                reasoning_effort=self.reasoning_effort,
+                text_verbosity=self.text_verbosity,
+                service_tier=self.service_tier,
+                provider_options=self.provider_options,
+                temperature=temperature,
+                max_output_tokens=max_output_tokens,
+                on_complete=on_complete,
+            ),
+            provider=self.provider_name,
             model=self.model_name,
-            reasoning_effort=self.reasoning_effort,
-            text_verbosity=self.text_verbosity,
-            service_tier=self.service_tier,
-            provider_options=self.provider_options,
-            temperature=temperature,
-            max_output_tokens=max_output_tokens,
+            operation_name="stream_response",
         )
 
     def create_chat(

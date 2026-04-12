@@ -133,14 +133,6 @@
     return promptElement.value;
   }
 
-  function applyState(state) {
-    const nextState = state || {};
-
-    renderCards(nextState.cards);
-    setHint(nextState.hint || "");
-    setGenerating(Boolean(nextState.isGenerating));
-  }
-
   generateButton.addEventListener("click", function () {
     utils.emitBackendEvent("btn-click", { id: "generate", prompt: getPromptText() });
   });
@@ -164,11 +156,11 @@
     });
   });
 
-  globalObject.appBridge.observeState("lesson_setup_state", applyState, {
-    cards: [],
-    hint: "",
-    isGenerating: false,
-  });
+  globalObject.appBridge.observeState("lesson_setup/cards", renderCards, []);
+  globalObject.appBridge.observeState("lesson_setup/hint", setHint, "");
+  globalObject.appBridge.observeState("lesson_setup/is_generating", function (isGenerating) {
+    setGenerating(Boolean(isGenerating));
+  }, false);
 
   updateDeckLabel();
 })(window);

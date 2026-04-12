@@ -3,7 +3,6 @@ from __future__ import annotations
 __all__ = [
     "VocabularyCardGenerator",
     "LessonGoalGenerator",
-    "LessonStageGenerator",
     "LessonStagePlanner",
     "AnswerMatcher",
     "TaskGenerator",
@@ -11,9 +10,8 @@ __all__ = [
 
 _EXPORT_MAP = {
     "VocabularyCardGenerator": ("pipeline.card_generation", "VocabularyCardGenerator"),
-    "LessonGoalGenerator": ("pipeline.lesson_goals", "LessonGoalGenerator"),
-    "LessonStageGenerator": ("pipeline.lesson_generation", "LessonStageGenerator"),
-    "LessonStagePlanner": ("pipeline.lesson_stage_planning", "LessonStagePlanner"),
+    "LessonGoalGenerator": ("pipeline.goals_generation", "LessonGoalGenerator"),
+    "LessonStagePlanner": ("pipeline.lesson_stage_planner", "LessonStagePlanner"),
     "AnswerMatcher": ("pipeline.answer_matcher", "AnswerMatcher"),
     "TaskGenerator": ("pipeline.task_generation", "TaskGenerator"),
 }

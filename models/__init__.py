@@ -1,5 +1,5 @@
 from .card_models import VocabularyCard
-from .task_generation_models import (
+from .task_models import (
     ExplanationCard,
     ExplanationExercise,
     FillInTheBlankExercise,
@@ -7,7 +7,7 @@ from .task_generation_models import (
     TranslationExercise,
     MultipleChoiceExercise,
 )
-from .lesson_generation_models import (
+from .task_result_model import (
     LESSON_STAGE_SEQUENCE,
     LessonStageId,
     LessonTaskResult,

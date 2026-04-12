@@ -4,10 +4,10 @@ import sys
 from pathlib import Path
 
 import webview
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 
 from app.backend import Backend
-from app.logging_config import setup_logging
+from app.logging_config import read_logging_settings_from_env, setup_logging
 from app.router import Router
 
 logger = logging.getLogger(__name__)
@@ -77,12 +77,26 @@ class GlosiumApp:
 
 
 def main() -> int:
-    setup_logging(logging.DEBUG, log_to_file=True)
+    env_loaded = False
+    dotenv_path = ""
 
     try:
-        logger.debug("dotenv initialization")
-        load_dotenv()
-        logger.debug("dotenv was initialized")
+        dotenv_path = find_dotenv(usecwd=True)
+        if dotenv_path:
+            env_loaded = load_dotenv(dotenv_path=dotenv_path)
+    except Exception:  # noqa: BLE001
+        env_loaded = False
+
+    level, log_to_file, llm_usage_enabled = read_logging_settings_from_env(env_loaded=env_loaded)
+    setup_logging(level, log_to_file=log_to_file, llm_usage_enabled=llm_usage_enabled)
+
+    try:
+        if env_loaded:
+            logger.debug("dotenv was initialized from %s", dotenv_path)
+        else:
+            logger.warning(
+                "dotenv was not loaded; using fallback logging settings: level=INFO, file_logging=off, llm_usage=off"
+            )
 
         logger.debug("Application startup")
 

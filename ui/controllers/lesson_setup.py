@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import logging
 import random
-from threading import Thread
 from typing import TYPE_CHECKING
 
 from models.card_models import VocabularyCard
 
 logger = logging.getLogger(__name__)
+
+CARDS_STATE_KEY = "lesson_setup/cards"
+HINT_STATE_KEY = "lesson_setup/hint"
+GENERATING_STATE_KEY = "lesson_setup/is_generating"
 
 if TYPE_CHECKING:
     from dev_fixtures.settings import DevFixtureSettings
@@ -38,7 +41,6 @@ class LessonSetupController:
         self._cards: list[dict[str, object]] = []
         self._generation_error_message: str | None = None
         self._dev_fixtures: DevFixtureSettings | None = None
-        self._card_generation_thread: Thread | None = None
         self._is_generating = False
         self._hint = ""
         self._next_card_id = 0
@@ -48,6 +50,9 @@ class LessonSetupController:
         self._lerner_language: str | None = None
         self._lerner_level: str | None = None
         self._user_request: str | None = None
+        self._publish_cards()
+        self._publish_hint()
+        self._publish_generating()
 
     def on_load_finished(self):
         self._cards = []
@@ -55,7 +60,8 @@ class LessonSetupController:
         self._is_generating = False
         self._user_request = None
         self._set_hint(f"Tip: {random.choice(hints)}")
-        self._publish_state()
+        self._publish_cards()
+        self._publish_generating()
         self._load_dev_cards_if_needed()
 
     def on_ui_event(self, name: str, payload: dict):
@@ -63,12 +69,17 @@ class LessonSetupController:
         if handler:
             handler(payload)
 
-    def _publish_state(self) -> None:
-        self.backend.set_state("lesson_setup_state", {
-            "cards": [self._serialize_card_entry(entry) for entry in self._cards],
-            "hint": self._hint,
-            "isGenerating": self._is_generating,
-        })
+    def _publish_cards(self) -> None:
+        self.backend.publish_state(
+            CARDS_STATE_KEY,
+            [self._serialize_card_entry(entry) for entry in self._cards],
+        )
+
+    def _publish_hint(self) -> None:
+        self.backend.publish_state(HINT_STATE_KEY, self._hint)
+
+    def _publish_generating(self) -> None:
+        self.backend.publish_state(GENERATING_STATE_KEY, self._is_generating)
 
     def _serialize_card_entry(self, entry: dict[str, object]) -> dict[str, str]:
         card = entry["card"]
@@ -94,16 +105,16 @@ class LessonSetupController:
             "card": card,
         }
         self._cards.append(card_entry)
-        self._publish_state()
+        self._publish_cards()
         logger.debug("Added vocabulary card to UI: ui_card_id=%s lexeme=%s", card_entry["id"], card.lexeme)
 
     def _set_hint(self, hint: str) -> None:
         self._hint = hint
-        self._publish_state()
+        self._publish_hint()
 
     def _set_card_generating(self, is_generating: bool) -> None:
         self._is_generating = is_generating
-        self._publish_state()
+        self._publish_generating()
 
     def _load_dev_cards_if_needed(self) -> None:
         fixtures = self._get_dev_fixtures()
@@ -122,33 +133,23 @@ class LessonSetupController:
             logger.warning("Not a valid query for card generation")
             return
 
-        if self._card_generation_thread is not None and self._card_generation_thread.is_alive():
-            logger.warning("Card generation is already running; ignoring duplicate start request")
-            return
-
         self._generation_error_message = None
         self._set_card_generating(True)
         self._ensure_lesson_settings()
 
-        from ui.services.lesson_generation_workers import CardGenerationWorker
+        from ui.services.card_generation_worker import CardGenerationWorker
 
         worker = CardGenerationWorker(
             query=clean_query,
             lesson_language=self._lesson_language or "",
             translation_language=self._lerner_language or "",
         )
-        worker_thread = Thread(
-            target=worker.run,
-            kwargs={
-                "on_card_generated": self._handle_card_generated,
-                "on_generation_failed": self._handle_card_generation_error,
-                "on_finished": self._finish_card_generation,
-            },
-            daemon=True,
+        worker.run(
+            on_card_generated=self._handle_card_generated,
+            on_generation_failed=self._handle_card_generation_error,
+            on_finished=self._finish_card_generation
         )
-        self._card_generation_thread = worker_thread
-        worker_thread.start()
-
+        
     def _handle_card_generated(self, card: VocabularyCard) -> None:
         try:
             self._append_card(card)
@@ -169,8 +170,6 @@ class LessonSetupController:
                 self._set_hint("Cards generation failed. Check the logs and try again.")
         except Exception:  # noqa: BLE001
             logger.exception("Unhandled exception while finalizing vocabulary generation")
-        finally:
-            self._card_generation_thread = None
 
     def _on_btn_click(self, payload: dict):
         logger.debug("Clicked the button with the id='%s'", payload.get("id"))
@@ -210,7 +209,7 @@ class LessonSetupController:
                 continue
 
             self._cards.pop(index)
-            self._publish_state()
+            self._publish_cards()
             logger.debug("The card %s was closed by the UI", card_id)
             return
 

@@ -9,8 +9,8 @@
   const shellState = {
     activeTaskController: createEmptyTaskController(),
     activeTaskElement: null,
-    lastTaskRevision: 0,
-    lastValidationRevision: 0,
+    activeTaskIndex: null,
+    validationMarker: null,
     transitionFallbackMs: 500,
     transitionToken: 0,
   };
@@ -159,28 +159,6 @@
     shellState.activeTaskController.setValidity(Boolean(isCorrect));
   }
 
-  function applyState(state) {
-    const nextState = state || {};
-    const taskState = nextState.task || null;
-    const validationState = nextState.validation || null;
-
-    setStep(nextState.stepIndex || 0, nextState.totalSteps || 0);
-
-    if (taskState && taskState.revision !== shellState.lastTaskRevision) {
-      shellState.lastTaskRevision = taskState.revision;
-      shellState.lastValidationRevision = 0;
-      setTask(taskState.type, taskState.direction, taskState.payload);
-    }
-
-    if (
-      validationState &&
-      validationState.revision !== shellState.lastValidationRevision
-    ) {
-      shellState.lastValidationRevision = validationState.revision;
-      setActiveTaskValidity(validationState.isCorrect);
-    }
-  }
-
   continueButton.addEventListener("click", function () {
     globalObject.appBridge.emitBackendEvent("btn-click", {
       id: "continue",
@@ -192,10 +170,42 @@
     globalObject.appBridge.emitBackendEvent("btn-click", { id: "skip" });
   });
 
-  globalObject.appBridge.observeState("lesson_flow_state", applyState, {
+  globalObject.appBridge.observeState("lesson_flow/progress", function (progressState) {
+    const nextState = progressState || {};
+    setStep(nextState.stepIndex || 0, nextState.totalSteps || 0);
+  }, {
     stepIndex: 0,
     totalSteps: 0,
-    task: null,
-    validation: null,
   });
+
+  globalObject.appBridge.observeState("lesson_flow/task", function (taskState) {
+    if (!taskState) {
+      return;
+    }
+
+    // if (taskState.taskIndex === shellState.activeTaskIndex) {
+    //   return;
+    // }
+
+    shellState.activeTaskIndex = taskState.taskIndex;
+    shellState.validationMarker = null;
+    setTask(taskState.type, taskState.direction, taskState.payload);
+  }, null);
+
+  globalObject.appBridge.observeState("lesson_flow/validation", function (validationState) {
+    if (!validationState) {
+      shellState.validationMarker = null;
+      setActiveTaskValidity(true);
+      return;
+    }
+
+    const nextMarker = validationState.isCorrect ? "correct" : "incorrect";
+
+    if (shellState.validationMarker === nextMarker) {
+      return;
+    }
+
+    shellState.validationMarker = nextMarker;
+    setActiveTaskValidity(validationState.isCorrect);
+  }, null);
 })(window);

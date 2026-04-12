@@ -3,14 +3,14 @@ lesson:
   lerner_language: ru
   learner_level: B2
 models:
-  card_generation: google:gemini-3.1-flash-lite-preview
+  card_generation: google:gemma-4-26b-a4b-it
   lesson_planning:
-    goals: google:gemini-3-flash-preview
-    presentation: google:gemini-3-flash-preview
-    recognition: google:gemini-3-flash-preview
-    stronger_recall: google:gemini-3-flash-preview
-  task_generation: google:gemini-3.1-flash-lite-preview
-  answer_matcher: google:gemini-3.1-flash-lite-preview
+    goals: google:gemma-4-26b-a4b-it
+    presentation: google:gemma-4-26b-a4b-it
+    recognition: google:gemma-4-26b-a4b-it
+    stronger_recall: google:gemma-4-26b-a4b-it
+  task_generation: google:gemma-4-26b-a4b-it
+  answer_matcher: google:gemma-4-26b-a4b-it
 pipeline:
   card_generation:
     reasoning_effort: minimal

@@ -5,7 +5,7 @@ import random
 from collections import Counter
 from typing import Any, Iterable
 
-from models.task_generation_models import (
+from models.task_models import (
     ExplanationCard,
     ExplanationExercise,
     FillInTheBlankExercise,

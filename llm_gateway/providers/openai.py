@@ -5,10 +5,11 @@ import json
 import logging
 import time
 from collections.abc import Iterator, Sequence
-from typing import Any
+from typing import Any, Callable
 
+from ..observability import complete_request_log, fail_request_log, start_request_log
 from .base import BaseProvider
-from ..types import LLMMessage, LLMResponse, LLMTokenUsage
+from ..types import LLMTimings, LLMMessage, LLMResponse, LLMTokenUsage
 
 
 logger = logging.getLogger(__name__)
@@ -76,25 +77,43 @@ class OpenAIProvider(BaseProvider):
             temperature=temperature,
             max_output_tokens=max_output_tokens,
         )
+        request_log = start_request_log(
+            provider=self.name,
+            model=model,
+            messages=messages,
+            reasoning_effort=reasoning_effort,
+            text_verbosity=text_verbosity,
+            service_tier=service_tier,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+            provider_options=provider_options,
+            stream=False,
+        )
 
-        response = client.responses.create(**request)
+        started_at = time.perf_counter()
+        try:
+            response = client.responses.create(**request)
+        except Exception as exc:
+            fail_request_log(request_log, exc)
+            raise
         usage = self._build_usage(response)
-        if usage is not None:
-            logger.info(
-                "OpenAI usage: model=%s input_tokens=%s output_tokens=%s total_tokens=%s",
-                model,
-                usage.input_tokens,
-                usage.output_tokens,
-                usage.total_tokens,
-            )
 
-        return LLMResponse(
+        actual_model = self._extract_response_model(response) or model
+        llm_response = LLMResponse(
             text=self._extract_text(response),
             response_id=getattr(response, "id", None),
             usage=usage,
+            timings=LLMTimings(total_seconds=time.perf_counter() - started_at),
             raw=response,
-            metadata={"model": model, "provider": self.name},
+            metadata={
+                "model": actual_model,
+                "provider": self.name,
+                "input_model": model,
+                "output_model": actual_model,
+            },
         )
+        complete_request_log(request_log, llm_response)
+        return llm_response
 
     def stream_response(
         self,
@@ -107,6 +126,7 @@ class OpenAIProvider(BaseProvider):
         provider_options: dict[str, Any] | None = None,
         temperature: float | None = None,
         max_output_tokens: int | None = None,
+        on_complete: Callable[[LLMResponse], None] | None = None,
     ) -> Iterator[str]:
         from openai import OpenAI
 
@@ -123,12 +143,30 @@ class OpenAIProvider(BaseProvider):
             max_output_tokens=max_output_tokens,
         )
         request["stream"] = True
-        raw_stream = client.responses.create(**request)
+        request_log = start_request_log(
+            provider=self.name,
+            model=model,
+            messages=messages,
+            reasoning_effort=reasoning_effort,
+            text_verbosity=text_verbosity,
+            service_tier=service_tier,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+            provider_options=provider_options,
+            stream=True,
+        )
+        try:
+            raw_stream = client.responses.create(**request)
+        except Exception as exc:
+            fail_request_log(request_log, exc)
+            raise
 
         def iterator() -> Iterator[str]:
             started_at = time.perf_counter()
             first_delta_at: float | None = None
             completed_response: Any | None = None
+            chunks: list[str] = []
+            failure: BaseException | None = None
             try:
                 for event in raw_stream:
                     event_type = getattr(event, "type", "")
@@ -141,27 +179,53 @@ class OpenAIProvider(BaseProvider):
                                     "Received first response delta after %.2fs",
                                     first_delta_at - started_at,
                                 )
+                            chunks.append(delta)
                             yield delta
                     elif event_type == "response.completed":
                         completed_response = getattr(event, "response", None)
                     elif event_type == "error":
                         raise RuntimeError(self._extract_stream_error(event))
+            except Exception as exc:
+                failure = exc
+                raise
             finally:
                 close = getattr(raw_stream, "close", None)
                 if callable(close):
                     close()
+                total_seconds = time.perf_counter() - started_at
                 usage = self._build_usage(completed_response) if completed_response is not None else None
-                if usage is not None:
-                    logger.info(
-                        "OpenAI usage: model=%s input_tokens=%s output_tokens=%s total_tokens=%s",
-                        model,
-                        usage.input_tokens,
-                        usage.output_tokens,
-                        usage.total_tokens,
-                    )
+                response = LLMResponse(
+                    text=self._extract_text(completed_response) if completed_response is not None else "".join(chunks),
+                    response_id=getattr(completed_response, "id", None) if completed_response is not None else None,
+                    usage=usage,
+                    timings=LLMTimings(
+                        total_seconds=total_seconds,
+                        time_to_first_token_seconds=(
+                            first_delta_at - started_at if first_delta_at is not None else None
+                        ),
+                        stream_seconds=(
+                            total_seconds - (first_delta_at - started_at)
+                            if first_delta_at is not None
+                            else None
+                        ),
+                    ),
+                    raw=completed_response,
+                    metadata={
+                        "model": self._extract_response_model(completed_response) or model,
+                        "provider": self.name,
+                        "input_model": model,
+                        "output_model": self._extract_response_model(completed_response) or model,
+                    },
+                )
+                if failure is not None:
+                    fail_request_log(request_log, failure, response=response)
+                    return
+                if on_complete is not None:
+                    on_complete(response)
+                complete_request_log(request_log, response)
                 logger.debug(
                     "Streaming response finished in %.2fs",
-                    time.perf_counter() - started_at,
+                    total_seconds,
                 )
 
         return iterator()
@@ -334,6 +398,21 @@ class OpenAIProvider(BaseProvider):
         if error is not None:
             return getattr(error, "message", None) or str(error)
         return "OpenAI streaming request failed."
+
+    @staticmethod
+    def _extract_response_model(response: Any) -> str | None:
+        model_name = getattr(response, "model", None)
+        if isinstance(model_name, str) and model_name:
+            return model_name
+
+        model_dump = getattr(response, "model_dump", None)
+        if callable(model_dump):
+            dumped = model_dump()
+            dumped_model = dumped.get("model") if isinstance(dumped, dict) else None
+            if isinstance(dumped_model, str) and dumped_model:
+                return dumped_model
+
+        return None
 
     @staticmethod
     def _build_usage(response: Any) -> LLMTokenUsage | None:

@@ -8,16 +8,6 @@ from app.language_registry import get_language_display_name
 from app.settings import get_settings_store
 from llm_gateway import LLMTextClient
 from models import VocabularyCard
-from .lesson_observability import (
-    build_log_scope,
-    format_log_event,
-    format_parse_error_context,
-    format_text_block,
-    summarize_cards,
-    summarize_goals,
-    summarize_llm_output,
-    summarize_prompt,
-)
 
 
 logger = logging.getLogger(__name__)
@@ -36,10 +26,10 @@ class LessonGoalGenerator:
 
         settings = get_settings_store()
         self._text_client = LLMTextClient(
-            model=settings.get_value("models/lesson_planning"),
-            reasoning_effort=settings.get_value("pipeline/lesson_planning/reasoning_effort"),
-            text_verbosity=settings.get_value("pipeline/lesson_planning/text_verbosity"),
-            service_tier=settings.get_value("pipeline/lesson_planning/service_tier"),
+            model=settings.get_value("models/lesson_planning/goals"),
+            reasoning_effort=settings.get_value("pipeline/lesson_planning/goals/reasoning_effort"),
+            text_verbosity=settings.get_value(f"pipeline/lesson_planning/goals/text_verbosity"),
+            service_tier=settings.get_value(f"pipeline/lesson_planning/goals/service_tier"),
         )
 
         prompt_path = Path("prompts") / lesson_language / "lesson_goal_generation.txt"
@@ -52,55 +42,34 @@ class LessonGoalGenerator:
         *,
         cards: list[VocabularyCard],
         user_request: str | None = None,
-        trace_id: str | None = None,
     ) -> list[str]:
         prompt = self._build_user_prompt(cards=cards, user_request=user_request)
-        scope = build_log_scope(trace_id=trace_id)
-        logger.info(
-            "%s",
-            format_log_event(
-                f"{scope}Lesson goals request",
-                f"model: {self._text_client.model_spec}",
-                f"system prompt: {summarize_prompt(self._system_prompt, path=self._prompt_path)}",
-                f"user prompt: {summarize_prompt(prompt)}",
-                "cards:",
-                *[f"  {line}" for line in summarize_cards(cards)],
-                f"user request: {' '.join(user_request.split()) if user_request else '[empty]'}",
-            ),
-        )
+        logger.info("Generating lesson goals...")
 
-        response = self._text_client.generate_text(
+        response = self._text_client.generate_response(
             system_prompt=self._system_prompt,
             user_text=prompt,
         )
-        if not isinstance(response, str):
-            raise TypeError(f"Lesson goals generator returned {type(response).__name__}, expected str.")
+        response_text = response.text
+        if not isinstance(response_text, str):
+            raise TypeError(f"Lesson goals generator returned {type(response_text).__name__}, expected str.")
 
         try:
-            goals = self._parse_goals(response)
+            goals = self._parse_goals(response_text)
         except Exception as exc:
             logger.error(
-                "%s",
-                format_log_event(
-                    f"{scope}Lesson goals parsing failed",
-                    f"error: {type(exc).__name__}: {exc}",
-                    "llm output summary:",
-                    *[f"  {line}" for line in summarize_llm_output(response)],
-                    *format_parse_error_context(response, max_chars=1600),
-                ),
+                "Lesson goals parsing failed\n"
+                "error: %s\n"
+                "llm output summary:\n%s",
+                exc,
+                response_text,
             )
             raise
 
         logger.info(
-            "%s",
-            format_log_event(
-                f"{scope}Lesson goals generated",
-                "goals:",
-                *[f"  {line}" for line in summarize_goals(goals)],
-                "llm output summary:",
-                *[f"  {line}" for line in summarize_llm_output(response)],
-                format_text_block("LLM response excerpt:", response, max_chars=1600),
-            ),
+            "Lesson goals generated\n"
+            "goals:\n%s",
+            "\n".join(goals)
         )
         return goals
 
@@ -111,11 +80,8 @@ class LessonGoalGenerator:
         user_request: str | None,
     ) -> str:
         lines: list[str] = [
-            "",
-            f"LERNER_LANGUAGE: {get_language_display_name(self._lerner_language)}",
-            "",
+            f"LERNER_LANGUAGE: {get_language_display_name(self._lerner_language)}"
             f"LERNER_LEVEL: {self._lerner_level}",
-            "",
         ]
 
         if user_request:

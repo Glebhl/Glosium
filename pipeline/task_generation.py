@@ -18,17 +18,6 @@ from models import (
     TranslationExercise,
     VocabularyCard,
 )
-from .lesson_observability import (
-    build_log_scope,
-    format_log_event,
-    format_parse_error_context,
-    format_text_block,
-    summarize_cards,
-    summarize_llm_output,
-    summarize_macro_step,
-    summarize_prompt,
-    summarize_task_payload,
-)
 from .task_generation_parsers import (
     parse_explanation_exercise,
     parse_fill_in_the_blank_exercise,
@@ -48,43 +37,40 @@ class TaskGenerator:
         self,
         *,
         lesson_language: str,
-        translation_language: str,
+        lerner_language: str,
         lerner_level: str,
     ) -> None:
         self._generator_by_exercise_id = {
             "explanation": ExplanationTaskGenerator(
                 lesson_language=lesson_language,
-                translation_language=translation_language,
+                lerner_language=lerner_language,
                 lerner_level=lerner_level,
             ),
             "filling": FillingTaskGenerator(
                 lesson_language=lesson_language,
-                translation_language=translation_language,
+                lerner_language=lerner_language,
                 lerner_level=lerner_level,
             ),
             "matching": MatchingTaskGenerator(
                 lesson_language=lesson_language,
-                translation_language=translation_language,
+                lerner_language=lerner_language,
                 lerner_level=lerner_level,
             ),
             "question": QuestionTaskGenerator(
                 lesson_language=lesson_language,
-                translation_language=translation_language,
+                lerner_language=lerner_language,
                 lerner_level=lerner_level,
             ),
             "translation": TranslationTaskGenerator(
                 lesson_language=lesson_language,
-                translation_language=translation_language,
+                lerner_language=lerner_language,
                 lerner_level=lerner_level,
             ),
         }
 
-    def generate_task_payload(
+    def generate_task(
         self,
         step: MacroPlanStep,
-        *,
-        stage_id: str | None = None,
-        trace_id: str | None = None,
     ) -> dict | None:
         exercise_id = step.exercise_id.strip().lower()
 
@@ -96,8 +82,6 @@ class TaskGenerator:
         task = generator.generate_task(
             description=step.description,
             targets=step.targets,
-            stage_id=stage_id,
-            trace_id=trace_id,
         )
         if hasattr(task, "mode"):
             task = replace(task, mode=step.mode)
@@ -105,17 +89,13 @@ class TaskGenerator:
         payload = asdict(task)
         payload["lesson_description"] = step.description
         payload["lesson_targets"] = [card.lexeme for card in step.targets]
-        scope = build_log_scope(trace_id=trace_id, stage_id=stage_id)
-        logger.info(
-            "%s",
-            format_log_event(
-                f"{scope}Task payload ready",
-                "macro step:",
-                *[f"  {line}" for line in summarize_macro_step(step)],
-                "payload:",
-                *[f"  {line}" for line in summarize_task_payload(payload)],
-            ),
-        )
+        # logger.info(
+        #     "Task payload ready\n"
+        #     "macro step:\n%s\n"
+        #     "payload:\n%s",
+        #     step,  # TODO make this readable
+        #     "\n".join(payload),
+        # )
         return payload
 
 
@@ -128,10 +108,10 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
         self,
         *,
         lesson_language: str,
-        translation_language: str,
+        lerner_language: str,
         lerner_level: str,
     ) -> None:
-        self._translation_language = translation_language
+        self._lerner_language = lerner_language
         self._lerner_level = lerner_level
         settings = get_settings_store()
         self._text_client = LLMTextClient(
@@ -155,69 +135,46 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
         *,
         description: str,
         targets: list[VocabularyCard],
-        stage_id: str | None = None,
-        trace_id: str | None = None,
     ) -> ParsedExerciseT:
         prompt = self._build_user_prompt(
-            translation_language=get_language_display_name(self._translation_language),
+            lerner_language=get_language_display_name(self._lerner_language),
             lerner_level=self._lerner_level,
             description=description,
             targets=targets,
         )
-        scope = build_log_scope(trace_id=trace_id, stage_id=stage_id)
-        logger.info(
-            "%s",
-            format_log_event(
-                f"{scope}Task generation request",
-                f"exercise_id: {self.prompt_filename.replace('_task_generation.txt', '')}",
-                f"model: {self._text_client.model_spec}",
-                f"system prompt: {summarize_prompt(self._system_prompt, path=f'{self._common_prompt_path} + {self._task_prompt_path}')}",
-                f"user prompt: {summarize_prompt(prompt)}",
-                f"description: {' '.join(description.split())}",
-                "targets:",
-                *[f"  {line}" for line in summarize_cards(targets)],
-            ),
-        )
+        logger.debug("Task generation request")
 
-        response = self._text_client.generate_text(
+        response = self._text_client.generate_response(
             system_prompt=self._system_prompt,
             user_text=prompt,
         )
+        response_text = response.text
         try:
-            parsed = self.parser(response)
+            parsed = self.parser(response_text)
         except Exception as exc:
-            logger.error(
-                "%s",
-                format_log_event(
-                    f"{scope}Task parsing failed",
-                    f"exercise_id: {self.prompt_filename.replace('_task_generation.txt', '')}",
-                    f"error: {type(exc).__name__}: {exc}",
-                    "llm output summary:",
-                    *[f"  {line}" for line in summarize_llm_output(response)],
-                    *format_parse_error_context(response, max_chars=2200),
-                ),
+            logger.error(  # TODO Remove this exception handler and move this log directly to the parser
+                "Task parsing failed\n"
+                "exercise_id: N/A\n"  # TODO add exercise id
+                "error: %s\n"
+                "llm output:\n%s",
+                exc,
+                response_text,
             )
             raise
 
         payload = asdict(parsed)
-        logger.info(
-            "%s",
-            format_log_event(
-                f"{scope}Task generation completed",
-                f"exercise_id: {self.prompt_filename.replace('_task_generation.txt', '')}",
-                "llm output summary:",
-                *[f"  {line}" for line in summarize_llm_output(response)],
-                format_text_block("LLM response excerpt:", response, max_chars=1800),
-                "parsed payload:",
-                *[f"  {line}" for line in summarize_task_payload(payload)],
-            ),
-        )
+        # logger.debug(
+        #     "Task generation completed\n"
+        #     "exercise_id: N/A\n"  # TODO add exercise id
+        #     "parsed payload:%s\n",
+        #     "\n".join(payload),  # TODO make this readable
+        # )
         return parsed
 
     def _build_user_prompt(
         self,
         *,
-        translation_language: str,
+        lerner_language: str,
         lerner_level,
         description: str,
         targets: list[VocabularyCard],
@@ -227,20 +184,9 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
         """
 
         lines: list[str] = []
-
-        lines.append(f"LERNER_LANGUAGE: {translation_language}")
-        lines.append("")
-
+        lines.append(f"LERNER_LANGUAGE: {lerner_language}")
         lines.append(f"LERNER_LEVEL: {lerner_level}")
-        lines.append("")
-
         lines.append(f"DESCRIPTION: {description}")
-        lines.append("")
-
-        lines.append("OUTPUT_FORMAT:")
-        lines.append(self.output_format_prompt.strip())
-        lines.append("")
-
         lines.append(f"TARGETS:")
         for index, card in enumerate(targets, start=1):
             base = (
@@ -256,49 +202,23 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
 class ExplanationTaskGenerator(BaseTaskGenerator[ExplanationExercise]):
     prompt_filename = "explanation_task_generation.txt"
     parser = staticmethod(parse_explanation_exercise)
-    output_format_prompt = (
-        "Return plain text, not JSON. "
-        "For each card use exactly this structure:\n"
-        "===CARD===\n"
-        "NAME: <short block title>\n"
-        "HTML:\n"
-        "<html fragment>\n"
-        "===END_CARD===\n"
-        "Do not use markdown code fences."
-    )
 
 
 class FillingTaskGenerator(BaseTaskGenerator[FillInTheBlankExercise]):
     prompt_filename = "filling_task_generation.txt"
     parser = staticmethod(parse_fill_in_the_blank_exercise)
-    output_format_prompt = (
-        'Return one JSON object: {"paragraph":"text with [answers] in square brackets","distractors":["..."]}. '
-        'Do not use markdown code fences.'
-    )
 
 
 class MatchingTaskGenerator(BaseTaskGenerator[MatchingExercise]):
     prompt_filename = "matching_task_generation.txt"
     parser = staticmethod(parse_matching_exercise)
-    output_format_prompt = (
-        'Return one JSON object: {"pairs":[["left","right"],["left","right"]]}. '
-        'Do not use markdown code fences.'
-    )
 
 
 class QuestionTaskGenerator(BaseTaskGenerator[MultipleChoiceExercise]):
     prompt_filename = "question_task_generation.txt"
     parser = staticmethod(parse_multiple_choice_exercise)
-    output_format_prompt = (
-        'Return one JSON object: {"passage":"...","question":"...","options":["..."],"answer":0}. '
-        'The answer may also be a letter or the exact option text. Do not use markdown code fences.'
-    )
 
 
 class TranslationTaskGenerator(BaseTaskGenerator[TranslationExercise]):
     prompt_filename = "translation_task_generation.txt"
     parser = staticmethod(parse_translation_exercise)
-    output_format_prompt = (
-        'Return one JSON object: {"paragraph":"...","answers":["..."],"distractors":["..."]}. '
-        'Do not use markdown code fences.'
-    )

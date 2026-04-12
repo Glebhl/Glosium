@@ -1,5 +1,6 @@
 (function registerPywebviewBridge(globalObject) {
   const readyCallbacks = [];
+  const stateObserversByKey = new Map();
   let isReady = false;
 
   function flushReadyCallbacks() {
@@ -56,37 +57,66 @@
     });
   }
 
-  function observeState(key, callback, fallbackValue, intervalMs) {
+  function observeState(key, callback, fallbackValue) {
+    const observerKey = String(key || "");
+    const observerEntry = {
+      callback: callback,
+      fallbackValue: fallbackValue,
+      lastSerialized: null,
+    };
+
+    if (!stateObserversByKey.has(observerKey)) {
+      stateObserversByKey.set(observerKey, new Set());
+    }
+
+    stateObserversByKey.get(observerKey).add(observerEntry);
+
     onReady(function () {
-      let lastSerialized = null;
-      const pollIntervalMs = Number(intervalMs) > 0 ? Number(intervalMs) : 150;
-      const warmupPollDelaysMs = [24, 72];
+      getState(observerKey, fallbackValue)
+        .then(function (value) {
+          applyStateValue(observerEntry, value);
+        })
+        .catch(function () {
+          applyStateValue(observerEntry, fallbackValue);
+        });
+    });
 
-      function applyIfChanged(value) {
-        const normalizedValue = value === undefined || value === null ? fallbackValue : value;
-        const serializedValue = JSON.stringify(normalizedValue);
-
-        if (serializedValue === lastSerialized) {
-          return;
-        }
-
-        lastSerialized = serializedValue;
-        callback(normalizedValue);
+    return function unsubscribe() {
+      const observers = stateObserversByKey.get(observerKey);
+      if (!observers) {
+        return;
       }
 
-      function poll() {
-        getState(key, fallbackValue)
-          .then(applyIfChanged)
-          .catch(function () {
-            applyIfChanged(fallbackValue);
-          });
+      observers.delete(observerEntry);
+      if (observers.size === 0) {
+        stateObserversByKey.delete(observerKey);
       }
+    };
+  }
 
-      poll();
-      warmupPollDelaysMs.forEach(function (delayMs) {
-        globalObject.setTimeout(poll, delayMs);
-      });
-      globalObject.setInterval(poll, pollIntervalMs);
+  function applyStateValue(observerEntry, value) {
+    const normalizedValue =
+      value === undefined || value === null ? observerEntry.fallbackValue : value;
+    const serializedValue = JSON.stringify(normalizedValue);
+
+    if (serializedValue === observerEntry.lastSerialized) {
+      return;
+    }
+
+    observerEntry.lastSerialized = serializedValue;
+    observerEntry.callback(normalizedValue);
+  }
+
+  function deliverStateUpdate(key, value) {
+    const observerKey = String(key || "");
+    const observers = stateObserversByKey.get(observerKey);
+
+    if (!observers) {
+      return;
+    }
+
+    observers.forEach(function (observerEntry) {
+      applyStateValue(observerEntry, value);
     });
   }
 
@@ -94,6 +124,7 @@
   markReady();
 
   globalObject.appBridge = {
+    __deliverStateUpdate: deliverStateUpdate,
     emitBackendEvent: emitBackendEvent,
     getState: getState,
     observeState: observeState,

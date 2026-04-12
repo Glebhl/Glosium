@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from collections.abc import Iterator, Sequence
-from typing import Any
+from typing import Any, Callable
 
 from ..types import LLMMessage, LLMResponse
 
@@ -37,5 +37,6 @@ class BaseProvider(ABC):
         provider_options: dict[str, Any] | None = None,
         temperature: float | None = None,
         max_output_tokens: int | None = None,
+        on_complete: Callable[[LLMResponse], None] | None = None,
     ) -> Iterator[str]:
         raise NotImplementedError

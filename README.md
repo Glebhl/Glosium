@@ -62,9 +62,20 @@ Create a `.env` file in the project root:
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
+GLOSIUM_LOG_LEVEL=INFO
+GLOSIUM_LOG_TO_FILE=0
+GLOSIUM_LLM_USAGE_ENABLED=1
 ```
 
 Without `OPENAI_API_KEY`, card generation and live lesson generation will not work.
+
+Logging configuration is also read from `.env`:
+
+- `GLOSIUM_LOG_LEVEL`: root log level such as `DEBUG`, `INFO`, `WARNING`, or a numeric level.
+- `GLOSIUM_LOG_TO_FILE`: enables writing the main application log to `app.log` when set to `1`, `true`, `yes`, or `on`.
+- `GLOSIUM_LLM_USAGE_ENABLED`: enables the dedicated `llm.usage` logger and its `llm_usage.log` file when file logging is on.
+
+If `.env` is missing or cannot be read, the app falls back to `INFO` level and disables all file logging.
 
 ### 5. Adjust runtime settings
 
@@ -77,7 +88,11 @@ lesson:
   learner_level: B2
 models:
   card_generation: openai:gpt-5.4-nano
-  lesson_planning: openai:o3
+  lesson_planning:
+    goals: openai:o3
+    presentation: openai:o3
+    recognition: openai:o3
+    stronger_recall: openai:o3
   task_generation: openai:gpt-5.4-mini
   answer_matcher: openai:gpt-5.4-nano
 pipeline:
@@ -86,9 +101,22 @@ pipeline:
     text_verbosity: low
     service_tier: flex
   lesson_planning:
-    reasoning_effort: low
-    text_verbosity: null
-    service_tier: flex
+    goals:
+      reasoning_effort: low
+      text_verbosity: null
+      service_tier: flex
+    presentation:
+      reasoning_effort: low
+      text_verbosity: null
+      service_tier: flex
+    recognition:
+      reasoning_effort: low
+      text_verbosity: null
+      service_tier: flex
+    stronger_recall:
+      reasoning_effort: low
+      text_verbosity: null
+      service_tier: flex
   task_generation:
     reasoning_effort: none
     text_verbosity: low

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import logging
 
+from ui.services import LessonGenerationSession
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,7 +30,7 @@ class LoadingScreenController:
         self._user_request = user_request
         self._learner_level = learner_level
         self._lesson_language = lesson_language
-        self._translation_language = translation_language
+        self._lerner_language = translation_language
         self._generation_started = False
         self._generation_error_message: str | None = None
         self._lesson_session = None
@@ -60,49 +62,46 @@ class LoadingScreenController:
             return
 
         self._generation_error_message = None
+        logger.info(
+            "Opening stub lesson from loading screen: cards=%d lesson_language=%s translation_language=%s learner_level=%s user_request=%r",
+            len(self._cards),
+            self._lesson_language,
+            self._lerner_language,
+            self._learner_level,
+            self._user_request,
+        )
 
-        from ui.services import LessonGenerationSession
-
-        session = LessonGenerationSession(
-            cards=self._cards,
-            user_request=self._user_request,
+        self._lesson_session = LessonGenerationSession(
             lerner_level=self._learner_level,
             lesson_language=self._lesson_language,
-            translation_language=self._translation_language,
+            lerner_language=self._lerner_language,
         )
-        self._lesson_session = session
-        session.set_listener(self._handle_lesson_session_update)
-        session.start()
+        self._lesson_session.subscribe_first_task_generated(self._handle_first_task_generated)
+        self._lesson_session.start_generation(
+            cards=self._cards,
+            user_request=self._user_request,
+        )
 
-    def _handle_lesson_session_update(self) -> None:
+    def _handle_first_task_generated(self) -> None:
         if self._lesson_session is None:
             return
 
-        error_message = self._lesson_session.error_message
-        if error_message:
-            self._handle_lesson_generation_error(error_message)
-            return
-
-        if self._lesson_opened or self._lesson_session.available_task_count < 1:
-            return
-
-        self._lesson_opened = True
-        from ui.controllers.lesson_flow import LessonFlowController
+        from .lesson_flow import LessonFlowController
 
         self.router.replace_current(
             LessonFlowController,
             self._lesson_session,
             self._lesson_language,
-            self._translation_language,
+            self._lerner_language,
         )
 
     def _handle_lesson_generation_error(self, message: str) -> None:
         try:
             self._generation_error_message = message
-            logger.error("Lesson generation failed: %s", message)
+            logger.error("Stub lesson flow failed: %s", message)
         except Exception:  # noqa: BLE001
-            logger.exception("Unhandled exception while handling a lesson generation error")
+            logger.exception("Unhandled exception while handling a stub lesson error")
 
     def _finish_lesson_generation(self) -> None:
         if self._generation_error_message:
-            logger.warning("Lesson generation finished with an error: %s", self._generation_error_message)
+            logger.warning("Stub lesson flow finished with an error: %s", self._generation_error_message)
