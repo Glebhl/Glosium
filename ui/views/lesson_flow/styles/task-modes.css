@@ -50,21 +50,16 @@
 }
 
 .task-answer.task-answer--filling {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  align-content: start;
-  gap: 6px;
+  display: block;
   min-height: 94px;
   color: var(--color-text);
   font-size: 16px;
+  line-height: 42px;
   transition: transform var(--duration-fast) ease;
 }
 
 .filling-text {
-  min-height: 42px;
   line-height: 42px;
-  text-align: end;
 }
 
 .task-blank {
@@ -106,6 +101,8 @@
 .task-blank > .task-key {
   position: relative;
   z-index: 1;
+  line-height: normal;
+  align-self: center;
   transition:
     opacity var(--duration-normal) ease,
     transform var(--duration-normal) ease;

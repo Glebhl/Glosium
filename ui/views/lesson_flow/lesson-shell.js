@@ -204,8 +204,22 @@
     if (shellState.validationMarker === nextMarker) {
       return;
     }
-
+    
     shellState.validationMarker = nextMarker;
     setActiveTaskValidity(validationState.isCorrect);
   }, null);
+  setTask(
+    "filling",
+    "next",
+    {
+      "task_id": "filling",
+      "sentence": ["I bougheffffffft fef ef efefefefe ef f ", "new car yestefef e fe ef fefefeferday.", "car is verye fe efefefef ef fast."],
+      "keyboard": ["a", "The"],
+      "mode": "word-bank",
+      "typing_language": "en",
+      "answers": ["a", "The"],
+      "audio": false
+    }
+  )
 })(window);
+
