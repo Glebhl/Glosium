@@ -1,10 +1,161 @@
 .lesson-setup-header {
-  flex: none;
   padding: 15px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   box-shadow: var(--shadow-shell);
+}
+
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-shell);
+}
+
+.settings-title {
+  color: var(--color-text);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+  --settings-fade-size: 24px;
+  --settings-top-fade-start-alpha: 1;
+  --settings-bottom-fade-start-alpha: 0;
+  --settings-scrollbar-width: 10px;
+  --settings-scrollbar-gap: 6px;
+  --settings-scrollbar-safe-area: calc(var(--settings-scrollbar-width) + var(--settings-scrollbar-gap));
+  --color-scroll-track: rgba(255, 255, 255, 0.06);
+  --color-scroll-thumb: rgba(255, 255, 255, 0.22);
+  padding-right: var(--settings-scrollbar-gap);
+  scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
+  scrollbar-gutter: stable;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    rgb(0 0 0 / var(--settings-top-fade-start-alpha)) 0,
+    #000 var(--settings-fade-size),
+    #000 calc(100% - var(--settings-fade-size)),
+    rgb(0 0 0 / var(--settings-bottom-fade-start-alpha)) 100%
+  ),
+  linear-gradient(#000, #000);
+  -webkit-mask-size:
+    calc(100% - var(--settings-scrollbar-safe-area)) 100%,
+    var(--settings-scrollbar-safe-area) 100%;
+  -webkit-mask-position:
+    left top,
+    right top;
+  -webkit-mask-repeat: no-repeat;
+  mask-image: linear-gradient(
+    180deg,
+    rgb(0 0 0 / var(--settings-top-fade-start-alpha)) 0,
+    #000 var(--settings-fade-size),
+    #000 calc(100% - var(--settings-fade-size)),
+    rgb(0 0 0 / var(--settings-bottom-fade-start-alpha)) 100%
+  ),
+  linear-gradient(#000, #000);
+  mask-size:
+    calc(100% - var(--settings-scrollbar-safe-area)) 100%,
+    var(--settings-scrollbar-safe-area) 100%;
+  mask-position:
+    left top,
+    right top;
+  mask-repeat: no-repeat;
+}
+
+.settings-content::-webkit-scrollbar {
+  width: var(--settings-scrollbar-width);
+}
+
+.settings-content::-webkit-scrollbar-track {
+  background: var(--color-scroll-track);
+}
+
+.settings-content::-webkit-scrollbar-thumb {
+  background: var(--color-scroll-thumb);
+  border-radius: 999px;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-group-title {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.settings-item-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: var(--shadow-card);
+}
+
+.settings-item-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-item-title {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.settings-item-description {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.settings-summary-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.settings-summary-label {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.settings-summary-value {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .brand {

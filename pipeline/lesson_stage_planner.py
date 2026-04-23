@@ -109,10 +109,18 @@ class LessonStagePlanner:
         lerner_language: str,
         lerner_level: str,
         stage_id: LessonStageId,
+        user_request: str | None = None,
+        disabled_task_ids: tuple[str, ...] | list[str] = (),
     ) -> None:
         self._lerner_language = lerner_language
         self._lerner_level = lerner_level
         self._stage_id = stage_id
+        self._user_request = str(user_request or "").strip()
+        self._disabled_task_ids = tuple(
+            str(task_id or "").strip().lower()
+            for task_id in disabled_task_ids
+            if str(task_id or "").strip()
+        )
 
         settings = get_settings_store()
         self._text_client = LLMTextClient(
@@ -156,9 +164,25 @@ class LessonStagePlanner:
             user_text=user_prompt,
         ):
             for step in parser.feed(text_delta):
+                if self._is_disabled_step(step):
+                    logger.debug(
+                        "Skipping disabled lesson step: stage=%s exercise_id=%s description=%s",
+                        self._stage_id,
+                        step.exercise_id,
+                        step.description,
+                    )
+                    continue
                 yield step
 
         for step in parser.finalize():
+            if self._is_disabled_step(step):
+                logger.debug(
+                    "Skipping disabled lesson step on finalize: stage=%s exercise_id=%s description=%s",
+                    self._stage_id,
+                    step.exercise_id,
+                    step.description,
+                )
+                continue
             yield step
 
     def _build_user_prompt(
@@ -174,6 +198,11 @@ class LessonStagePlanner:
         lines.append(f"STAGE: {self._stage_id}")
         lines.append(f"LERNER_LANGUAGE: {learner_language}")
         lines.append(f"LERNER_LEVEL: {self._lerner_level}")
+        if self._user_request:
+            lines.append("LEARNER_REQUEST:")
+            lines.append(self._user_request)
+        if self._disabled_task_ids:
+            lines.append(f"DISABLED_EXERCISES: {', '.join(self._disabled_task_ids)}")
         
         lines.append("LEARNING_UNITS:")
         for index, card in enumerate(cards, start=1):
@@ -187,3 +216,6 @@ class LessonStagePlanner:
             lines.append(f"{index}. {goal}")
 
         return "\n".join(lines)
+
+    def _is_disabled_step(self, step: MacroPlanStep) -> bool:
+        return step.exercise_id.strip().lower() in self._disabled_task_ids

@@ -2,15 +2,50 @@ from __future__ import annotations
 
 import logging
 import random
+from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
+from app.language_registry import get_language_display_name
 from models.card_models import VocabularyCard
+from app.settings import get_settings_store
 
 logger = logging.getLogger(__name__)
 
 CARDS_STATE_KEY = "lesson_setup/cards"
 HINT_STATE_KEY = "lesson_setup/hint"
 GENERATING_STATE_KEY = "lesson_setup/is_generating"
+SETTINGS_BLOCK_STATE_KEY = "lesson_setup/settings_block"
+SETTINGS_CLEAR_STATE_KEY = "lesson_setup/settings_clear"
+
+LEVEL_OPTIONS = ("A1", "A2", "B1", "B2", "C1", "C2")
+TASK_OPTIONS = (
+    {
+        "value": "explanation",
+        "label": "Explanation",
+        "description": "Short teaching step without an answer field.",
+    },
+    {
+        "value": "matching",
+        "label": "Matching",
+        "description": "Connect words, meanings, or pairs inside one task.",
+    },
+    {
+        "value": "filling",
+        "label": "Fill in the blank",
+        "description": "Complete short sentences with guided recall.",
+    },
+    {
+        "value": "translation",
+        "label": "Translation",
+        "description": "Translate short phrases or sentences into English.",
+    },
+    {
+        "value": "question",
+        "label": "Question",
+        "description": "Read a short passage and answer a comprehension question.",
+    },
+)
+TASK_OPTION_IDS = tuple(option["value"] for option in TASK_OPTIONS)
 
 if TYPE_CHECKING:
     from dev_fixtures.settings import DevFixtureSettings
@@ -37,6 +72,7 @@ class LessonSetupController:
         self._handlers = {
             "btn-click": self._on_btn_click,
             "card-closed": self._on_card_closed,
+            "setting-changed": self._on_setting_changed,
         }
         self._cards: list[dict[str, object]] = []
         self._generation_error_message: str | None = None
@@ -45,24 +81,21 @@ class LessonSetupController:
         self._hint = ""
         self._next_card_id = 0
 
-        # Placeholders for settings tab
+        # Settings
+        self._settings_store = get_settings_store()
+        self._disabled_task_ids: list[str] = self._settings_store.get_value("lesson/disabled_tasks") or []
+        self._learner_level: str | None = self._settings_store.get_value("lesson/learner_level")
         self._lesson_language: str | None = None
         self._lerner_language: str | None = None
-        self._lerner_level: str | None = None
         self._user_request: str | None = None
-        self._publish_cards()
-        self._publish_hint()
-        self._publish_generating()
 
     def on_load_finished(self):
         self._cards = []
         self._generation_error_message = None
         self._is_generating = False
-        self._user_request = None
         self._set_hint(f"Tip: {random.choice(hints)}")
-        self._publish_cards()
-        self._publish_generating()
         self._load_dev_cards_if_needed()
+        self._publish_all_setting_blocks()
 
     def on_ui_event(self, name: str, payload: dict):
         handler = self._handlers.get(name)
@@ -78,8 +111,58 @@ class LessonSetupController:
     def _publish_hint(self) -> None:
         self.backend.publish_state(HINT_STATE_KEY, self._hint)
 
-    def _publish_generating(self) -> None:
+    def _publish_generating(self) -> None:  # TODO make it do something in UI
         self.backend.publish_state(GENERATING_STATE_KEY, self._is_generating)
+
+    def _publish_all_setting_blocks(self) -> dict[str, object] | None:
+        logger.warning(self._learner_level)
+        blocks = [
+            {
+                "id": "learner_level",
+                "group_id": "lesson_profile",
+                "group_title": "Lesson profile",
+                "type": "level_picker",
+                "label": "Learner level",
+                "description": "Used for lesson pacing, explanations, and task difficulty.",
+                "value": self._learner_level or "",
+                "options": [
+                    {"value": level, "label": level}
+                    for level in LEVEL_OPTIONS
+                ],
+            },
+            {
+                "id": "user_request",
+                "group_id": "lesson_tuning",
+                "group_title": "Lesson tuning",
+                "type": "textarea",
+                "label": "Lesson request",
+                "description": "Optional note for tone, context, grammar focus, or extra guidance.",
+                "value": self._user_request or "",
+                "placeholder": 'For example: "More explanations and travel context"',
+                "rows": 4,
+            },
+            {
+                "id": "disabled_tasks",
+                "group_id": "lesson_tuning",
+                "group_title": "Lesson tuning",
+                "type": "toggle_list",
+                "label": "Exercise types",
+                "description": "Turn off formats you do not want in this lesson.",
+                "options": [
+                    {
+                        **option,
+                        "checked": option["value"] not in self._disabled_task_ids,
+                    }
+                    for option in TASK_OPTIONS
+                ],
+            }
+        ]
+    
+        for block in blocks:
+            self.backend.publish_state(
+                SETTINGS_BLOCK_STATE_KEY,
+                block,
+            )
 
     def _serialize_card_entry(self, entry: dict[str, object]) -> dict[str, str]:
         card = entry["card"]
@@ -135,7 +218,6 @@ class LessonSetupController:
 
         self._generation_error_message = None
         self._set_card_generating(True)
-        self._ensure_lesson_settings()
 
         from ui.services.card_generation_worker import CardGenerationWorker
 
@@ -180,14 +262,13 @@ class LessonSetupController:
             case "start_lesson":
                 from ui.controllers.loading_screen import LoadingScreenController
 
-                self._ensure_lesson_settings()
                 for index, entry in enumerate(self._cards):
                     logger.debug("Lesson card %d: %s", index, entry["card"])
 
                 logger.debug(
                     "Starting lesson generation with user_request=%r lerner_level=%s lesson_language=%s lerner_language=%s",
                     self._user_request,
-                    self._lerner_level,
+                    self._learner_level,
                     self._lesson_language,
                     self._lerner_language,
                 )
@@ -196,9 +277,10 @@ class LessonSetupController:
                     LoadingScreenController,
                     [entry["card"] for entry in self._cards if isinstance(entry["card"], VocabularyCard)],
                     self._user_request,
-                    self._lerner_level or "",
+                    self._learner_level or "",
                     self._lesson_language or "",
                     self._lerner_language or "",
+                    self._disabled_task_ids,
                 )
 
     def _on_card_closed(self, payload: dict):
@@ -215,6 +297,29 @@ class LessonSetupController:
 
         logger.warning("Received invalid UI card id: %r", card_id)
 
+    def _on_setting_changed(self, payload: dict) -> None:
+        setting_id = str(payload.get("id", "")).strip()
+        value = payload.get("value")
+
+        if not setting_id:
+            logger.warning("Received a setting change without an id: %r", payload)
+            return
+
+        match setting_id:
+            case "learner_level":
+                normalized_level = str(value or "").strip().upper()
+                self._learner_level = normalized_level
+                self._settings_store.set_value("lesson/learner_level", normalized_level)
+            case "user_request":
+                self._user_request = str(value or "").strip()
+            case "disabled_tasks":
+                normalized_task_ids = self._normalize_disabled_task_ids(value)
+                self._disabled_task_ids = normalized_task_ids
+                self._settings_store.set_value("lesson/disabled_tasks", self._disabled_task_ids)
+            case _:
+                logger.warning("Received an unsupported lesson setting id: %s", setting_id)
+                return
+
     def _get_dev_fixtures(self) -> DevFixtureSettings:
         if self._dev_fixtures is None:
             from dev_fixtures.settings import DevFixtureSettings
@@ -222,13 +327,23 @@ class LessonSetupController:
             self._dev_fixtures = DevFixtureSettings.from_env()
         return self._dev_fixtures
 
-    def _ensure_lesson_settings(self) -> None:
-        if self._lesson_language is not None and self._lerner_language is not None and self._lerner_level is not None:
-            return
+    def _normalize_disabled_task_ids(self, value: object) -> list[str]:
+        normalized: list[str] = []
+        raw_values: Iterable[object]
 
-        from app.settings import get_settings_store
+        if isinstance(value, str):
+            raw_values = [chunk.strip() for chunk in value.split(",")]
+        elif isinstance(value, Iterable):
+            raw_values = value
+        else:
+            raw_values = []
 
-        settings = get_settings_store()
-        self._lesson_language = settings.get_value("lesson/language") or ""
-        self._lerner_language = settings.get_value("lesson/lerner_language") or ""
-        self._lerner_level = settings.get_value("lesson/learner_level") or ""
+        seen: set[str] = set()
+        for raw_value in raw_values:
+            task_id = str(raw_value or "").strip().lower()
+            if task_id not in TASK_OPTION_IDS or task_id in seen:
+                continue
+            normalized.append(task_id)
+            seen.add(task_id)
+
+        return normalized

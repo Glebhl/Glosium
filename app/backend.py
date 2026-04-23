@@ -41,13 +41,7 @@ class Backend:
             logger.warning("UI event dropped because no handler is active: %s", event_name)
             return {"accepted": False}
 
-        # Run the actual handler out-of-band so pywebview can resolve the JS promise
-        # before a controller triggers navigation and tears down the current page.
-        Thread(
-            target=self._ui_event_handler,
-            args=(event_name, payload_dict),
-            daemon=True,
-        ).start()
+        self._ui_event_handler(event_name, payload_dict)
         return {"accepted": True}
 
     def log(self, message: str) -> None:

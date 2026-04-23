@@ -4,10 +4,9 @@ import json
 import logging
 import time
 from collections.abc import Iterator, Sequence
-from typing import Any, Callable
+from typing import Any, Callable, Literal, TypedDict
 
 from google import genai
-from google.genai import types
 
 from ..observability import complete_request_log, fail_request_log, start_request_log
 from .base import BaseProvider
@@ -36,6 +35,31 @@ GOOGLE_SERVICE_TIERS = (
     GOOGLE_SERVICE_TIER_FLEX,
     GOOGLE_SERVICE_TIER_PRIORITY,
 )
+
+GoogleContentRole = Literal["user", "model"]
+GoogleThinkingLevel = Literal["MINIMAL", "LOW", "MEDIUM", "HIGH"]
+
+
+class GooglePart(TypedDict):
+    text: str
+
+
+class GoogleContent(TypedDict):
+    role: GoogleContentRole
+    parts: list[GooglePart]
+
+
+class GoogleThinkingConfig(TypedDict):
+    thinking_level: GoogleThinkingLevel
+
+
+class GoogleGenerationConfig(TypedDict, total=False):
+    system_instruction: str
+    thinking_config: GoogleThinkingConfig
+    service_tier: str
+    temperature: float
+    max_output_tokens: int
+    should_return_http_response: bool
 
 
 class GoogleProvider(BaseProvider):
@@ -244,8 +268,8 @@ class GoogleProvider(BaseProvider):
         self._client = genai.Client(**client_kwargs)
         return self._client
 
-    def _build_contents(self, messages: Sequence[LLMMessage]) -> list[types.Content]:
-        contents: list[types.Content] = []
+    def _build_contents(self, messages: Sequence[LLMMessage]) -> list[GoogleContent]:
+        contents: list[GoogleContent] = []
 
         for msg in messages:
             if msg.role == "system":
@@ -253,10 +277,10 @@ class GoogleProvider(BaseProvider):
 
             role = "model" if msg.role == "assistant" else "user"
             contents.append(
-                types.Content(
-                    role=role,
-                    parts=[types.Part.from_text(text=msg.content)],
-                )
+                {
+                    "role": role,
+                    "parts": [{"text": msg.content}],
+                }
             )
 
         return contents
@@ -271,7 +295,7 @@ class GoogleProvider(BaseProvider):
         temperature: float | None,
         max_output_tokens: int | None,
         include_http_response: bool,
-    ) -> types.GenerateContentConfig:
+    ) -> GoogleGenerationConfig:
         system_instruction = self._extract_system_instruction(messages)
         thinking_config = self._build_thinking_config(reasoning_effort)
         normalized_service_tier = self._normalize_service_tier(service_tier)
@@ -282,14 +306,21 @@ class GoogleProvider(BaseProvider):
                 text_verbosity,
             )
 
-        return types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            thinking_config=thinking_config,
-            service_tier=normalized_service_tier,
-            temperature=temperature,
-            max_output_tokens=max_output_tokens,
-            should_return_http_response=include_http_response,
-        )
+        config: GoogleGenerationConfig = {
+            "should_return_http_response": include_http_response,
+        }
+        if system_instruction is not None:
+            config["system_instruction"] = system_instruction
+        if thinking_config is not None:
+            config["thinking_config"] = thinking_config
+        if normalized_service_tier is not None:
+            config["service_tier"] = normalized_service_tier
+        if temperature is not None:
+            config["temperature"] = temperature
+        if max_output_tokens is not None:
+            config["max_output_tokens"] = max_output_tokens
+
+        return config
 
     @staticmethod
     def _extract_system_instruction(
@@ -303,19 +334,19 @@ class GoogleProvider(BaseProvider):
     @staticmethod
     def _build_thinking_config(
         reasoning_effort: str | None,
-    ) -> types.ThinkingConfig | None:
+    ) -> GoogleThinkingConfig | None:
         thinking_level = GoogleProvider._map_reasoning_effort_to_thinking_level(
             reasoning_effort
         )
         if thinking_level is None:
             return None
 
-        return types.ThinkingConfig(thinking_level=thinking_level)
+        return {"thinking_level": thinking_level}
 
     @staticmethod
     def _map_reasoning_effort_to_thinking_level(
         reasoning_effort: str | None,
-    ) -> str | None:
+    ) -> GoogleThinkingLevel | None:
         if reasoning_effort is None:
             return None
 

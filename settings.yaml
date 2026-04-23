@@ -2,6 +2,8 @@ lesson:
   language: en
   lerner_language: ru
   learner_level: B2
+  disabled_tasks:
+  - question
 models:
   card_generation: google:gemini-3.1-flash-lite-preview
   lesson_planning:
@@ -43,15 +45,13 @@ pipeline:
     service_tier: standard
 pricing:
   google:
-    gemini-3-flash-preview: {
-      "input_per_1m_tokens": 0.5,
-      "output_per_1m_tokens": 3.0,
-      "cached_input_per_1m_tokens": 0.05,
-      "thinking_per_1m_tokens": 3
-    }
-    gemini-3.1-flash-lite-preview: {
-      "input_per_1m_tokens": 0.25,
-      "output_per_1m_tokens": 1.5,
-      "cached_input_per_1m_tokens": 0.025,
-      "thinking_per_1m_tokens": 1.5
-    }
+    gemini-3-flash-preview:
+      input_per_1m_tokens: 0.5
+      output_per_1m_tokens: 3.0
+      cached_input_per_1m_tokens: 0.05
+      thinking_per_1m_tokens: 3
+    gemini-3.1-flash-lite-preview:
+      input_per_1m_tokens: 0.25
+      output_per_1m_tokens: 1.5
+      cached_input_per_1m_tokens: 0.025
+      thinking_per_1m_tokens: 1.5

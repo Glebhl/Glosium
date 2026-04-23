@@ -20,10 +20,14 @@ class LessonGenerationSession:
         lesson_language: str,
         lerner_language: str,
         lerner_level: str,
+        user_request: str | None = None,
+        disabled_task_ids: tuple[str, ...] | list[str] = (),
     ) -> None:
         self._lesson_language = lesson_language
         self._lerner_language = lerner_language
         self._lerner_level = lerner_level
+        self._user_request = user_request
+        self._disabled_task_ids = tuple(str(task_id) for task_id in disabled_task_ids)
 
         # Callbacks
         self._on_first_task_generated: None | Callable = None
@@ -86,6 +90,8 @@ class LessonGenerationSession:
             lerner_language=self._lerner_language,
             lerner_level=self._lerner_level,
             stage_id=stage_id,
+            user_request=self._user_request,
+            disabled_task_ids=self._disabled_task_ids,
         )
 
         first_task_in_session = self._generated_tasks_count == 0

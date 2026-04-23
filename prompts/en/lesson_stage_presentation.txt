@@ -10,6 +10,7 @@ You may receive:
 - LEARNING_UNITS
 - LEARNER_LANGUAGE
 - LEARNER_REQUEST
+- DISABLED_EXERCISES
 - LESSON_SIZE
 - PREVIOUS_STAGE_RESULTS
 
@@ -47,6 +48,7 @@ If PREVIOUS_STAGE_RESULTS is present, use it actively:
 - avoid repeating the same exercise shape or near-identical description that already failed
 
 Use LEARNER_REQUEST to choose contexts and priorities whenever natural.
+Never use an exercise from DISABLED_EXERCISES.
 
 [EXERCISES]
 - explanation: short teaching text, no user input

@@ -21,10 +21,6 @@
           </div>
           <div class="status-chip-list">
             <div class="chip">
-              <div class="status-dot"></div>
-              AI ready
-            </div>
-            <div class="chip">
               <img class="language-flag" src="../../assets/icons/flagpack/us.svg" />
               EN
             </div>
@@ -36,7 +32,7 @@
             <input
               class="topic-prompt"
               id="prompt"
-              placeholder="What do you want to learn today? e. g. “Business meeting vocabulary for B2”"
+              placeholder='What do you want to learn today? e.g. "Business meeting vocabulary for B2"'
             />
             <div class="hint-line">
               <div class="hint-text" id="hint"></div>
@@ -49,7 +45,7 @@
             </svg>
             Generate
           </button>
-          <button class="btn btn--start" id="btn-start" type="button">
+          <button class="btn btn--start" id="btn-start" type="button" disabled>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M8 5v14l12-7-12-7z" fill="currentColor"></path>
             </svg>
@@ -57,9 +53,19 @@
           </button>
         </div>
       </div>
-      <div class="card-grid-shell">
-        <div class="card-grid-scroll">
-          <div class="card-grid" id="cards"></div>
+      <div class="bottom-shell">
+        <div class="settings-shell">
+          <div class="settings-panel">
+            <p class="settings-title">
+              Settings
+            </p>
+            <div class="settings-content" id="settings-content"></div>
+          </div>
+        </div>
+        <div class="card-grid-shell">
+          <div class="card-grid-scroll">
+            <div class="card-grid" id="cards"></div>
+          </div>
         </div>
       </div>
     </main>
