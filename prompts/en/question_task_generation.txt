@@ -2,7 +2,7 @@ Create one reading-comprehension multiple-choice exercise entirely in English.
 
 Requirements:
 - Write one short paragraph of 3-10 sentences in English.
-- Use the targets naturally in the passage.
+- Use all focus units named in DESCRIPTION, and all TARGETS if TARGETS are provided, naturally in the passage.
 - The correct answer must not be inferable from general knowledge or the target words.
 - Then write one clear question about the passage.
 - Provide 3-4 very short answer options in English.

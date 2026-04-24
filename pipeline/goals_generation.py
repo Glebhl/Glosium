@@ -18,11 +18,11 @@ class LessonGoalGenerator:
         self,
         *,
         lesson_language: str,
-        lerner_language: str,
-        lerner_level: str,
+        learner_language: str,
+        learner_level: str,
     ) -> None:
-        self._lerner_language = lerner_language
-        self._lerner_level = lerner_level
+        self._learner_language = learner_language
+        self._learner_level = learner_level
 
         settings = get_settings_store()
         self._text_client = LLMTextClient(
@@ -66,7 +66,7 @@ class LessonGoalGenerator:
             )
             raise
 
-        logger.info(
+        logger.debug(
             "Lesson goals generated\n"
             "goals:\n%s",
             "\n".join(goals)
@@ -80,13 +80,13 @@ class LessonGoalGenerator:
         user_request: str | None,
     ) -> str:
         lines: list[str] = [
-            f"LERNER_LANGUAGE: {get_language_display_name(self._lerner_language)}"
-            f"LERNER_LEVEL: {self._lerner_level}",
+            f"LEARNER_LANGUAGE: {get_language_display_name(self._learner_language)}"
+            f"LEARNER_LEVEL: {self._learner_level}",
         ]
 
         if user_request:
             lines.extend([
-                "LERNER_REQUEST:",
+                "LEARNER_REQUEST:",
                 user_request,
                 "",
             ])

@@ -37,34 +37,34 @@ class TaskGenerator:
         self,
         *,
         lesson_language: str,
-        lerner_language: str,
-        lerner_level: str,
+        learner_language: str,
+        learner_level: str,
     ) -> None:
         self._generator_by_exercise_id = {
             "explanation": ExplanationTaskGenerator(
                 lesson_language=lesson_language,
-                lerner_language=lerner_language,
-                lerner_level=lerner_level,
+                learner_language=learner_language,
+                learner_level=learner_level,
             ),
             "filling": FillingTaskGenerator(
                 lesson_language=lesson_language,
-                lerner_language=lerner_language,
-                lerner_level=lerner_level,
+                learner_language=learner_language,
+                learner_level=learner_level,
             ),
             "matching": MatchingTaskGenerator(
                 lesson_language=lesson_language,
-                lerner_language=lerner_language,
-                lerner_level=lerner_level,
+                learner_language=learner_language,
+                learner_level=learner_level,
             ),
             "question": QuestionTaskGenerator(
                 lesson_language=lesson_language,
-                lerner_language=lerner_language,
-                lerner_level=lerner_level,
+                learner_language=learner_language,
+                learner_level=learner_level,
             ),
             "translation": TranslationTaskGenerator(
                 lesson_language=lesson_language,
-                lerner_language=lerner_language,
-                lerner_level=lerner_level,
+                learner_language=learner_language,
+                learner_level=learner_level,
             ),
         }
 
@@ -79,16 +79,11 @@ class TaskGenerator:
             logger.warning("Unsupported exercise_id in macro plan: %r", step.exercise_id)
             return None
 
-        task = generator.generate_task(
-            description=step.description,
-            targets=step.targets,
-        )
+        task = generator.generate_task(description=step.description)
         if hasattr(task, "mode"):
             task = replace(task, mode=step.mode)
 
         payload = asdict(task)
-        payload["lesson_description"] = step.description
-        payload["lesson_targets"] = [card.lexeme for card in step.targets]
         # logger.info(
         #     "Task payload ready\n"
         #     "macro step:\n%s\n"
@@ -108,11 +103,11 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
         self,
         *,
         lesson_language: str,
-        lerner_language: str,
-        lerner_level: str,
+        learner_language: str,
+        learner_level: str,
     ) -> None:
-        self._lerner_language = lerner_language
-        self._lerner_level = lerner_level
+        self._learner_language = learner_language
+        self._learner_level = learner_level
         settings = get_settings_store()
         self._text_client = LLMTextClient(
             model=settings.get_value("models/task_generation"),
@@ -134,13 +129,11 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
         self,
         *,
         description: str,
-        targets: list[VocabularyCard],
     ) -> ParsedExerciseT:
         prompt = self._build_user_prompt(
-            lerner_language=get_language_display_name(self._lerner_language),
-            lerner_level=self._lerner_level,
+            learner_language=get_language_display_name(self._learner_language),
+            learner_level=self._learner_level,
             description=description,
-            targets=targets,
         )
         logger.debug("Task generation request")
 
@@ -162,39 +155,30 @@ class BaseTaskGenerator(Generic[ParsedExerciseT]):
             )
             raise
 
-        payload = asdict(parsed)
+        # payload = asdict(parsed) # TODO make this readable
         # logger.debug(
         #     "Task generation completed\n"
         #     "exercise_id: N/A\n"  # TODO add exercise id
         #     "parsed payload:%s\n",
-        #     "\n".join(payload),  # TODO make this readable
+        #     "\n".join(payload),
         # )
         return parsed
 
     def _build_user_prompt(
         self,
         *,
-        lerner_language: str,
-        lerner_level,
+        learner_language: str,
+        learner_level,
         description: str,
-        targets: list[VocabularyCard],
     ) -> str:
         """
         Builds a plain-text input prompt for the task content generator.
         """
 
         lines: list[str] = []
-        lines.append(f"LERNER_LANGUAGE: {lerner_language}")
-        lines.append(f"LERNER_LEVEL: {lerner_level}")
+        lines.append(f"LEARNER_LANGUAGE: {learner_language}")
+        lines.append(f"LEARNER_LEVEL: {learner_level}")
         lines.append(f"DESCRIPTION: {description}")
-        lines.append(f"TARGETS:")
-        for index, card in enumerate(targets, start=1):
-            base = (
-                f"U{index} | lexeme={card.lexeme} | meaning={card.meaning_english} | "
-                f"pos={card.part_of_speech} | translation={card.translation}"
-            )
-
-            lines.append(base)
         
         return "\n".join(lines)
     

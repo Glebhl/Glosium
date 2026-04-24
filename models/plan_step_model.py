@@ -7,5 +7,4 @@ class MacroPlanStep:
     description: str
     exercise_id: str
     mode: str
-    targets: list[VocabularyCard]
     

@@ -31,7 +31,7 @@ class LoadingScreenController:
         self._user_request = user_request
         self._learner_level = learner_level
         self._lesson_language = lesson_language
-        self._lerner_language = translation_language
+        self._learner_language = translation_language
         self._disabled_task_ids = tuple(str(task_id) for task_id in disabled_task_ids or [])
         self._generation_started = False
         self._generation_error_message: str | None = None
@@ -68,15 +68,15 @@ class LoadingScreenController:
             "Opening stub lesson from loading screen: cards=%d lesson_language=%s translation_language=%s learner_level=%s user_request=%r",
             len(self._cards),
             self._lesson_language,
-            self._lerner_language,
+            self._learner_language,
             self._learner_level,
             self._user_request,
         )
 
         self._lesson_session = LessonGenerationSession(
-            lerner_level=self._learner_level,
+            learner_level=self._learner_level,
             lesson_language=self._lesson_language,
-            lerner_language=self._lerner_language,
+            learner_language=self._learner_language,
             user_request=self._user_request,
             disabled_task_ids=self._disabled_task_ids,
         )
@@ -96,7 +96,7 @@ class LoadingScreenController:
             LessonFlowController,
             self._lesson_session,
             self._lesson_language,
-            self._lerner_language,
+            self._learner_language,
         )
 
     def _handle_lesson_generation_error(self, message: str) -> None:

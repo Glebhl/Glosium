@@ -1,9 +1,12 @@
 Create one translation exercise.
 
 Requirements:
+- Follow DESCRIPTION for translation direction and answer language.
+- If DESCRIPTION implies typing, the user must produce English: paragraph in the learner language, answers in English.
+- Never make typing require answers in the learner language.
 - Write a cohesive paragraph of 1-2 very short sentences or 3 extremely short ones.
-- Use all listed TARGETS.
-- Do not create any sentence without at least one listed TARGET.
+- Use all focus units named in DESCRIPTION, and all TARGETS if TARGETS are provided.
+- Do not create any sentence without at least one required focus unit.
 - Keep the meaning concrete, literal, and unambiguous.
 - Avoid open contexts that allow many equally natural translations, near-synonyms, or broad paraphrases.
 - Prefer simple, high-frequency wording and clear clues that point to one small set of valid translations.

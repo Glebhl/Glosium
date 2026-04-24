@@ -1,6 +1,6 @@
 lesson:
   language: en
-  lerner_language: ru
+  learner_language: ru
   learner_level: B2
 models:
   card_generation: google:gemma-4-26b-a4b-it

@@ -89,7 +89,7 @@ class LessonSetupController:
 
         # Lesson
         self._lesson_language: str = "en"
-        self._lerner_language: str = "ru"
+        self._learner_language: str = "ru"
 
     def on_load_finished(self):
         self._cards = []
@@ -226,7 +226,7 @@ class LessonSetupController:
         worker = CardGenerationWorker(
             query=clean_query,
             lesson_language=self._lesson_language or "",
-            translation_language=self._lerner_language or "",
+            translation_language=self._learner_language or "",
         )
         worker.run(
             on_card_generated=self._handle_card_generated,
@@ -260,11 +260,11 @@ class LessonSetupController:
                     logger.debug("Lesson card %d: %s", index, entry["card"])
 
                 logger.debug(
-                    "Starting lesson generation with user_request=%r lerner_level=%s lesson_language=%s lerner_language=%s, disabled_task_ids=%s",
+                    "Starting lesson generation with user_request=%r learner_level=%s lesson_language=%s learner_language=%s, disabled_task_ids=%s",
                     self._user_request,
                     self._learner_level,
                     self._lesson_language,
-                    self._lerner_language,
+                    self._learner_language,
                     self._disabled_task_ids,
                 )
 
@@ -274,7 +274,7 @@ class LessonSetupController:
                     self._user_request,
                     self._learner_level or "",
                     self._lesson_language or "",
-                    self._lerner_language or "",
+                    self._learner_language or "",
                     self._disabled_task_ids,
                 )
 

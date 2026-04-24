@@ -2,8 +2,9 @@ Create one fill-in-the-blank exercise.
 
 Requirements:
 - Write a cohesive paragraph in English using 1–2 sentences or 3 very short ones.
-- Each sentence must contain at least one TARGET, and each blank must test only one TARGET.
-- Distribute all targets evenly across the exercise.
+- Each sentence must contain at least one focus unit named in DESCRIPTION, or one TARGET if TARGETS are provided.
+- Each blank must test exactly one English target form.
+- Distribute all required focus units evenly across the exercise.
 - Make every blank solvable from the paragraph alone without relying on the word bank.
 - Provide clear local clues (action, function, attribute, relation, situation, or fixed collocation) so the answer is uniquely determined.
 - Avoid vague or generic contexts where multiple common words could fit.

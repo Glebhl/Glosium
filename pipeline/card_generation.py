@@ -184,9 +184,9 @@ class VocabularyCardGenerator:
     def __init__(
         self,
         lesson_language: str,
-        lerner_language: str,
+        learner_language: str,
     ) -> None:
-        self._lerner_language = lerner_language
+        self._learner_language = learner_language
         settings = get_settings_store()
         self._text_client = LLMTextClient(
             model=settings.get_value("models/card_generation"),
@@ -199,9 +199,9 @@ class VocabularyCardGenerator:
         logger.debug("Loading vocabulary card prompt from %s", prompt_path)
         self._system_prompt = prompt_path.read_text(encoding="utf-8")
         logger.debug(
-            "Initialized VocabularyCardGenerator with lesson_language='%s', lerner_language='%s'.",
+            "Initialized VocabularyCardGenerator with lesson_language='%s', learner_language='%s'.",
             lesson_language,
-            lerner_language,
+            learner_language,
         )
 
     def generate_cards(self, query: str) -> list[VocabularyCard]:
@@ -226,9 +226,9 @@ class VocabularyCardGenerator:
             yield card
 
     def _build_user_prompt(self, query: str) -> str:
-        learner_language = get_language_display_name(self._lerner_language) or self._lerner_language
+        learner_language = get_language_display_name(self._learner_language) or self._learner_language
         lines = [
-            "LERNER_LANGUAGE: " + learner_language,
+            "LEARNER_LANGUAGE: " + learner_language,
             "REQUEST:",
             (query or "").strip(),
         ]

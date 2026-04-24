@@ -6,8 +6,8 @@ Always use:
 - one compact JSON object per line
 - no markdown code fences
 - no prose before or after the data
-The user prompt will provide LERNER_LANGUAGE.
-All fields must be in English except translation and meaning, which must be in the learner language from LERNER_LANGUAGE.
+The user prompt will provide LEARNER_LANGUAGE.
+All fields must be in English except translation and meaning, which must be in the learner language from LEARNER_LANGUAGE.
 Do not use line breaks inside string values.
 Each card must represent exactly one meaning or one fixed lexical item.
 One card = one meaning.

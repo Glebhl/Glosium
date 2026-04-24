@@ -35,7 +35,7 @@ class CardGenerationWorker:
         try:
             card_generator = VocabularyCardGenerator(
                 lesson_language=self._lesson_language,
-                lerner_language=self._translation_language,
+                learner_language=self._translation_language,
             )
             for card in card_generator.stream_cards(self._query):
                 if not first_card_logged:

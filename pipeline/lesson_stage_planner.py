@@ -61,14 +61,13 @@ class LessonStagePlanStreamParser:
         if not line:
             return None
 
-        payload = json.loads(line)
+        payload = json.loads(line)  # TODO show an error message task
         if not isinstance(payload, dict):
             raise ValueError("Lesson stage step must be a JSON object.")
 
         description = str(payload.get("description", "")).strip()
         exercise_id = str(payload.get("exercise_id", "")).strip()
         mode = str(payload.get("mode", "")).strip()
-        raw_targets = payload.get("targets")
 
         if not description:
             raise ValueError("Lesson stage step is missing description.")
@@ -76,22 +75,11 @@ class LessonStagePlanStreamParser:
             raise ValueError("Lesson stage step is missing exercise_id.")
         if not mode:
             raise ValueError("Lesson stage step is missing mode.")
-        if not isinstance(raw_targets, list) or not raw_targets:
-            raise ValueError("Lesson stage step must contain a non-empty targets list.")
-
-        targets: list[VocabularyCard] = []
-        for raw_target in raw_targets:
-            unit_id = str(raw_target).strip()
-            card = self._cards_by_unit_id.get(unit_id)
-            if card is None:
-                raise ValueError(f"Unknown learning unit in lesson stage step: {unit_id!r}")
-            targets.append(card)
 
         return MacroPlanStep(
             description=description,
             exercise_id=exercise_id,
             mode=mode,
-            targets=targets,
         )
 
 
@@ -106,14 +94,14 @@ class LessonStagePlanner:
         self,
         *,
         lesson_language: str,
-        lerner_language: str,
-        lerner_level: str,
+        learner_language: str,
+        learner_level: str,
         stage_id: LessonStageId,
         user_request: str | None = None,
         disabled_task_ids: tuple[str, ...] | list[str] = (),
     ) -> None:
-        self._lerner_language = lerner_language
-        self._lerner_level = lerner_level
+        self._learner_language = learner_language
+        self._learner_level = learner_level
         self._stage_id = stage_id
         self._user_request = str(user_request or "").strip()
         self._disabled_task_ids = tuple(
@@ -191,13 +179,12 @@ class LessonStagePlanner:
         lesson_goals: list[str],
         cards: list[VocabularyCard],
     ) -> str:
-        learner_language = get_language_display_name(self._lerner_language)
+        learner_language = get_language_display_name(self._learner_language)
 
         lines = []
 
-        lines.append(f"STAGE: {self._stage_id}")
-        lines.append(f"LERNER_LANGUAGE: {learner_language}")
-        lines.append(f"LERNER_LEVEL: {self._lerner_level}")
+        lines.append(f"LEARNER_LANGUAGE: {learner_language}")
+        lines.append(f"LEARNER_LEVEL: {self._learner_level}")
         if self._user_request:
             lines.append("LEARNER_REQUEST:")
             lines.append(self._user_request)

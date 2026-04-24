@@ -18,14 +18,14 @@ class LessonGenerationSession:
         self,
         *,
         lesson_language: str,
-        lerner_language: str,
-        lerner_level: str,
+        learner_language: str,
+        learner_level: str,
         user_request: str | None = None,
         disabled_task_ids: tuple[str, ...] | list[str] = (),
     ) -> None:
         self._lesson_language = lesson_language
-        self._lerner_language = lerner_language
-        self._lerner_level = lerner_level
+        self._learner_language = learner_language
+        self._learner_level = learner_level
         self._user_request = user_request
         self._disabled_task_ids = tuple(str(task_id) for task_id in disabled_task_ids)
 
@@ -37,13 +37,13 @@ class LessonGenerationSession:
         # Generators
         self._goal_generator: LessonGoalGenerator = LessonGoalGenerator(
             lesson_language=lesson_language,
-            lerner_language=lerner_language,
-            lerner_level = lerner_level
+            learner_language=learner_language,
+            learner_level=learner_level
         )
         self._task_generator: TaskGenerator = TaskGenerator(
             lesson_language=lesson_language,
-            lerner_language=lerner_language,
-            lerner_level = lerner_level,
+            learner_language=learner_language,
+            learner_level=learner_level,
 
         )
         self._cards: list[VocabularyCard] = []
@@ -87,8 +87,8 @@ class LessonGenerationSession:
     def _generate_stage(self, stage_id: str) -> None:
         stage_planner = LessonStagePlanner(
             lesson_language=self._lesson_language,
-            lerner_language=self._lerner_language,
-            lerner_level=self._lerner_level,
+            learner_language=self._learner_language,
+            learner_level=self._learner_level,
             stage_id=stage_id,
             user_request=self._user_request,
             disabled_task_ids=self._disabled_task_ids,

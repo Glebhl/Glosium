@@ -84,7 +84,7 @@ Edit `settings.yaml` to choose lesson languages, learner level, model assignment
 ```yaml
 lesson:
   language: en
-  lerner_language: ru
+  learner_language: ru
   learner_level: B2
 models:
   card_generation: openai:gpt-5.4-nano
