@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>localStorage Control</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f2;
+      --surface: #ffffff;
+      --surface-soft: #eef2e8;
+      --ink: #1f2528;
+      --muted: #667177;
+      --line: #d9dfd5;
+      --accent: #23736f;
+      --accent-strong: #135a56;
+      --danger: #b23b3b;
+      --danger-soft: #fff0ef;
+      --focus: #e0b84c;
+      --shadow: 0 18px 50px rgba(29, 42, 44, 0.12);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 7px;
+      cursor: pointer;
+      min-height: 38px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: var(--surface);
+      color: var(--ink);
+      transition: border-color 120ms ease, background 120ms ease, color 120ms ease, transform 120ms ease;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      border-color: #aab7b4;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    button.primary:hover {
+      background: var(--accent-strong);
+      border-color: var(--accent-strong);
+    }
+
+    button.danger {
+      color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    button.icon {
+      width: 38px;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      color: var(--ink);
+      outline: none;
+      padding: 10px 12px;
+    }
+
+    textarea {
+      min-height: 190px;
+      resize: vertical;
+      font-family: "Cascadia Mono", Consolas, ui-monospace, monospace;
+      line-height: 1.5;
+    }
+
+    input:focus,
+    textarea:focus,
+    button:focus-visible {
+      border-color: var(--focus);
+      box-shadow: 0 0 0 3px rgba(224, 184, 76, 0.22);
+    }
+
+    .app {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .title-block p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(110px, 1fr));
+      gap: 10px;
+      min-width: min(430px, 100%);
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto auto auto;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .file-button {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .file-button input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .editor {
+      position: sticky;
+      top: 16px;
+      padding: 16px;
+    }
+
+    .panel-title {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .form-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .hint {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .list-panel {
+      overflow: hidden;
+    }
+
+    .list-head {
+      display: grid;
+      grid-template-columns: minmax(140px, 0.65fr) minmax(180px, 1fr) 136px;
+      gap: 12px;
+      padding: 13px 16px;
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .entries {
+      min-height: 320px;
+    }
+
+    .entry {
+      display: grid;
+      grid-template-columns: minmax(140px, 0.65fr) minmax(180px, 1fr) 136px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .entry-key,
+    .entry-value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .entry-key {
+      font-family: "Cascadia Mono", Consolas, ui-monospace, monospace;
+      font-weight: 700;
+    }
+
+    .entry-value {
+      color: var(--muted);
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 7px;
+      justify-content: flex-end;
+    }
+
+    .empty {
+      display: grid;
+      place-items: center;
+      min-height: 320px;
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .status {
+      min-height: 22px;
+      margin: 12px 0 0;
+      color: var(--accent-strong);
+      font-size: 14px;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    @media (max-width: 860px) {
+      .topbar,
+      .layout,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .editor {
+        position: static;
+      }
+
+      .stats {
+        grid-template-columns: repeat(3, 1fr);
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .app {
+        width: min(100% - 20px, 1180px);
+        padding: 18px 0;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .list-head {
+        display: none;
+      }
+
+      .entry {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .entry-actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .form-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="title-block">
+        <h1>localStorage</h1>
+        <p>Просмотр, редактирование, импорт и экспорт данных, сохранённых для текущего origin этой страницы.</p>
+      </div>
+      <section class="stats" aria-label="Сводка localStorage">
+        <div class="stat">
+          <span>Записей</span>
+          <strong id="countStat">0</strong>
+        </div>
+        <div class="stat">
+          <span>Размер</span>
+          <strong id="sizeStat">0 B</strong>
+        </div>
+        <div class="stat">
+          <span>Фильтр</span>
+          <strong id="visibleStat">0</strong>
+        </div>
+      </section>
+    </header>
+
+    <section class="toolbar" aria-label="Инструменты">
+      <input id="searchInput" type="search" placeholder="Поиск по ключам и значениям" autocomplete="off">
+      <button id="refreshButton" type="button" title="Обновить список">Обновить</button>
+      <button id="exportButton" type="button" title="Скачать JSON">Экспорт JSON</button>
+      <label class="file-button">
+        <span>Импорт JSON</span>
+        <input id="importInput" type="file" accept="application/json,.json">
+      </label>
+      <button id="clearAllButton" class="danger" type="button" title="Удалить все записи">Очистить всё</button>
+    </section>
+
+    <section class="layout">
+      <form class="panel editor" id="editorForm">
+        <h2 class="panel-title">Запись</h2>
+        <div class="field">
+          <label for="keyInput">Ключ</label>
+          <input id="keyInput" type="text" placeholder="например: user.theme" autocomplete="off" required>
+        </div>
+        <div class="field">
+          <label for="valueInput">Значение</label>
+          <textarea id="valueInput" placeholder="Текст, JSON или любое строковое значение"></textarea>
+        </div>
+        <div class="form-actions">
+          <button id="saveButton" class="primary" type="submit">Сохранить</button>
+          <button id="resetButton" type="button">Сбросить</button>
+        </div>
+        <p class="hint">localStorage хранит только строки. Если вставить JSON, страница сохранит его как текст и покажет без преобразования.</p>
+        <p id="statusLine" class="status" role="status" aria-live="polite"></p>
+      </form>
+
+      <section class="panel list-panel" aria-label="Записи localStorage">
+        <div class="list-head" aria-hidden="true">
+          <span>Ключ</span>
+          <span>Значение</span>
+          <span>Действия</span>
+        </div>
+        <div id="entries" class="entries"></div>
+      </section>
+    </section>
+  </main>
+
+  <template id="entryTemplate">
+    <article class="entry">
+      <div class="entry-key"></div>
+      <div class="entry-value"></div>
+      <div class="entry-actions">
+        <button class="icon edit-entry" type="button" title="Редактировать" aria-label="Редактировать">✎</button>
+        <button class="icon copy-entry" type="button" title="Скопировать значение" aria-label="Скопировать значение">⧉</button>
+        <button class="icon delete-entry danger" type="button" title="Удалить" aria-label="Удалить">×</button>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    const keyInput = document.getElementById("keyInput");
+    const valueInput = document.getElementById("valueInput");
+    const saveButton = document.getElementById("saveButton");
+    const searchInput = document.getElementById("searchInput");
+    const exportButton = document.getElementById("exportButton");
+    const importInput = document.getElementById("importInput");
+    const clearAllButton = document.getElementById("clearAllButton");
+    const refreshButton = document.getElementById("refreshButton");
+    const resetButton = document.getElementById("resetButton");
+    const editorForm = document.getElementById("editorForm");
+    const entriesRoot = document.getElementById("entries");
+    const entryTemplate = document.getElementById("entryTemplate");
+    const countStat = document.getElementById("countStat");
+    const sizeStat = document.getElementById("sizeStat");
+    const visibleStat = document.getElementById("visibleStat");
+    const statusLine = document.getElementById("statusLine");
+
+    function getEntries() {
+      return Object.keys(localStorage)
+        .sort((a, b) => a.localeCompare(b, "ru"))
+        .map((key) => ({ key, value: localStorage.getItem(key) ?? "" }));
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+    }
+
+    function estimateSize(entries) {
+      return entries.reduce((total, item) => total + new Blob([item.key, item.value]).size, 0);
+    }
+
+    function setStatus(message, isError = false) {
+      statusLine.textContent = message;
+      statusLine.classList.toggle("error", isError);
+    }
+
+    function createEmptyState(text) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = text;
+      return empty;
+    }
+
+    function renderEntries() {
+      const entries = getEntries();
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = entries.filter((item) => {
+        const haystack = `${item.key}\n${item.value}`.toLowerCase();
+        return haystack.includes(query);
+      });
+
+      countStat.textContent = String(entries.length);
+      visibleStat.textContent = String(filtered.length);
+      sizeStat.textContent = formatBytes(estimateSize(entries));
+      entriesRoot.replaceChildren();
+
+      if (entries.length === 0) {
+        entriesRoot.append(createEmptyState("В localStorage пока нет записей."));
+        return;
+      }
+
+      if (filtered.length === 0) {
+        entriesRoot.append(createEmptyState("По этому фильтру ничего не найдено."));
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      filtered.forEach((item) => {
+        const node = entryTemplate.content.firstElementChild.cloneNode(true);
+        node.dataset.key = item.key;
+        node.querySelector(".entry-key").textContent = item.key;
+        node.querySelector(".entry-value").textContent = item.value;
+        node.querySelector(".edit-entry").addEventListener("click", () => editEntry(item.key));
+        node.querySelector(".copy-entry").addEventListener("click", () => copyEntry(item.value));
+        node.querySelector(".delete-entry").addEventListener("click", () => deleteEntry(item.key));
+        fragment.append(node);
+      });
+
+      entriesRoot.append(fragment);
+    }
+
+    function editEntry(key) {
+      keyInput.value = key;
+      valueInput.value = localStorage.getItem(key) ?? "";
+      keyInput.focus();
+      setStatus(`Открыта запись "${key}"`);
+    }
+
+    async function copyEntry(value) {
+      try {
+        await navigator.clipboard.writeText(value);
+        setStatus("Значение скопировано");
+      } catch {
+        setStatus("Не удалось скопировать значение", true);
+      }
+    }
+
+    function deleteEntry(key) {
+      if (!confirm(`Удалить запись "${key}"?`)) return;
+      localStorage.removeItem(key);
+      renderEntries();
+      setStatus(`Запись "${key}" удалена`);
+    }
+
+    editorForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const key = keyInput.value.trim();
+      if (!key) {
+        setStatus("Укажите ключ записи", true);
+        keyInput.focus();
+        return;
+      }
+
+      try {
+        localStorage.setItem(key, valueInput.value);
+        renderEntries();
+        setStatus(`Запись "${key}" сохранена`);
+      } catch (error) {
+        setStatus(`Не удалось сохранить: ${error.message}`, true);
+      }
+    });
+
+    resetButton.addEventListener("click", () => {
+      editorForm.reset();
+      keyInput.focus();
+      setStatus("");
+    });
+
+    searchInput.addEventListener("input", renderEntries);
+    refreshButton.addEventListener("click", () => {
+      renderEntries();
+      setStatus("Список обновлён");
+    });
+
+    exportButton.addEventListener("click", () => {
+      const payload = Object.fromEntries(getEntries().map((item) => [item.key, item.value]));
+      const json = JSON.stringify(payload, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `localStorage-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      setStatus("Экспорт подготовлен");
+    });
+
+    importInput.addEventListener("change", async () => {
+      const file = importInput.files?.[0];
+      if (!file) return;
+
+      try {
+        const data = JSON.parse(await file.text());
+        if (!data || Array.isArray(data) || typeof data !== "object") {
+          throw new Error("JSON должен быть объектом с парами ключ-значение");
+        }
+
+        Object.entries(data).forEach(([key, value]) => {
+          localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
+        });
+
+        renderEntries();
+        setStatus(`Импортировано записей: ${Object.keys(data).length}`);
+      } catch (error) {
+        setStatus(`Ошибка импорта: ${error.message}`, true);
+      } finally {
+        importInput.value = "";
+      }
+    });
+
+    clearAllButton.addEventListener("click", () => {
+      const count = localStorage.length;
+      if (count === 0) {
+        setStatus("Очищать нечего");
+        return;
+      }
+
+      if (!confirm(`Удалить все записи localStorage для этого origin? Количество: ${count}`)) return;
+      localStorage.clear();
+      renderEntries();
+      setStatus("localStorage очищен");
+    });
+
+    addEventListener("storage", () => {
+      renderEntries();
+      setStatus("Данные обновлены в другой вкладке");
+    });
+
+    renderEntries();
+  </script>
+</body>
+</html>
