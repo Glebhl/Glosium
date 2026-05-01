@@ -1,0 +1,24 @@
+Create one translation exercise.
+
+Requirements:
+- Follow DESCRIPTION for translation direction and answer language.
+- If DESCRIPTION implies typing, the user must produce English: paragraph in the learner language, answers in English.
+- Never make typing require answers in the learner language.
+- Write a cohesive paragraph of 1-2 very short sentences or 3 extremely short ones.
+- Use all focus units named in DESCRIPTION, and all TARGETS if TARGETS are provided.
+- Do not create any sentence without at least one required focus unit.
+- Keep the meaning concrete, literal, and unambiguous.
+- Avoid open contexts that allow many equally natural translations, near-synonyms, or broad paraphrases.
+- Prefer simple, high-frequency wording and clear clues that point to one small set of valid translations.
+- Provide all acceptable full-sentence answers, but do not duplicate answers that differ only by expanded contractions.
+- Provide a word bank with 3-5 extra distractor words for ANSWERS.
+- Do not use distractors that are near-synonyms, same-category alternatives, or words that could still fit naturally into a valid translation.
+- Do not mix languages in a single field.
+- PARAGRAPH must be in one language; ANSWERS and DISTRACTORS must be in the other language.
+
+Output format:
+{
+  "paragraph": "<text to be translated by the user>",
+  "answers": ["<full translation>", "..."],
+  "distractors": ["...", "..."]
+}

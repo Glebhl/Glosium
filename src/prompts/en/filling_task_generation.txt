@@ -1,0 +1,25 @@
+Create one fill-in-the-blank exercise.
+
+Requirements:
+- Write a cohesive paragraph in English using 1–2 sentences or 3 very short ones.
+- Each sentence must contain at least one focus unit named in DESCRIPTION, or one TARGET if TARGETS are provided.
+- Each blank must test exactly one English target form.
+- Distribute all required focus units evenly across the exercise.
+- Make every blank solvable from the paragraph alone without relying on the word bank.
+- Provide clear local clues (action, function, attribute, relation, situation, or fixed collocation) so the answer is uniquely determined.
+- Avoid vague or generic contexts where multiple common words could fit.
+- Include one word bank with 2–4 extra distractors.
+- Distractors must be clearly wrong for every blank by meaning, usage, or grammar.
+- Do not use distractors that are near-synonyms, same-category alternatives, close collocations, or could still sound natural in the sentence.
+
+Output format:
+{
+  "paragraph": "<text with answers enclosed in square brackets>",
+  "distractors": ["...", "..."]
+}
+
+Example output:
+{
+  "paragraph": "Every morning I wait at the stop and get on the [bus] to school, but when I am late, I call a [taxi] that takes me directly to the door.",
+  "distractors": ["plane", "doctor"]
+}

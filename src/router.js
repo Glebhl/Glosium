@@ -91,7 +91,7 @@ export class Router {
       throw new Error(`Route "${path}" does not export Controller.mount()`);
     }
 
-    controller.mount(this, options);
+    await controller.mount(this, options);
 
     return controller;
   }

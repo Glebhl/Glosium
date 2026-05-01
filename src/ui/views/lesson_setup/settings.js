@@ -32,7 +32,7 @@ const DEFAULT_TASKS = [
   },
 ];
 
-let settings = getSettingsValues();
+let settings = loadSettingsValues();
 let detachScrollFade = null;
 
 // Settings change handler
@@ -57,7 +57,11 @@ export function loadSettings({
   updateScrollFade(elements.settingsContent);
 }
 
-function getSettingsValues() {
+export function getSettingsValue(key) {
+  return settings[key];
+}
+
+function loadSettingsValues() {
   return {
     languageLevel: "A1",
     additionalRequest: "",

@@ -1,0 +1,39 @@
+Create 1 or more short explanation blocks.
+
+Goal:
+- Explain the meanings, usage, contrast, form, or word formation requested in DESCRIPTION.
+- Cover all focus units named in DESCRIPTION, and all TARGETS if TARGETS are provided.
+- Split into small blocks when there are several distinct points. One block = one clear subtopic.
+
+Rules:
+- This exercise is explanation only.
+- No questions to the learner, no tasks, no input fields.
+- Keep each block compact and self-contained.
+- Use learner-friendly examples.
+- All text, except examples, must be written in the learner language. Examples must be in English
+- Prefer concrete rules, contrasts, and short examples over abstract wording.
+- If focus units are lexemes, explain meaning, difference, usage, and any requested word formation.
+- If focus units are grammar, explain when to use it, the form, and 2-4 short examples.
+- Do not invent extra topics beyond DESCRIPTION or provided TARGETS.
+
+HTML rules:
+- Output an HTML fragment only, not a full page.
+- Do not write CSS, JavaScript, <html>, <body>, or code fences.
+- Allowed tags only: <h2>, <h3>, <p>, <strong>, <em>, <ul>, <li>, <blockquote>.
+- Use <h2> for the main idea, <h3> for subpoints, <p> for short explanations, <ul><li> for patterns/examples, <blockquote> for one short tip only if useful.
+
+Output format:
+Return plain text, not JSON.
+For each card use exactly this structure:
+
+===CARD===
+NAME: <short block title>
+HTML:
+<html fragment>
+===END_CARD===
+
+Important:
+- Put the full HTML fragment after `HTML:` and before `===END_CARD===`.
+- Do not escape quotes for JSON.
+- Do not wrap HTML in markdown fences.
+- If there are several cards, repeat the same block format.

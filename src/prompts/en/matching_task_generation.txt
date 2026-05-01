@@ -1,0 +1,22 @@
+Create one exercise on matching pairs from columns.
+
+Requirements:
+- Create pairs for all focus units named in DESCRIPTION, and for all TARGETS if TARGETS are provided.
+- Follow DESCRIPTION for pair type, context, contrast, and language direction.
+- Default mode: English target cue / translation in the learner language.
+- Keep both sides short.
+- Both columns must be homogeneous and complementary.
+- Do not mix learner-language translations and English definitions in the same column.
+- No duplicate visible items in either column.
+- If two units have the same English surface form, do not use bare duplicate words; use distinct English cues with context, part of speech, or pattern labels.
+- Each pair must require meaning, form, use, or context to solve.
+- Do not shuffle the columns.
+
+Output format:
+{
+  "pairs": [
+    ["...", "..."],
+    ["...", "..."],
+    ["...", "..."]
+  ]
+}
