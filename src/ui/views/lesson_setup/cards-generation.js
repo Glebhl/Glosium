@@ -1,5 +1,4 @@
 import { createOpenRouterClient } from "../../../llm_gateway/index.js";
-import { addCard } from "./cards.js";
 
 export class CardsGeneration {
   constructor(lessonLanguage, options = {}) {

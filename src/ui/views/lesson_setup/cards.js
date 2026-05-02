@@ -19,7 +19,9 @@ export function addCard(card) {
   const cardEntry = createCardEntry(card);
 
   cardEntries.push(cardEntry);
-  elements.cardList.appendChild(createCardElement(cardEntry));
+  const cardElement = createCardElement(cardEntry);
+  elements.cardList.appendChild(cardElement);
+  playEnterAnimation(cardElement);
   refreshDeckState();
 
   return cardEntry.card;
@@ -106,7 +108,6 @@ function createCardElement(cardEntry) {
 
   cardElement.dataset.cardId = cardEntry.id;
   fillCardElement(cardElement, cardEntry.card);
-  finishCardEnter(cardElement);
 
   return cardElement;
 }
@@ -126,45 +127,36 @@ function setText(root, selector, value) {
   root.querySelector(selector).textContent = value || "";
 }
 
-function finishCardEnter(cardElement) {
-  cardElement.classList.add("fade-enter");
-
-  doubleAnimationFrame(function () {
-    cardElement.classList.add("fade-enter-active");
-  });
-
-  cardElement.addEventListener("transitionend", function handleEnterEnd(event) {
-    if (event.target !== cardElement || event.propertyName !== "opacity") {
-      return;
-    }
-
-    cardElement.classList.remove("fade-enter", "fade-enter-active");
-    cardElement.removeEventListener("transitionend", handleEnterEnd);
-  });
+function playEnterAnimation(cardElement) {
+  cardElement.animate(
+    [
+      { opacity: 0, transform: "scale(0.985)" },
+      { opacity: 1, transform: "scale(1)" },
+    ],
+    {
+      duration: 150,
+      easing: "ease",
+      fill: "both",
+    },
+  );
 }
 
-function removeCardElement(cardElement, callback) {
-  if (!cardElement || cardElement.classList.contains("fade-exit-active")) {
-    return;
-  }
+function removeCardElement(cardElement, callback) {  
+  const animation = cardElement.animate(
+    [
+      { opacity: 1, transform: "scale(1)" },
+      { opacity: 0, transform: "scale(0.985)" },
+    ],
+    {
+      duration: 150,
+      easing: "ease",
+      fill: "both",
+    },
+  );
 
-  cardElement.classList.add("fade-exit");
-
-  doubleAnimationFrame(function () {
-    cardElement.classList.add("fade-exit-active");
-  });
-
-  cardElement.addEventListener("transitionend", function handleExitEnd(event) {
-    if (event.target !== cardElement || event.propertyName !== "opacity") {
-      return;
-    }
-
-    cardElement.removeEventListener("transitionend", handleExitEnd);
+  animation.finished.finally(() => {
     cardElement.remove();
-
-    if (typeof callback === "function") {
-      callback();
-    }
+    callback();
   });
 }
 
@@ -187,12 +179,6 @@ function refreshDeckState() {
 
 function formatDeckAmount(amount) {
   return "Deck: " + amount + " card" + (amount === 1 ? "" : "s");
-}
-
-function doubleAnimationFrame(callback) {
-  requestAnimationFrame(function () {
-    requestAnimationFrame(callback);
-  });
 }
 
 function capturePositions(container, selector) {

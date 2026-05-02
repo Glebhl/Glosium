@@ -11,9 +11,9 @@ const elements = {
 };
 
 const testCard = {
-  word: "negotiate",
+  lexeme: "negotiate",
   unit: "negotiate",
-  part: "verb",
+  part_of_speech: "verb",
   level: "B2",
   transcription: "/nəˈɡəʊʃieɪt/",
   translation: "вести переговоры",
@@ -37,6 +37,12 @@ export class Controller {
     initLessonSetupTabs();
     loadSettings(options.settings);
     showHint();
+
+    addCard(testCard);
+    addCard(testCard);
+    addCard(testCard);
+    addCard(testCard);
+    addCard(testCard);
     
     elements.btnGenerate.addEventListener("click", this.generateCards.bind(this));
     elements.btnStart.addEventListener("click", () => {});
