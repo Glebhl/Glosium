@@ -370,10 +370,6 @@
     grid-column: 1 / -1;
   }
 
-  /* .topic-prompt {
-    padding: 13px;
-  } */
-
   .btn {
     justify-content: center;
     min-width: 0;

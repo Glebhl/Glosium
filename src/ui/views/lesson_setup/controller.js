@@ -39,10 +39,6 @@ export class Controller {
     showHint();
 
     addCard(testCard);
-    addCard(testCard);
-    addCard(testCard);
-    addCard(testCard);
-    addCard(testCard);
     
     elements.btnGenerate.addEventListener("click", this.generateCards.bind(this));
     elements.btnStart.addEventListener("click", () => {});
@@ -55,6 +51,10 @@ export class Controller {
   generateCards() {
     // console.log("Test");
     const learnerRequest = elements.prompt.value;
+    if (!learnerRequest) {
+      console.warn("Enter lesson request");
+      return;
+    }
     const learnerLanguage = this.learnerLanguage;
     this.cardsGeneration.generate({ learnerRequest, learnerLanguage, callback: addCard });
   }

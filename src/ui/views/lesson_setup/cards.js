@@ -10,6 +10,7 @@ const elements = {
   cardList: document.getElementById("cards"),
   emptyText: document.getElementById("cards-empty-text"),
   deckAmount: document.getElementById("deck-amount"),
+  btnStart: document.getElementById("btn-start"),
 };
 
 elements.cardList.addEventListener("click", handleCardActionClick);
@@ -175,6 +176,8 @@ function refreshDeckState() {
 
   elements.deckAmount.textContent = formatDeckAmount(cardEntries.length);
   elements.emptyText.classList.toggle("card-grid__empty-text--hidden", hasCards);
+
+  elements.btnStart.disabled = !hasCards;
 }
 
 function formatDeckAmount(amount) {
