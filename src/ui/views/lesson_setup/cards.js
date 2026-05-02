@@ -15,7 +15,7 @@ const elements = {
 elements.cardList.addEventListener("click", handleCardActionClick);
 
 export function addCard(card) {
-  console.debug(`Added card: ${card}`)
+  console.debug(`Added card: ${card}`);
   const cardEntry = createCardEntry(card);
 
   cardEntries.push(cardEntry);
@@ -117,10 +117,10 @@ function fillCardElement(cardElement, card) {
   setText(cardElement, ".meta-pill__value--unit", card.lexical_unit);
   setText(cardElement, ".meta-pill__value--part", card.part_of_speech);
   setText(cardElement, ".meta-pill__value--level", card.level);
-  setText(cardElement, ".lesson-card__transcription", card.translation);
-  setText(cardElement, ".lesson-card__translation", card.transcription);
+  setText(cardElement, ".lesson-card__transcription", card.transcription);
+  setText(cardElement, ".lesson-card__translation", card.translation);
   setText(cardElement, ".lesson-card__definition", card.definition);
-  setText(cardElement, ".lesson-card__example", card.example);
+  setText(cardElement, ".lesson-card__example", `"${card.example}"`);
 }
 
 function setText(root, selector, value) {

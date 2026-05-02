@@ -1,28 +1,18 @@
-const DEFAULT_PANEL = "settings";
-
-export function initLessonSetupTabs(rootElement = document) {
-  const bottomShell = rootElement.querySelector(".bottom-shell");
-  const tabElements = Array.from(rootElement.querySelectorAll("[data-setup-tab]"));
-  const panelElements = Array.from(rootElement.querySelectorAll("[data-setup-panel]"));
-
-  if (!bottomShell || tabElements.length === 0 || panelElements.length === 0) {
-    return function () {};
-  }
+export function initLessonSetupTabs() {
+  const bottomShell = document.querySelector(".bottom-shell");
+  const tabElements = Array.from(document.querySelectorAll("[data-setup-tab]"));
+  const panelElements = Array.from(document.querySelectorAll("[data-setup-panel]"));
+  let activePanel = "cards";
 
   function showPanel(panelName) {
-    const activePanel = panelName || DEFAULT_PANEL;
-
-    bottomShell.dataset.activePanel = activePanel;
+    activePanel = panelName;
 
     tabElements.forEach(function (tabElement) {
-      const isActive = tabElement.dataset.setupTab === activePanel;
-
-      tabElement.classList.toggle("is-active", isActive);
-      tabElement.setAttribute("aria-selected", isActive ? "true" : "false");
+      tabElement.classList.toggle("is-active", tabElement.dataset.setupTab === panelName);
     });
 
     panelElements.forEach(function (panelElement) {
-      panelElement.classList.toggle("is-active", panelElement.dataset.setupPanel === activePanel);
+      panelElement.classList.toggle("is-active", panelElement.dataset.setupPanel === panelName);
     });
   }
 
@@ -32,7 +22,5 @@ export function initLessonSetupTabs(rootElement = document) {
     });
   });
 
-  showPanel(bottomShell.dataset.activePanel || DEFAULT_PANEL);
-
-  return showPanel;
+  showPanel(activePanel);
 }

@@ -3,7 +3,6 @@
   <head>
     <link href="../../assets/styles/theme.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
-    <link href="styles/motion.css" rel="stylesheet" />
     <link href="styles/content.css" rel="stylesheet" />
     <link href="styles/layout.css" rel="stylesheet" />
     <link href="styles/interactive.css" rel="stylesheet" />
@@ -53,16 +52,7 @@
           </button>
         </div>
       </div>
-      <div class="mobile-view-tabs" role="tablist" aria-label="Lesson setup sections">
-        <button
-          class="mobile-view-tab is-active"
-          type="button"
-          role="tab"
-          aria-selected="true"
-          data-setup-tab="settings"
-        >
-          Settings
-        </button>
+      <div class="mobile-view-tabs" role="tablist">
         <button
           class="mobile-view-tab"
           type="button"
@@ -72,8 +62,17 @@
         >
           Cards
         </button>
+        <button
+          class="mobile-view-tab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          data-setup-tab="settings"
+        >
+          Settings
+        </button>
       </div>
-      <div class="bottom-shell" data-active-panel="settings">
+      <div class="bottom-shell">
         <div class="settings-shell is-active" data-setup-panel="settings">
           <div class="settings-panel">
             <p class="settings-title">

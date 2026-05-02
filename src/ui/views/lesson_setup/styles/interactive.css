@@ -33,7 +33,29 @@
 }
 
 .mobile-view-tab.is-active:hover {
-  filter: brightness(1.04);
+  background: var(--color-surface);
+}
+
+.mobile-view-tab {
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  transition: var(--duration-moderate) var(--easing-standard);
+}
+
+.mobile-view-tab.is-active {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: white;
+  /* box-shadow: 0 8px 24px rgba(123, 97, 255, 0.2); */
 }
 
 .hint-line {
@@ -161,11 +183,6 @@
 .settings-level-step:disabled {
   cursor: not-allowed;
   opacity: 0.55;
-}
-
-.lesson-card:hover {
-  border-color: rgba(123, 97, 255, 0.35);
-  box-shadow: 0 6px 33px rgba(0, 0, 0, 0.25);
 }
 
 .lesson-card__actions {
@@ -336,6 +353,13 @@
   opacity: 0.7;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .lesson-card:hover {
+    border-color: rgba(123, 97, 255, 0.35);
+    box-shadow: 0 6px 33px rgba(0, 0, 0, 0.25);
+  }
+}
+
 @media (max-width: 800px) {
   .prompt-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -346,9 +370,9 @@
     grid-column: 1 / -1;
   }
 
-  .topic-prompt {
+  /* .topic-prompt {
     padding: 13px;
-  }
+  } */
 
   .btn {
     justify-content: center;

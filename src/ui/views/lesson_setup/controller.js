@@ -12,13 +12,13 @@ const elements = {
 
 const testCard = {
   lexeme: "negotiate",
-  unit: "negotiate",
+  lexical_unit: "word",
   part_of_speech: "verb",
   level: "B2",
   transcription: "/nəˈɡəʊʃieɪt/",
   translation: "вести переговоры",
   definition: "To discuss something in order to reach an agreement.",
-  example: '"We need to negotiate the contract terms."',
+  example: 'We need to negotiate the contract terms.',
 }
 
 export class Controller {
@@ -35,7 +35,7 @@ export class Controller {
     this.router = router;
     this.cardsGeneration = await CardsGeneration.create(this.lessonLanguage);
     initLessonSetupTabs();
-    loadSettings(options.settings);
+    loadSettings();
     showHint();
 
     addCard(testCard);

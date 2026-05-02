@@ -262,22 +262,3 @@ main {
     font-size: 13px;
   }
 }
-
-/* @media (max-width: 430px) {
-  main {
-    padding: 10px;
-  }
-
-  .settings-level-track {
-    gap: 4px;
-  }
-
-  .settings-toggle {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .settings-toggle__status {
-    grid-column: 2;
-    text-align: left;
-  }
-} */
